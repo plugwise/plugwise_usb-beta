@@ -17,7 +17,7 @@ set -e
 # Which packages to install (to prevent installing all test requirements)
 # actual package version ARE verified (i.e. grepped) from requirements_test_all
 # separate packages with |
-pip_packages="fnvhash|lru-dict|voluptuous|pyroute2|sqlalchemy|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
+pip_packages="fnvhash|lru-dict|voluptuous|pyroute2|sqlalchemy|zeroconf|pyserial|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic"
 
 echo ""
 echo "Checking for necessary tools and preparing setup:"
