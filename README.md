@@ -1,4 +1,4 @@
-# Plugwise custom_component (BETA)
+# Plugwise USB/Stick custom_component (BETA)
 
 :warning::warning::warning: Always **read** the [release notes](https://github.com/plugwise/plugwise_usb-beta/releases) before upgrading, in case there are BREAKING changes! **Do note** the release title on alpha releases and only install them if specifically instructed by our team! :warning::warning::warning:
 

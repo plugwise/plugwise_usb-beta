@@ -1,5 +1,5 @@
 {
-  "name": "Plugwise USB beta custom component",
+  "name": "Plugwise USB/Stick beta/dev",
   "domains": ["binary_sensor", "sensor", "switch"],
   "homeassistant": "2023.3.0",
   "render_readme": true
