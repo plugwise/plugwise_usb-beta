@@ -3,7 +3,7 @@ from datetime import timedelta
 import logging
 from typing import Final
 
-import voluptuous as vol  # pw-beta usb
+import voluptuous as vol
 
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
@@ -82,7 +82,7 @@ SERVICE_USB_DEVICE_ADD: Final = "device_add"
 SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {vol.Required(ATTR_MAC_ADDRESS): cv.string}
-)  # pw-beta usb
+)
 
 
 # USB Relay device constants

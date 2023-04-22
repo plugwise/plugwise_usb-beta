@@ -7,10 +7,10 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.nodes import PlugwiseNode  # pw-beta usb
+from plugwise_usb.nodes import PlugwiseNode
 
-from . import PlugwiseUSBEntity  # pw-beta
-from .const import (  # pw-beta usb
+from . import PlugwiseUSBEntity
+from .const import (
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
     ATTR_SCAN_SENSITIVITY_MODE,
@@ -53,8 +53,7 @@ async def async_setup_entry(
             [
                 USBBinarySensor(api_stick.devices[mac], description)
                 for description in PW_BINARY_SENSOR_TYPES
-                if description.plugwise_api == STICK
-                and description.key in api_stick.devices[mac].features
+                if description.key in api_stick.devices[mac].features
             ]
         )
         if entities:
@@ -88,8 +87,6 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-# pw-beta
-# Github issue #265
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB Binary Sensor."""
 
@@ -102,8 +99,7 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[mi
     @property
     def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
-        # Github issue #265
-        return getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
+        return getattr(self._node, self.entity_description.state_request_method)
 
     def _service_scan_config(self, **kwargs):
         """Service call to configure motion sensor of Scan device."""

@@ -3,30 +3,27 @@ from __future__ import annotations
 
 from typing import Any
 
-import serial.tools.list_ports  # pw-beta usb
+import serial.tools.list_ports
 import voluptuous as vol
 
-from homeassistant.components import usb  # pw-beta usb
+from homeassistant.components import usb
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-from plugwise_usb import Stick  # pw-beta usb
+from plugwise_usb import Stick
+from plugwise_usb.exceptions import (
+    NetworkDown,
+    PortError,
+    StickInitError,
+    TimeoutException,
+)
 
-# pw-beta Note; the below are explicit through isort
-from plugwise_usb.exceptions import NetworkDown  # pw-beta usb
-from plugwise_usb.exceptions import PortError  # pw-beta usb
-from plugwise_usb.exceptions import StickInitError  # pw-beta usb
-from plugwise_usb.exceptions import TimeoutException  # pw-beta usb
-
-# pw-beta Note; the below are explicit through isort
-from .const import CONF_MANUAL_PATH  # pw-beta usb
-from .const import CONF_USB_PATH  # pw-beta usb
-from .const import DOMAIN
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
 
 
 @callback
-def plugwise_stick_entries(hass):  # pw-beta usb
+def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
     sticks = []
     for entry in hass.config_entries.async_entries(DOMAIN):
@@ -34,12 +31,7 @@ def plugwise_stick_entries(hass):  # pw-beta usb
     return sticks
 
 
-# Github issue: #265
-# Might be a `tuple[dict[str, str], Stick | None]` for typing, but that throws
-# Item None of Optional[Any] not having attribute mac [union-attr]
-async def validate_usb_connection(
-    self, device_path=None
-) -> tuple[dict[str, str], Any]:  # pw-beta usb
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], Any]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -71,7 +63,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pw-beta usb
+    ) -> FlowResult:
         """Step when user initializes a integration."""
         errors: dict[str, str] = {}
         ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
@@ -108,7 +100,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_manual_path(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:  # pw-beta usb
+    ) -> FlowResult:
         """Step when manual path to device."""
         errors: dict[str, str] = {}
         if user_input is not None:

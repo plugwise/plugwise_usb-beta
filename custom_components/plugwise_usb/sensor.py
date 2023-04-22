@@ -8,8 +8,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.nodes import PlugwiseNode
 
-from . import PlugwiseUSBEntity  # pw-beta usb
-from .const import CB_NEW_NODE, DOMAIN, STICK  # pw-beta usb
+from . import PlugwiseUSBEntity
+from .const import CB_NEW_NODE, DOMAIN, STICK
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 
 PARALLEL_UPDATES = 0
@@ -30,8 +30,7 @@ async def async_setup_entry(
             [
                 USBSensor(api_stick.devices[mac], description)
                 for description in PW_SENSOR_TYPES
-                if description.plugwise_api == STICK
-                and description.key in api_stick.devices[mac].features
+                if description.key in api_stick.devices[mac].features
             ]
         )
         if entities:
@@ -48,8 +47,7 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-# Github issue #265
-class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-beta usb
+class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB sensor."""
 
     def __init__(
@@ -61,9 +59,7 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-be
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        # Github issue #265
-        state_value = getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
-        # /Github issue #265
+        state_value = getattr(self._node, self.entity_description.state_request_method)
         if state_value is not None:
             return float(round(state_value, 3))
         return None
