@@ -47,7 +47,6 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-# Github issue #265
 class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-beta usb
     """Representation of a Plugwise USB sensor."""
 
@@ -60,9 +59,7 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-be
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        # Github issue #265
         state_value = getattr(self._node, self.entity_description.state_request_method)
-        # /Github issue #265
         if state_value is not None:
             return float(round(state_value, 3))
         return None

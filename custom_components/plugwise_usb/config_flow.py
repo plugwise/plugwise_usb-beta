@@ -34,9 +34,6 @@ def plugwise_stick_entries(hass):  # pw-beta usb
     return sticks
 
 
-# Github issue: #265
-# Might be a `tuple[dict[str, str], Stick | None]` for typing, but that throws
-# Item None of Optional[Any] not having attribute mac [union-attr]
 async def validate_usb_connection(
     self, device_path=None
 ) -> tuple[dict[str, str], Any]:  # pw-beta usb

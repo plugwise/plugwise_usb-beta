@@ -45,8 +45,7 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-# Github issue #265
-class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]  # pw-beta usb
+class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a Stick Node switch."""
 
     def __init__(
@@ -58,7 +57,6 @@ class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]  # pw-be
     @property
     def is_on(self) -> bool:
         """Return true if the switch is on."""
-        # Github issue #265
         return getattr(self._node, self.entity_description.state_request_method)
 
     def turn_off(self, **kwargs):

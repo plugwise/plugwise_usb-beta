@@ -189,7 +189,6 @@ class PlugwiseUSBEntity(Entity):
 
     entity_description: PlugwiseEntityDescription
 
-    # Github issue #265: the entity_description is not working accordingly
     def __init__(
         self, node: PlugwiseNode, entity_description: PlugwiseEntityDescription
     ) -> None:
@@ -203,9 +202,7 @@ class PlugwiseUSBEntity(Entity):
             "sw_version": f"{node.firmware_version}",
         }
         self._attr_name = f"{entity_description.name} ({node.mac[-5:]})"
-        # Github issue #265
         self._attr_should_poll = entity_description.should_poll
-        # /Github issue #265
         self._attr_unique_id = f"{node.mac}-{entity_description.key}"
         self._node = node
         self.entity_description = entity_description

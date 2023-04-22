@@ -87,8 +87,6 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-# pw-beta
-# Github issue #265
 class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB Binary Sensor."""
 
@@ -101,7 +99,6 @@ class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[mi
     @property
     def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
-        # Github issue #265
         return getattr(self._node, self.entity_description.state_request_method)
 
     def _service_scan_config(self, **kwargs):
