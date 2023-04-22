@@ -30,8 +30,7 @@ async def async_setup_entry(
             [
                 USBSensor(api_stick.devices[mac], description)
                 for description in PW_SENSOR_TYPES
-                if description.plugwise_api == STICK
-                and description.key in api_stick.devices[mac].features
+                if description.key in api_stick.devices[mac].features
             ]
         )
         if entities:
@@ -62,7 +61,7 @@ class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-be
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
         # Github issue #265
-        state_value = getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
+        state_value = getattr(self._node, self.entity_description.state_request_method)
         # /Github issue #265
         if state_value is not None:
             return float(round(state_value, 3))

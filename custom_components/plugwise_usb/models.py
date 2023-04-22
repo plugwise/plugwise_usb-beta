@@ -22,19 +22,15 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.entity import EntityDescription
 
-from .const import STICK, USB_MOTION_ID, USB_RELAY_ID
+from .const import USB_MOTION_ID, USB_RELAY_ID
 
 
 @dataclass
-class PlugwiseRequiredKeysMixin:
-    """Mixin for required keys."""
-
-    plugwise_api: str
-
-
-@dataclass
-class PlugwiseEntityDescription(EntityDescription, PlugwiseRequiredKeysMixin):
+class PlugwiseEntityDescription(EntityDescription):
     """Generic Plugwise entity description."""
+
+    should_poll: bool = False
+    state_request_method: str = "dummy"
 
 
 @dataclass
@@ -43,19 +39,12 @@ class PlugwiseSensorEntityDescription(
 ):
     """Describes Plugwise sensor entity."""
 
-    should_poll: bool = False
-    state_class: str | None = SensorStateClass.MEASUREMENT
-    state_request_method: str | None = None
-
 
 @dataclass
 class PlugwiseSwitchEntityDescription(
     SwitchEntityDescription, PlugwiseEntityDescription
 ):
     """Describes Plugwise switch entity."""
-
-    should_poll: bool = False
-    state_request_method: str | None = None
 
 
 @dataclass
@@ -64,14 +53,9 @@ class PlugwiseBinarySensorEntityDescription(
 ):
     """Describes Plugwise binary sensor entity."""
 
-    icon_off: str | None = None
-    should_poll: bool = False
-    state_request_method: str | None = None
-
 
 PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_1s",
         name="Power usage",
         device_class=SensorDeviceClass.POWER,
@@ -79,7 +63,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_request_method="current_power_usage",
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="energy_consumption_today",
         name="Energy consumption today",
         device_class=SensorDeviceClass.ENERGY,
@@ -88,7 +71,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         state_request_method="energy_consumption_today",
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="ping",
         name="Ping roundtrip",
         icon="mdi:speedometer",
@@ -98,7 +80,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_8s",
         name="Power usage 8 seconds",
         device_class=SensorDeviceClass.POWER,
@@ -107,7 +88,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="RSSI_in",
         name="Inbound RSSI",
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
@@ -117,7 +97,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="RSSI_out",
         name="Outbound RSSI",
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
@@ -127,7 +106,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_con_cur_hour",
         name="Power consumption current hour",
         icon="mdi:lightning-bolt",
@@ -136,7 +114,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_prod_cur_hour",
         name="Power production current hour",
         icon="mdi:lightning-bolt",
@@ -145,7 +122,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_con_today",
         name="Power consumption today",
         icon="mdi:lightning-bolt",
@@ -154,7 +130,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_con_prev_hour",
         name="Power consumption previous hour",
         icon="mdi:lightning-bolt",
@@ -164,7 +139,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
-        plugwise_api=STICK,
         key="power_con_yesterday",
         name="Power consumption yesterday",
         icon="mdi:lightning-bolt",
@@ -177,7 +151,6 @@ PW_SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
-        plugwise_api=STICK,
         key=USB_RELAY_ID,
         device_class=SwitchDeviceClass.OUTLET,
         name="Relay state",
@@ -187,7 +160,6 @@ PW_SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 
 PW_BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
-        plugwise_api=STICK,
         key=USB_MOTION_ID,
         name="Motion",
         device_class=BinarySensorDeviceClass.MOTION,

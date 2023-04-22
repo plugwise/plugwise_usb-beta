@@ -204,7 +204,7 @@ class PlugwiseUSBEntity(Entity):
         }
         self._attr_name = f"{entity_description.name} ({node.mac[-5:]})"
         # Github issue #265
-        self._attr_should_poll = entity_description.should_poll  # type: ignore[attr-defined]
+        self._attr_should_poll = entity_description.should_poll
         # /Github issue #265
         self._attr_unique_id = f"{node.mac}-{entity_description.key}"
         self._node = node

@@ -28,8 +28,7 @@ async def async_setup_entry(
             [
                 USBSwitch(api_stick.devices[mac], description)
                 for description in PW_SWITCH_TYPES
-                if description.plugwise_api == STICK
-                and description.key in api_stick.devices[mac].features
+                if description.key in api_stick.devices[mac].features
             ]
         )
         if entities:
@@ -60,7 +59,7 @@ class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]  # pw-be
     def is_on(self) -> bool:
         """Return true if the switch is on."""
         # Github issue #265
-        return getattr(self._node, self.entity_description.state_request_method)  # type: ignore[attr-defined]
+        return getattr(self._node, self.entity_description.state_request_method)
 
     def turn_off(self, **kwargs):
         """Instruct the switch to turn off."""
