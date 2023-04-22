@@ -7,10 +7,10 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.nodes import PlugwiseNode  # pw-beta usb
+from plugwise_usb.nodes import PlugwiseNode
 
-from . import PlugwiseUSBEntity  # pw-beta
-from .const import (  # pw-beta usb
+from . import PlugwiseUSBEntity
+from .const import (
     ATTR_SCAN_DAYLIGHT_MODE,
     ATTR_SCAN_RESET_TIMER,
     ATTR_SCAN_SENSITIVITY_MODE,

@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.nodes import PlugwiseNode
 
-from . import PlugwiseUSBEntity  # pw-beta usb
+from . import PlugwiseUSBEntity
 from .const import CB_NEW_NODE, DOMAIN, STICK
 from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
 

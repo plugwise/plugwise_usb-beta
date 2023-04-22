@@ -8,8 +8,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.nodes import PlugwiseNode
 
-from . import PlugwiseUSBEntity  # pw-beta usb
-from .const import CB_NEW_NODE, DOMAIN, STICK  # pw-beta usb
+from . import PlugwiseUSBEntity
+from .const import CB_NEW_NODE, DOMAIN, STICK
 from .models import PW_SENSOR_TYPES, PlugwiseSensorEntityDescription
 
 PARALLEL_UPDATES = 0
@@ -47,7 +47,7 @@ async def async_setup_entry(
     api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
 
 
-class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]  # pw-beta usb
+class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]
     """Representation of a Plugwise USB sensor."""
 
     def __init__(
