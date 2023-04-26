@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### Ongoing
+
+- CI improvements
+
 ### 0.41x
 
 - Release of standalone USB plugwise_usb-beta `custom_component`

@@ -12,6 +12,7 @@ A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. 
 [![HASSfest](https://github.com/plugwise/plugwise_usb-beta/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/plugwise/plugwise_usb-beta/actions)
 [![HA-Core](https://github.com/plugwise/plugwise_usb-beta/workflows/Test%20with%20HA-core/badge.svg)](https://github.com/plugwise/plugwise_usb-beta/actions)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/plugwise/plugwise_usb-beta/main.svg)](https://results.pre-commit.ci/latest/github/plugwise/plugwise_usb-beta/main)
+[![renovate maintained](https://img.shields.io/badge/maintained%20with-renovate-blue?logo=renovatebot)](https://github.com/plugwise/plugwise_usb-beta/issues/3)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/plugwise_usb-beta/badge)](https://www.codefactor.io/repository/github/plugwise/plugwise_usb-beta)
 
@@ -31,6 +32,7 @@ Our [`python-plugwise-usb`](https://github.com/plugwise/python-plugwise-usb) pyt
 [![Latest release](https://github.com/plugwise/python-plugwise-usb/workflows/Latest%20release/badge.svg)](https://github.com/plugwise/python-plugwise-usb/actions)
 [![Newest commit](https://github.com/plugwise/python-plugwise-usb/workflows/Latest%20commit/badge.svg)](https://github.com/plugwise/python-plugwise-usb/actions)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/plugwise/python-plugwise-usb/main.svg)](https://results.pre-commit.ci/latest/github/plugwise/python-plugwise-usb/main)
+[![renovate maintained](https://img.shields.io/badge/maintained%20with-renovate-blue?logo=renovatebot)](https://github.com/plugwise/python-plugwise-usb/issues/2)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb/badge)](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb)
 [![codecov](https://codecov.io/gh/plugwise/python-plugwise-usb/branch/main/graph/badge.svg)](https://codecov.io/gh/plugwise/python-plugwise-usb)
