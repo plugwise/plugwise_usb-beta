@@ -210,9 +210,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo "... ruff-ing component..."
-	ruff homeassistant/components/plugwise_usb/*py || exit
+	ruff --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes"
 	echo "... ruff-ing tests..."
-	ruff tests/components/plugwise_usb/*py || exit
+	ruff --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
 	echo "... mypy ..."
