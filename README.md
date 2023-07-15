@@ -19,6 +19,7 @@ A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. 
 Always first attempt to use the native [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)-component using this button
 
 [![Open your Home Assistant instance and show your integrations.](https://my.home-assistant.io/badges/integrations.svg)](https://my.home-assistant.io/redirect/integrations/)
+(at this moment this beta is required to use the USB/Stick functionality as Plugwise USB support is not available in Home Assistant Core yet)
 
 If you don't mind a bug now and then and are interested in helping us test new features and improvements, you can start using this BETA `custom_component`. We develop and maintain both versions.
 
@@ -64,7 +65,7 @@ As such we ask USB users, who are tied in with the `custom_component` as there i
 - Use [HACS](https://hacs.xyz)
 - Navigate to the `Integrations` page and use the three-dots icon on the top right to add a custom repository.
 - Use the link to this page as the URL and select 'Integrations' as the category.
-- Look for `Plugwise beta custom component` in `Integrations` and install it!
+- Look for `Plugwise USB/Stick beta` in `Integrations` and install it!
 
 #### How to add the integration to HA Core
 
