@@ -23,5 +23,23 @@
     "abort": {
       "already_configured": "Dit apparaat is al geconfigureerd"
     }
+  },
+  "services": {
+    "device_add": {
+      "name": "Voeg handmatig een plugwise apparaat toe",
+      "description": "Voegt handmatig een nieuw plugwise apparaat toe."
+    },
+    "device_remove": {
+      "name": "Verwijder handmatig een plugwise apparaat",
+      "description": "Verwijdert een plugwise apparaat."
+    },
+    "configure_scan": {
+      "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
+      "description": "Configureert bewegingsinstellingen voor een Plugwise Scan apparaat."
+    },
+    "configure_battery_savings": {
+      "name": "Configureer batterij besparing",
+      "description": "Configureert batterij besparingsinstellingen voor batterij gevoedde Pluwise apparaten."
+    }
   }
 }
