@@ -23,5 +23,23 @@
     "abort": {
       "already_configured": "This device is already configured"
     }
+  },
+  "services": {
+    "device_add": {
+      "name": "Manually add a plugwise device",
+      "description": "Manually adds a new plugwise device."
+    },
+    "device_remove": {
+      "name": "Manually remove a plugwise device",
+      "description": "Removes and un-registers specified device (MAC) from plugwise network."
+    },
+    "configure_scan": {
+      "name": "Configure motion settings",
+      "description": "Configures the motion settings for a Plugwise Scan device."
+    },
+    "configure_battery_savings": {
+      "name": "Configure battery savings",
+      "description": "Configures the battery saving settings for battery powered Plugwise devices."
+    }
   }
 }

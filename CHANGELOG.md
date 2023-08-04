@@ -2,11 +2,12 @@
 
 ## Versions from 0.4x
 
-### Ongoing
+### 0.40.2
 
 - CI improvements
+- Added translations for services
 
-### 0.41x
+### 0.40.1
 
 - Release of standalone USB plugwise_usb-beta `custom_component`
 - More formal Split between Networked and USB code
