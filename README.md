@@ -2,6 +2,10 @@
 
 :warning::warning::warning: Always **read** the [release notes](https://github.com/plugwise/plugwise_usb-beta/releases) before upgrading, in case there are BREAKING changes! **Do note** the release title on alpha releases and only install them if specifically instructed by our team! :warning::warning::warning:
 
+## Help wanted
+
+:no_entry::triangular_flag_on_post: As a team we have been unable to maintain communications with the main tester and developer for the USB legacy devices. If you want to help us maintain the USB code by joining (or reaching out to @brefra) contact us through [this issue](https://github.com/plugwise/plugwise_usb-beta/issues/67). :triangular_flag_on_post::no_entry:
+
 ## About
 
 A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
