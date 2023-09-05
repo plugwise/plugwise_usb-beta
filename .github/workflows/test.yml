@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 6
+  CACHE_VERSION: 7
   DEFAULT_PYTHON: "3.11"
 
 on:
@@ -21,7 +21,7 @@ jobs:
     name: Setup for HA-core
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v3.6.0
+        uses: actions/checkout@v3
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v4
