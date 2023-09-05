@@ -27,19 +27,75 @@
   "services": {
     "device_add": {
       "name": "Voeg handmatig een plugwise apparaat toe",
-      "description": "Voegt handmatig een nieuw plugwise apparaat toe."
+      "description": "Voegt handmatig een nieuw plugwise apparaat toe.",
+      "fields": {
+        "mac": {
+          "name": "MAC address",
+          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
+        }
+      }
     },
     "device_remove": {
       "name": "Verwijder handmatig een plugwise apparaat",
-      "description": "Verwijdert een plugwise apparaat."
+      "description": "Verwijdert een plugwise apparaat.",
+      "fields": {
+        "mac": {
+          "name": "MAC address",
+          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
+        }
+      }
     },
     "configure_scan": {
       "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
-      "description": "Configureert bewegingsinstellingen voor een Plugwise Scan apparaat."
+      "description": "Configureert bewegingsinstellingen voor een Plugwise Scan apparaat.",
+      "fields": {
+        "entity_id": {
+          "name": "Entiteit ID",
+          "description": "Entiteits id van de Plugwise Scan bewegingssensor."
+        },
+        "sensitivity_mode": {
+          "name": "Gevoeligheid",
+          "description": "Gevoeligheidsmode voor scannen (hoog/gemiddeld/uit)."
+        },
+        "reset_timer": {
+          "name": "Timer herstel",
+          "description": "Aantal minuten om te wachten, nadat er geen beweging meer gedecteteerd is, voordat de status naar uit gaat. Invoer van 1 minuut minimum tot 240 minuten maximum (4 uur)."
+        },
+        "day_light": {
+          "name": "Daglicht mode",
+          "description": "Enkel beweging detecteren wanneer licht niveau onder een gekalibreerde waarde valt."
+        }
+      }
     },
     "configure_battery_savings": {
       "name": "Configureer batterij besparing",
-      "description": "Configureert batterij besparingsinstellingen voor batterij gevoedde Pluwise apparaten."
+      "description": "Configureert batterij besparingsinstellingen voor batterij gevoedde Pluwise apparaten.",
+      "fields": {
+        "entity_id": {
+          "name": "Entiteit ID",
+          "description": "Entiteits id van het battery gevoedde Plugwise apparaat."
+        },
+        "stay_active": {
+          "name": "Actief blijven",
+          "description": "Aantal seconden dat het apparaat wakker blijft. Hogere waarden leiden tot kortere batterijduur."
+        },
+        "sleep_for": {
+          "name": "Slapen tot",
+          "description": "Aantal minuten dat het apparaat blijft slapen en niet zal reageren op commando's."
+        },
+        "maintenance_interval": {
+          "name": "Onderhoudsinterval",
+          "description": "Tijdsinterval in minuten dat het apparaat wakker wordt en (onderhouds-)commando's kan ontvangen."
+        },
+        "clock_sync": {
+          "name": "Kloksyncronisatie",
+          "description": "Aan- of uitzetten van interne klok synchronisatie."
+        },
+        "clock_interval": {
+          "name": "Interval kloksyncronisatie",
+          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als clock_sync gezet is."
+        }
+      }
     }
   }
 }
