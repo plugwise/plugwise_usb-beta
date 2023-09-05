@@ -5,6 +5,7 @@
 ### 0.40.3
 
 - Translation maintenance as per [development](https://developers.home-assistant.io/blog/2023/07/11/translating-services)
+- Bump minimal version for HACS to 2023.8 as per the above
 
 ### 0.40.2
 
