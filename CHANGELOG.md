@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### 0.40.4
+
+- Update backend-library to v0.31.1: fix for flooding of CircleEnergyCountersRequests, provided by @dirixmjm
+
 ### 0.40.3
 
 - Translation maintenance as per [development](https://developers.home-assistant.io/blog/2023/07/11/translating-services)
