@@ -19,6 +19,9 @@ A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. 
 [![renovate maintained](https://img.shields.io/badge/maintained%20with-renovate-blue?logo=renovatebot)](https://github.com/plugwise/plugwise_usb-beta/issues/3)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/plugwise_usb-beta/badge)](https://www.codefactor.io/repository/github/plugwise/plugwise_usb-beta)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=plugwise_plugwise_usb-beta&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=plugwise_plugwise_usb-beta)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=plugwise_plugwise_usb-beta&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=plugwise_plugwise_usb-beta)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=plugwise_plugwise_usb-beta&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=plugwise_plugwise_usb-beta)
 
 Always first attempt to use the native [Home Assistant](https://www.home-assistant.io/integrations/plugwise/)-component using this button
 
@@ -41,6 +44,9 @@ Our [`python-plugwise-usb`](https://github.com/plugwise/python-plugwise-usb) pyt
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb/badge)](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb)
 [![codecov](https://codecov.io/gh/plugwise/python-plugwise-usb/branch/main/graph/badge.svg)](https://codecov.io/gh/plugwise/python-plugwise-usb)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
 
 ## Changelog
 

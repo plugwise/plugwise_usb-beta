@@ -183,7 +183,7 @@ fixture-parentheses = false
 force-sort-within-sections = true
 known-first-party = [
     "homeassistant",
-    "plugwise",
+    "plugwise_usb",
 ]
 combine-as-imports = true
 
