@@ -44,6 +44,9 @@ Our [`python-plugwise-usb`](https://github.com/plugwise/python-plugwise-usb) pyt
 
 [![CodeFactor](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb/badge)](https://www.codefactor.io/repository/github/plugwise/python-plugwise-usb)
 [![codecov](https://codecov.io/gh/plugwise/python-plugwise-usb/branch/main/graph/badge.svg)](https://codecov.io/gh/plugwise/python-plugwise-usb)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=plugwise_python-plugwise-usb&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=plugwise_python-plugwise-usb)
 
 ## Changelog
 
