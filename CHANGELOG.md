@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### Ongoing
+
+- Fix building (remaining plugwise instead of plugwise_usb)
+
 ### 0.40.4
 
 - Update backend-library to v0.31.1: fix for flooding of CircleEnergyCountersRequests, provided by @dirixmjm
