@@ -8,6 +8,11 @@
 
 ### 0.40.4
 
+- Update backend-library to v0.31.2b6: fix stuck energy_consumption_today, provided by @dirixmjm
+
+
+### 0.40.4
+
 - Update backend-library to v0.31.1: fix for flooding of CircleEnergyCountersRequests, provided by @dirixmjm
 
 ### 0.40.3
