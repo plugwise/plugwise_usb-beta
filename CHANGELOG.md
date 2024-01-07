@@ -6,7 +6,7 @@
 
 - Fix building (remaining plugwise instead of plugwise_usb)
 
-### 0.40.4
+### 0.40.5
 
 - Update backend-library to v0.31.2b6: fix stuck energy_consumption_today, provided by @dirixmjm
 
