@@ -7,32 +7,24 @@ import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
-DOMAIN: Final = "plugwise_usb"
+DOMAIN: Final = "plugwise_usb_test"
 
 LOGGER = logging.getLogger(__package__)
 
+COORDINATOR: Final = "coordinator"
 CONF_MANUAL_PATH: Final = "Enter Manually"
 STICK: Final = "stick"
+NODES: Final = "nodes"
 USB: Final = "usb"
 
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
-# --- Const for Plugwise USB-stick.
-
-PLATFORMS_USB: Final[list[str]] = [
+PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
     Platform.SENSOR,
     Platform.SWITCH,
 ]
 CONF_USB_PATH: Final = "usb_path"
-
-# Callback types
-CB_NEW_NODE: Final = "NEW_NODE"
-CB_JOIN_REQUEST: Final = "JOIN_REQUEST"
-
-
-# USB generic device constants
-USB_AVAILABLE_ID: Final = "available"
 
 ATTR_MAC_ADDRESS: Final = "mac"
 
@@ -41,11 +33,6 @@ SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {vol.Required(ATTR_MAC_ADDRESS): cv.string}
 )
-
-
-# USB Relay device constants
-USB_RELAY_ID: Final = "relay"
-
 
 # USB SED (battery powered) device constants
 ATTR_SED_STAY_ACTIVE: Final = "stay_active"
@@ -73,8 +60,6 @@ SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA: Final = {
 
 
 # USB Scan device constants
-USB_MOTION_ID: Final = "motion"
-
 ATTR_SCAN_DAYLIGHT_MODE: Final = "day_light"
 ATTR_SCAN_SENSITIVITY_MODE: Final = "sensitivity_mode"
 ATTR_SCAN_RESET_TIMER: Final = "reset_timer"

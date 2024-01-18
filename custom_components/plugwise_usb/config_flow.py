@@ -6,18 +6,14 @@ from typing import Any
 import serial.tools.list_ports
 import voluptuous as vol
 
+from .plugwise_usb import Stick
+from .plugwise_usb.exceptions import StickError
+
 from homeassistant.components import usb
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-from plugwise_usb import Stick
-from plugwise_usb.exceptions import (
-    NetworkDown,
-    PortError,
-    StickInitError,
-    TimeoutException,
-)
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
 
@@ -31,7 +27,9 @@ def plugwise_stick_entries(hass):
     return sticks
 
 
-async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], Any]:
+async def validate_usb_connection(
+    self, device_path=None
+) -> tuple[dict[str, str], str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -40,20 +38,20 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    api_stick = await self.async_add_executor_job(Stick, device_path)
+    api_stick = Stick(device_path, use_cache=False)
+    mac = ""
     try:
-        await self.async_add_executor_job(api_stick.connect)
-        await self.async_add_executor_job(api_stick.initialize_stick)
-        await self.async_add_executor_job(api_stick.disconnect)
-    except PortError:
+        await api_stick.async_connect()
+    except StickError:
         errors[CONF_BASE] = "cannot_connect"
-    except StickInitError:
-        errors[CONF_BASE] = "stick_init"
-    except NetworkDown:
-        errors[CONF_BASE] = "network_down"
-    except TimeoutException:
-        errors[CONF_BASE] = "network_timeout"
-    return errors, api_stick
+    else:
+        try:
+            await api_stick.async_initialize()
+            mac = api_stick.mac_stick
+        except StickError:
+            errors[CONF_BASE] = "stick_init"
+    await api_stick.async_disconnect()
+    return errors, mac
 
 
 class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -84,9 +82,9 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, port.device
             )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(api_stick.mac)
+                await self.async_set_unique_id(f"{mac_stick}-test") # todo: fix id
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
