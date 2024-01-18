@@ -1,16 +1,59 @@
 """Plugwise USB Switch component for HomeAssistant."""
 from __future__ import annotations
 
-from homeassistant.components.switch import SwitchEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.nodes import PlugwiseNode
+from dataclasses import dataclass
+from datetime import timedelta
+import logging
 
-from . import PlugwiseUSBEntity
-from .const import CB_NEW_NODE, DOMAIN, STICK
-from .models import PW_SWITCH_TYPES, PlugwiseSwitchEntityDescription
+from .plugwise_usb.api import NodeFeature
+from .plugwise_usb.nodes import PlugwiseNode
+
+from homeassistant.components.switch import (
+    SwitchDeviceClass,
+    SwitchEntity,
+    SwitchEntityDescription,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
+from homeassistant.core import callback, HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import DOMAIN, NODES, STICK
+from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .entity import (
+    PlugwiseUSBEntityDescription,
+    PlugwiseUSBEntity,
+)
+
+
+@dataclass
+class PlugwiseSwitchEntityDescription(
+    SwitchEntityDescription, PlugwiseUSBEntityDescription
+):
+    """Describes Plugwise switch entity."""
+    async_switch_method: str = ""
+
+
+_LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 0
+SCAN_INTERVAL = timedelta(seconds=30)
+SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
+    PlugwiseSwitchEntityDescription(
+        key="relay",
+        name="Relay state",
+        device_class=SwitchDeviceClass.OUTLET,
+        async_switch_method="async_relay",
+        feature=NodeFeature.RELAY,
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="relay init",
+        name="Relay startup state",
+        device_class=SwitchDeviceClass.OUTLET,
+        async_switch_method="async_relay_init_set",
+        entity_category=EntityCategory.CONFIG,
+        feature=NodeFeature.RELAY_INIT,
+    ),
+)
 
 
 async def async_setup_entry(
@@ -21,48 +64,60 @@ async def async_setup_entry(
     """Set up the USB switches from a config entry."""
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    async def async_add_switches(mac: str):
-        """Add Plugwise USB switches."""
-        entities: list[USBSwitch] = []
-        entities.extend(
-            [
-                USBSwitch(api_stick.devices[mac], description)
-                for description in PW_SWITCH_TYPES
-                if description.key in api_stick.devices[mac].features
-            ]
-        )
-        if entities:
-            async_add_entities(entities)
-
-    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH]:
-        hass.async_create_task(async_add_switches(mac))
-
-    def discoved_device(mac: str):
-        """Add switches for newly discovered device."""
-        hass.async_create_task(async_add_switches(mac))
-
-    # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
+    entities: list[PlugwiseUSBEntity] = []
+    for mac, coordinator in hass.data[DOMAIN][config_entry.entry_id][NODES].items():
+        if coordinator.data[NodeFeature.INFO] is not None:
+            entities.extend(
+                [
+                    PlugwiseUSBSwitchEntity(
+                        coordinator, entity_description, api_stick.nodes[mac]
+                    )
+                    for entity_description in SWITCH_TYPES
+                    if entity_description.feature in coordinator.data[
+                        NodeFeature.INFO
+                    ].features
+                ]
+            )
+    if entities:
+        async_add_entities(entities, update_before_add=True)
 
 
-class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]
-    """Representation of a Stick Node switch."""
+class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
+    """Representation of a Plugwise USB Data Update Coordinator switch."""
 
     def __init__(
-        self, node: PlugwiseNode, description: PlugwiseSwitchEntityDescription
+        self,
+        coordinator: PlugwiseUSBDataUpdateCoordinator,
+        entity_description: PlugwiseSwitchEntityDescription,
+        node: PlugwiseNode,
     ) -> None:
         """Initialize a switch entity."""
-        super().__init__(node, description)
+        super().__init__(coordinator, entity_description)
+        self.node = node
 
-    @property
-    def is_on(self) -> bool:
-        """Return true if the switch is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        if self.coordinator.data[self.entity_description.feature] is None:
+            _LOGGER.warning(
+                "No switch data for %s",
+                str(self.entity_description.feature)
+            )
+            return
+        self._attr_is_on = self.coordinator.data[self.entity_description.feature][self.entity_description.key]
+        self.async_write_ha_state()
 
-    def turn_off(self, **kwargs):
-        """Instruct the switch to turn off."""
-        setattr(self._node, self.entity_description.state_request_method, False)
+    async def async_switch_node(self, state: bool) -> bool:
+        """Switch configuration of Node."""
+        self._attr_is_on = await setattr(
+            self.node, self.entity_description.async_switch_method, state
+        )
+        self.async_write_ha_state()
 
-    def turn_on(self, **kwargs):
-        """Instruct the switch to turn on."""
-        setattr(self._node, self.entity_description.state_request_method, True)
+    async def async_turn_on(self, **kwargs):
+        """Turn the switch on"""
+        await self.async_switch_node(True)
+
+    async def async_turn_off(self, **kwargs):
+        """Turn the switch off"""
+        await self.async_switch_node(True)
