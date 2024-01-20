@@ -5,6 +5,7 @@
 ### Ongoing
 
 - Fix building (remaining plugwise instead of plugwise_usb)
+- Update backend-library to v0.31.2: fix sequence_id counter skew, provided by @dirixmjm
 
 ### 0.40.5
 
