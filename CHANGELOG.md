@@ -2,13 +2,11 @@
 
 ## Versions from 0.4x
 
-### Ongoing
-
-- Fix building (remaining plugwise instead of plugwise_usb)
-
 ### 0.40.5
 
-- Update backend-library to v0.31.2b6: fix stuck energy_consumption_today, provided by @dirixmjm
+- Fix building (remaining plugwise instead of plugwise_usb).
+- Fix sequence_id counter skew, provided by @dirixmjm.
+- Fix stuck energy_consumption_today, provided by @dirixmjm.
 
 ### 0.40.4
 
