@@ -41,7 +41,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     _LOGGER.debug("Connect to Plugwise USB-Stick")
     try:
-        await api_stick.async_connect()
+        await api_stick.connect()
     except StickError:
         raise ConfigEntryNotReady(
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
@@ -49,18 +49,18 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     _LOGGER.debug("Initialize Plugwise USB-Stick")
     try:
-        await api_stick.async_initialize()
+        await api_stick.initialize()
     except StickError:
-        await api_stick.async_disconnect()
+        await api_stick.disconnect()
         raise ConfigEntryNotReady(
             "Failed to initialize connection to Plugwise USB-Stick"
         ) from StickError
 
     _LOGGER.debug("Discover registered Plugwise nodes")
     try:
-        await api_stick.async_discover(load=False, rediscover=False)
+        await api_stick.discover_nodes(load=False)
     except StickError:
-        await api_stick.async_disconnect()
+        await api_stick.disconnect()
         raise ConfigEntryNotReady(
             "Failed to discover Plugwise USB nodes"
         ) from StickError
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     # Setup a 'Data Update Coordinator' for each plugwise node
     for mac, node in api_stick.nodes.items():
         _LOGGER.debug("Try to load Plugwise USB-Stick node %s", mac)
-        if await node.async_load(from_cache=True):
+        if await node.load():
             _LOGGER.debug("Try to load Plugwise USB-Stick node %s", mac)
             coordinator = PlugwiseUSBDataUpdateCoordinator(hass, node)
             await coordinator.async_config_entry_first_refresh()
@@ -88,5 +88,5 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         config_entry, PLUGWISE_USB_PLATFORMS
     )
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
-    await api_stick.async_disconnect()
+    await api_stick.disconnect()
     return unload
