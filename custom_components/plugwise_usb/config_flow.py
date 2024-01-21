@@ -41,16 +41,16 @@ async def validate_usb_connection(
     api_stick = Stick(device_path, use_cache=False)
     mac = ""
     try:
-        await api_stick.async_connect()
+        await api_stick.connect()
     except StickError:
         errors[CONF_BASE] = "cannot_connect"
     else:
         try:
-            await api_stick.async_initialize()
+            await api_stick.initialize()
             mac = api_stick.mac_stick
         except StickError:
             errors[CONF_BASE] = "stick_init"
-    await api_stick.async_disconnect()
+    await api_stick.disconnect()
     return errors, mac
 
 
