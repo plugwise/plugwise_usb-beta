@@ -6,9 +6,6 @@ from typing import Any
 import serial.tools.list_ports
 import voluptuous as vol
 
-from .plugwise_usb import Stick
-from .plugwise_usb.exceptions import StickError
-
 from homeassistant.components import usb
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_BASE
@@ -16,6 +13,8 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
+from .plugwise_usb import Stick
+from .plugwise_usb.exceptions import StickError
 
 
 @callback
