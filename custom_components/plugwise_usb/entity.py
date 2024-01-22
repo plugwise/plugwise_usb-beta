@@ -7,13 +7,12 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
 
+from .const import DOMAIN
+from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .plugwise_usb.api import (
     NodeFeature,
     NodeInfo,
 )
-
-from .const import DOMAIN
-from .coordinator import PlugwiseUSBDataUpdateCoordinator
 
 
 @dataclass
