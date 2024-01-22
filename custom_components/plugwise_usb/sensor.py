@@ -5,8 +5,6 @@ from dataclasses import dataclass
 from datetime import timedelta
 import logging
 
-from .plugwise_usb.api import NodeFeature
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -21,14 +19,16 @@ from homeassistant.const import (
     UnitOfPower,
     UnitOfTime,
 )
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const  import DOMAIN, NODES
+from .const import DOMAIN, NODES
 from .entity import (
-    PlugwiseUSBEntityDescription,
     PlugwiseUSBEntity,
+    PlugwiseUSBEntityDescription,
 )
+from .plugwise_usb.api import NodeFeature
+
 
 @dataclass
 class PlugwiseSensorEntityDescription(
@@ -45,6 +45,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Power usage",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        suggested_display_precision=2,
         feature=NodeFeature.POWER,
     ),
     PlugwiseSensorEntityDescription(
@@ -52,6 +53,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         name="Power usage last 8 seconds",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
+        suggested_display_precision=2,
         feature=NodeFeature.POWER,
         entity_registry_enabled_default=False,
     ),
@@ -59,8 +61,10 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="day_consumption",
         name="Energy consumption today",
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
+        #state_class=SensorStateClass.TOTAL_INCREASING,
+        state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=3,
         feature=NodeFeature.ENERGY,
     ),
     PlugwiseSensorEntityDescription(
@@ -69,6 +73,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         icon="mdi:speedometer",
         native_unit_of_measurement=UnitOfTime.MILLISECONDS,
         feature=NodeFeature.PING,
+        suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -78,6 +83,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         feature=NodeFeature.PING,
+        suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -85,7 +91,9 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="RSSI_out",
         name="Outbound RSSI",
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         feature=NodeFeature.PING,
+        suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -100,13 +108,14 @@ async def async_setup_entry(
     """Set up Plugwise USB sensor based on config_entry."""
 
     entities: list[PlugwiseUSBEntity] = []
-    for coordinator in hass.data[DOMAIN][config_entry.entry_id][NODES].values():
-        if coordinator.data[NodeFeature.INFO] is not None:
+    plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
+    for node in plugwise_nodes.values():
+        if node.data[NodeFeature.INFO] is not None:
             entities.extend(
                 [
-                    PlugwiseUSBSensorEntity(coordinator, entity_description)
+                    PlugwiseUSBSensorEntity(node, entity_description)
                     for entity_description in SENSOR_TYPES
-                    if entity_description.feature in coordinator.data[
+                    if entity_description.feature in node.data[
                         NodeFeature.INFO
                     ].features
                 ]
@@ -121,7 +130,8 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        if self.coordinator.data[self.entity_description.feature] is None:
+        data = self.coordinator.data.get(self.entity_description.feature, None)
+        if data is None:
             _LOGGER.warning(
                 "No sensor data for %s",
                 str(self.entity_description.feature)
@@ -131,7 +141,7 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
             self.coordinator.data[
                 self.entity_description.feature
             ],
-            self.entity_description.key
+            self.entity_description.key.lower()
         )
         if self.entity_description.feature == NodeFeature.ENERGY:
             self._attr_last_reset = getattr(
