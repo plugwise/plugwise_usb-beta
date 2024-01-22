@@ -5,15 +5,13 @@ from dataclasses import dataclass
 from datetime import timedelta
 import logging
 
-from .plugwise_usb.api import NodeFeature
-
 from homeassistant.components.binary_sensor import (
-    BinarySensorEntityDescription,
-    BinarySensorEntity,
     BinarySensorDeviceClass,
+    BinarySensorEntity,
+    BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (  # noqa: F401
@@ -21,9 +19,10 @@ from .const import (  # noqa: F401
     NODES,
 )
 from .entity import (
-    PlugwiseUSBEntityDescription,
     PlugwiseUSBEntity,
+    PlugwiseUSBEntityDescription,
 )
+from .plugwise_usb.api import NodeFeature
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,6 +32,7 @@ class PlugwiseBinarySensorEntityDescription(
     BinarySensorEntityDescription, PlugwiseUSBEntityDescription
 ):
     """Describes Plugwise switch entity."""
+
     has_entity_name: bool = True
 
 

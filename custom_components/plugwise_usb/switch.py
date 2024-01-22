@@ -5,9 +5,6 @@ from dataclasses import dataclass
 from datetime import timedelta
 import logging
 
-from .plugwise_usb.api import NodeFeature
-from .plugwise_usb.nodes import PlugwiseNode
-
 from homeassistant.components.switch import (
     SwitchDeviceClass,
     SwitchEntity,
@@ -15,15 +12,17 @@ from homeassistant.components.switch import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import callback, HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, NODES, STICK
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .entity import (
-    PlugwiseUSBEntityDescription,
     PlugwiseUSBEntity,
+    PlugwiseUSBEntityDescription,
 )
+from .plugwise_usb.api import NodeFeature
+from .plugwise_usb.nodes import PlugwiseNode
 
 
 @dataclass
@@ -31,6 +30,7 @@ class PlugwiseSwitchEntityDescription(
     SwitchEntityDescription, PlugwiseUSBEntityDescription
 ):
     """Describes Plugwise switch entity."""
+
     async_switch_method: str = ""
 
 
@@ -65,15 +65,16 @@ async def async_setup_entry(
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
     entities: list[PlugwiseUSBEntity] = []
-    for mac, coordinator in hass.data[DOMAIN][config_entry.entry_id][NODES].items():
-        if coordinator.data[NodeFeature.INFO] is not None:
+    plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
+    for mac, node in plugwise_nodes.items():
+        if node.data[NodeFeature.INFO] is not None:
             entities.extend(
                 [
                     PlugwiseUSBSwitchEntity(
-                        coordinator, entity_description, api_stick.nodes[mac]
+                        node, entity_description, api_stick.nodes[mac]
                     )
                     for entity_description in SWITCH_TYPES
-                    if entity_description.feature in coordinator.data[
+                    if entity_description.feature in node.data[
                         NodeFeature.INFO
                     ].features
                 ]
