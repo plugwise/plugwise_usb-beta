@@ -1,5 +1,5 @@
 {
-  "domain": "plugwise_usb_test",
+  "domain": "plugwise_usb",
   "name": "Plugwise USB TEST",
   "after_dependencies": ["usb"],
   "codeowners": ["@CoMPaTech", "@bouwew", "@brefra"],
