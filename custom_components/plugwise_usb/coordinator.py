@@ -1,14 +1,11 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
 
-import async_timeout
 from asyncio import TimeoutError
 from datetime import timedelta
-from typing import Any
 import logging
+from typing import Any
 
-from .plugwise_usb.api import NodeFeature, PUSHING_FEATURES
-from .plugwise_usb.nodes import PlugwiseNode
-from .plugwise_usb.exceptions import NodeError, NodeTimeout, StickError
+import async_timeout
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
@@ -16,6 +13,10 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+
+from .plugwise_usb.api import PUSHING_FEATURES, NodeFeature
+from .plugwise_usb.exceptions import NodeError, NodeTimeout, StickError
+from .plugwise_usb.nodes import PlugwiseNode
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,17 +41,17 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 always_update=False,
             )
         else:
-            _LOGGER.debug("Create normal powered DUC for %s", node.mac)
+            _LOGGER.debug("Create normal powered DUC for %s: %s", node.mac, str(update_interval))
             super().__init__(
                 hass,
                 _LOGGER,
                 name=f"Plugwise USB node {node.mac}",
-                update_interval=update_interval,
+                update_interval=timedelta(seconds=15),
                 update_method=self.async_node_update,
-                always_update=False,
+                always_update=True,
             )
         self.node = node
-        # self._initial_update = True
+        self._initial_update = False
 
         # Subscribe to events
         self.event_subscription_ids: list[int] = [
@@ -74,28 +75,26 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         """Request status update for Plugwise Node."""
         try:
             async with async_timeout.timeout(30):
-                # if self._initial_update:
-                #     _LOGGER.debug(
-                #         "Initial coordinator update for %s", self.node.mac
-                #     )
-                #     self._initial_update = await self.node.async_load(
-                #         from_cache=True, lazy_load=True
-                #     )
-                #     return await self.node.async_get_state((NodeFeature.INFO,))
-
-                features = tuple(self.async_contexts())
-                if not features:
+                if not self._initial_update:
                     _LOGGER.debug(
-                        "Coordinator update for %s, context=<empty>",
+                        "Initial coordinator update for %s", self.node.mac
+                     )
+                    self._initial_update = await self.node.load()
+                    return await self.node.get_state((NodeFeature.INFO,))
+                else:
+                    features = set(self.async_contexts())
+                    if not features:
+                        _LOGGER.debug(
+                            "Coordinator update for %s, context=<empty>",
+                            self.node.mac,
+                        )
+                        features.add(NodeFeature.INFO)
+                    _LOGGER.debug(
+                        "Coordinator update for %s, context=%s",
                         self.node.mac,
-                    )   
-                    features += (NodeFeature.INFO,)
-                _LOGGER.debug(
-                    "Coordinator update for %s, context=%s",
-                    self.node.mac,
-                    str(features),
-                )
-                return await self.node.async_get_state(features)
+                        str(features),
+                    )
+                    return await self.node.get_state(features)
         except StickError as err:
             raise ConfigEntryNotReady from err
         except NodeTimeout as err:
