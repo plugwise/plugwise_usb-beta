@@ -37,7 +37,7 @@ async def validate_usb_connection(
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    api_stick = Stick(device_path, use_cache=False)
+    api_stick = Stick(device_path, cache_enabled=False)
     mac = ""
     try:
         await api_stick.connect()

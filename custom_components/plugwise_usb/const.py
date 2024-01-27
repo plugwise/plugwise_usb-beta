@@ -7,10 +7,10 @@ import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
-DOMAIN: Final = "plugwise_usb_test"
+DOMAIN: Final = "plugwise_usb"
 
 LOGGER = logging.getLogger(__package__)
-
+CB_NEW_NODE: Final = "NEW_NODE"
 COORDINATOR: Final = "coordinator"
 CONF_MANUAL_PATH: Final = "Enter Manually"
 STICK: Final = "stick"
