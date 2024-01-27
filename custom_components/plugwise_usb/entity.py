@@ -47,6 +47,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             "model": node_info.model,
             "sw_version": f"{node_info.firmware}",
         }
-        self._attr_name = entity_description.name
+        self._attr_name = f"{entity_description.name} ({node_info.mac[-5:]})"
         self._attr_unique_id = f"{node_info.mac}-{entity_description.key}"
+        self._attr_should_poll = False
         self.entity_description = entity_description
