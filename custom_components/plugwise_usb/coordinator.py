@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
 
 from asyncio import TimeoutError
+from collections.abc import Callable
 from datetime import timedelta
 import logging
 from typing import Any
@@ -54,14 +55,15 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         self._initial_update = False
 
         # Subscribe to events
-        self.event_subscription_ids: list[int] = [
-            node.subscribe_to_event(
-                push_feature,
-                self.async_push_event,
-            )
-            for push_feature in PUSHING_FEATURES
+        push_features = tuple(
+            push_feature for push_feature in PUSHING_FEATURES
             if push_feature in node.features
-        ]
+        )
+        self.unsubscribe_push_events: Callable[[], None] = node.subscribe_to_feature_update(
+            self.async_push_event,
+            push_features,
+        )
+
 
     async def async_push_event(self, feature: NodeFeature, state: Any) -> None:
         """"Callback to be notified for subscribed events."""
@@ -106,6 +108,5 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_shutdown(self) -> None:
         """Shutdown the coordinator."""
-        for subscription_id in self.event_subscription_ids:
-            self.node.unsubscribe(subscription_id)
+        self.unsubscribe_push_events()
         await super().async_shutdown()
