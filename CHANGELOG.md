@@ -2,11 +2,16 @@
 
 ## Versions from 0.4x
 
+### 0.40.6
+
+- Update backend-library to v0.31.3: fix midnight rollover, by @dirixmjm
+
 ### 0.40.5
 
-- Fix building (remaining plugwise instead of plugwise_usb).
-- Fix sequence_id counter skew, provided by @dirixmjm.
-- Fix stuck energy_consumption_today, provided by @dirixmjm.
+- Update backend-library to v0.31.2:
+  - Fix building (remaining plugwise instead of plugwise_usb).
+  - Fix sequence_id counter skew, provided by @dirixmjm.
+  - Fix stuck energy_consumption_today, provided by @dirixmjm.
 
 ### 0.40.4
 
