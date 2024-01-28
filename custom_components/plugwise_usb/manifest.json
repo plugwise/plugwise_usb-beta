@@ -2,12 +2,12 @@
   "domain": "plugwise_usb",
   "name": "Plugwise USB Beta",
   "after_dependencies": ["usb"],
-  "codeowners": ["@CoMPaTech", "@bouwew", "@brefra"],
+  "codeowners": ["@CoMPaTech", "@bouwew", "@brefra", "@dirixmjm"],
   "config_flow": true,
   "documentation": "https://github.com/plugwise/plugwise_usb-beta",
   "integration_type": "hub",
   "iot_class": "local_polling",
   "loggers": ["plugwise_usb"],
-  "requirements": ["plugwise-usb==0.31.2"],
-  "version": "0.40.5"
+  "requirements": ["plugwise-usb==0.31.3"],
+  "version": "0.40.6"
 }
