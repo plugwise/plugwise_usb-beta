@@ -39,8 +39,8 @@ PARALLEL_UPDATES = 0
 SCAN_INTERVAL = timedelta(seconds=30)
 SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
-        key="relay",
-        name="Relay state",
+        key="relay_state",
+        name="Relay",
         device_class=SwitchDeviceClass.OUTLET,
         async_switch_method="switch_relay",
         feature=NodeFeature.RELAY,
@@ -67,7 +67,9 @@ async def async_setup_entry(
     entities: list[PlugwiseUSBEntity] = []
     plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
     for mac, node in plugwise_nodes.items():
+        _LOGGER.debug("Check for switch setup for %s", mac)
         if node.data[NodeFeature.INFO] is not None:
+            _LOGGER.debug("- NodeFeature.INFO: %s", str(node.data[NodeFeature.INFO].features))
             entities.extend(
                 [
                     PlugwiseUSBSwitchEntity(
@@ -105,7 +107,10 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
                 str(self.entity_description.feature)
             )
             return
-        self._attr_is_on = self.coordinator.data[self.entity_description.feature][self.entity_description.key]
+        self._attr_is_on = getattr(
+            self.coordinator.data[self.entity_description.feature],
+            self.entity_description.key
+        )
         self.async_write_ha_state()
 
     async def async_switch_node(self, state: bool) -> bool:
