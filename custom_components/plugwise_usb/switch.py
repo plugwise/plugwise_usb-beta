@@ -67,9 +67,7 @@ async def async_setup_entry(
     entities: list[PlugwiseUSBEntity] = []
     plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
     for mac, node in plugwise_nodes.items():
-        _LOGGER.debug("Check for switch setup for %s", mac)
         if node.data[NodeFeature.INFO] is not None:
-            _LOGGER.debug("- NodeFeature.INFO: %s", str(node.data[NodeFeature.INFO].features))
             entities.extend(
                 [
                     PlugwiseUSBSwitchEntity(
