@@ -18,11 +18,13 @@ from .const import (  # noqa: F401
     DOMAIN,
     NODES,
 )
+from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .entity import (
     PlugwiseUSBEntity,
     PlugwiseUSBEntityDescription,
 )
 from .plugwise_usb.api import NodeFeature
+from .plugwise_usb.nodes import PlugwiseNode
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -56,13 +58,17 @@ async def async_setup_entry(
     """Set up Plugwise USB binary sensor based on config_entry."""
 
     entities: list[PlugwiseUSBEntity] = []
-    for coordinator in hass.data[DOMAIN][config_entry.entry_id][NODES].values():
-        if coordinator.data[NodeFeature.INFO] is not None:
+    plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
+    for mac, node in plugwise_nodes.items():
+        _LOGGER.debug("Check for binary_sensor setup for %s", mac)
+        if node.data[NodeFeature.INFO] is not None:
+            _LOGGER.debug("- NodeFeature.INFO: %s", str(node.data[NodeFeature.INFO].features))
+
             entities.extend(
                 [
-                    PlugwiseUSBBinarySensor(coordinator, entity_description)
+                    PlugwiseUSBBinarySensor(node, entity_description)
                     for entity_description in BINARY_SENSOR_TYPES
-                    if entity_description.feature in coordinator.data[
+                    if entity_description.feature in node.data[
                         NodeFeature.INFO
                     ].features
                 ]
@@ -74,6 +80,16 @@ async def async_setup_entry(
 class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     """Representation of a Plugwise USB Binary Sensor."""
 
+    def __init__(
+        self,
+        coordinator: PlugwiseUSBDataUpdateCoordinator,
+        entity_description: PlugwiseBinarySensorEntityDescription,
+        node: PlugwiseNode,
+    ) -> None:
+        """Initialize a switch entity."""
+        super().__init__(coordinator, entity_description)
+        self.node = node
+
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
@@ -83,7 +99,8 @@ class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
                 str(self.entity_description.feature)
             )
             return
-        self._attr_is_on = self.coordinator.data[
-            self.entity_description.feature
-        ][self.entity_description.key]
+        self._attr_is_on = getattr(
+            self.coordinator.data[self.entity_description.feature],
+            self.entity_description.key
+        )
         self.async_write_ha_state()
