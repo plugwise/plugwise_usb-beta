@@ -31,7 +31,7 @@ class PlugwiseSwitchEntityDescription(
 ):
     """Describes Plugwise switch entity."""
 
-    async_switch_method: str = ""
+    async_switch_fn: str = ""
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,14 +42,14 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         key="relay_state",
         name="Relay",
         device_class=SwitchDeviceClass.OUTLET,
-        async_switch_method="switch_relay",
+        async_switch_fn="switch_relay",
         feature=NodeFeature.RELAY,
     ),
     PlugwiseSwitchEntityDescription(
         key="relay init",
         name="Relay startup state",
         device_class=SwitchDeviceClass.OUTLET,
-        async_switch_method="switch_relay_init",
+        async_switch_fn="switch_relay_init",
         entity_category=EntityCategory.CONFIG,
         feature=NodeFeature.RELAY_INIT,
     ),
@@ -94,7 +94,9 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
     ) -> None:
         """Initialize a switch entity."""
         super().__init__(coordinator, entity_description)
-        self.node = node
+        self._async_switch_fn = getattr(
+            node, entity_description.async_switch_fn
+        )
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -111,17 +113,12 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         )
         self.async_write_ha_state()
 
-    async def async_switch_node(self, state: bool) -> bool:
-        """Switch configuration of Node."""
-        self._attr_is_on = await setattr(
-            self.node, self.entity_description.async_switch_method, state
-        )
-        self.async_write_ha_state()
-
     async def async_turn_on(self, **kwargs):
         """Turn the switch on"""
-        await self.async_switch_node(True)
+        self._attr_is_on = await self._async_switch_fn(True)
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off"""
-        await self.async_switch_node(True)
+        self._attr_is_on = await self._async_switch_fn(False)
+        self.async_write_ha_state()
