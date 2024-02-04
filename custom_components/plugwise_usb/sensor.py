@@ -39,12 +39,12 @@ async def async_setup_entry(
     for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR]:
         hass.async_create_task(async_add_sensors(mac))
 
-    def discoved_device(mac: str):
+    def discovered_device(mac: str):
         """Add sensors for newly discovered device."""
         hass.async_create_task(async_add_sensors(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discovered_device, CB_NEW_NODE)
 
 
 class USBSensor(PlugwiseUSBEntity, SensorEntity):  # type: ignore[misc]

@@ -37,12 +37,12 @@ async def async_setup_entry(
     for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH]:
         hass.async_create_task(async_add_switches(mac))
 
-    def discoved_device(mac: str):
+    def discovered_device(mac: str):
         """Add switches for newly discovered device."""
         hass.async_create_task(async_add_switches(mac))
 
     # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
+    api_stick.subscribe_stick_callback(discovered_device, CB_NEW_NODE)
 
 
 class USBSwitch(PlugwiseUSBEntity, SwitchEntity):  # type: ignore[misc]
