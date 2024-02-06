@@ -13,86 +13,85 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
+    Platform,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     EntityCategory,
+    PERCENTAGE,
     UnitOfEnergy,
     UnitOfPower,
+    UnitOfTemperature,
     UnitOfTime,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, NODES
-from .entity import (
-    PlugwiseUSBEntity,
-    PlugwiseUSBEntityDescription,
-)
-from .plugwise_usb.api import NodeFeature
+from .const import DOMAIN, NODES, STICK, UNSUB_NODE_LOADED
+from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
-
-@dataclass
-class PlugwiseSensorEntityDescription(
-    SensorEntityDescription, PlugwiseUSBEntityDescription
-):
-    """Describes Plugwise sensor entity."""
+from .plugwise_usb.api import NodeEvent, NodeFeature
 
 _LOGGER = logging.getLogger(__name__)
 PARALLEL_UPDATES = 2
 SCAN_INTERVAL = timedelta(seconds=30)
+
+
+@dataclass(kw_only=True)
+class PlugwiseSensorEntityDescription(PlugwiseUSBEntityDescription, SensorEntityDescription):
+    """Describes Plugwise sensor entity."""
+
+
 SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
     PlugwiseSensorEntityDescription(
         key="last_second",
-        name="Power usage",
+        translation_key="power_last_second",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         suggested_display_precision=2,
-        feature=NodeFeature.POWER,
+        node_feature=NodeFeature.POWER,
     ),
     PlugwiseSensorEntityDescription(
         key="last_8_seconds",
-        name="Power usage last 8 seconds",
+        translation_key="power_last_8_seconds",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         suggested_display_precision=2,
-        feature=NodeFeature.POWER,
+        node_feature=NodeFeature.POWER,
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
         key="day_consumption",
-        name="Energy consumption today",
+        translation_key="energy_day_consumption",
         device_class=SensorDeviceClass.ENERGY,
-        #state_class=SensorStateClass.TOTAL_INCREASING,
         state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         suggested_display_precision=3,
-        feature=NodeFeature.ENERGY,
+        node_feature=NodeFeature.ENERGY,
     ),
     PlugwiseSensorEntityDescription(
         key="rtt",
-        name="Network roundtrip",
-        icon="mdi:speedometer",
+        translation_key="ping_rrt",
         native_unit_of_measurement=UnitOfTime.MILLISECONDS,
-        feature=NodeFeature.PING,
+        node_feature=NodeFeature.PING,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        key="RSSI_in",
-        name="Inbound RSSI",
+        key="rssi_in",
+        translation_key="ping_rssi_in",
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-        feature=NodeFeature.PING,
+        node_feature=NodeFeature.PING,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     PlugwiseSensorEntityDescription(
-        key="RSSI_out",
-        name="Outbound RSSI",
+        key="rssi_out",
+        translation_key="ping_rssi_out",
         device_class=SensorDeviceClass.SIGNAL_STRENGTH,
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-        feature=NodeFeature.PING,
+        node_feature=NodeFeature.PING,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -107,21 +106,55 @@ async def async_setup_entry(
 ) -> None:
     """Set up Plugwise USB sensor based on config_entry."""
 
-    entities: list[PlugwiseUSBEntity] = []
-    plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
-    for node in plugwise_nodes.values():
-        if node.data[NodeFeature.INFO] is not None:
-            entities.extend(
-                [
-                    PlugwiseUSBSensorEntity(node, entity_description)
-                    for entity_description in SENSOR_TYPES
-                    if entity_description.feature in node.data[
-                        NodeFeature.INFO
-                    ].features
-                ]
+    async def async_add_sensor(node_event: NodeEvent, mac: str) -> None:
+        """Initialize DUC for sensor."""
+        _LOGGER.debug("async_add_sensor | %s | node_event=%s", mac, node_event)
+        if node_event != NodeEvent.LOADED:
+            return
+        entities: list[PlugwiseUSBEntity] = []
+        if (node_duc := hass.data[DOMAIN][config_entry.entry_id][NODES].get(mac)) is not None:
+            if node_duc.data[NodeFeature.INFO] is not None:
+                _LOGGER.debug("Add sensor entities for %s | duc=%s", mac, node_duc.name)
+                entities.extend(
+                    [
+                        PlugwiseUSBSensorEntity(node_duc, entity_description)
+                        for entity_description in SENSOR_TYPES
+                        if entity_description.node_feature in node_duc.data[
+                            NodeFeature.INFO
+                        ].features
+                    ]
+                )
+            else:
+                _LOGGER.debug("async_add_sensor | %s | data FAILED", mac)
+        else:
+            _LOGGER.debug("async_add_sensor | %s | GET MAC FAILED", mac)
+
+        if entities:
+            async_add_entities(entities, update_before_add=True)
+
+    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
+
+    # Listen for loaded nodes
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR] = {}
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR][UNSUB_NODE_LOADED] = (
+        api_stick.subscribe_to_node_events(
+            async_add_sensor,
+            (NodeEvent.LOADED,),
             )
-    if entities:
-        async_add_entities(entities, update_before_add=True)
+    )
+
+    # load current nodes
+    for mac, node in api_stick.nodes.items():
+        if node.loaded:
+            await async_add_sensor(NodeEvent.LOADED, mac)
+
+
+async def async_unload_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+) -> None:
+    """Unload a config entry."""
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR][UNSUB_NODE_LOADED]()
 
 
 class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
@@ -130,23 +163,24 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(self.entity_description.feature, None)
+        data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.warning(
-                "No sensor data for %s",
-                str(self.entity_description.feature)
+                "No %s sensor data for %s",
+                self.entity_description.node_feature,
+                self._node_info.mac,
             )
             return
         self._attr_native_value = getattr(
             self.coordinator.data[
-                self.entity_description.feature
+                self.entity_description.node_feature
             ],
-            self.entity_description.key.lower()
+            self.entity_description.key
         )
-        if self.entity_description.feature == NodeFeature.ENERGY:
+        if self.entity_description.node_feature == NodeFeature.ENERGY:
             self._attr_last_reset = getattr(
                 self.coordinator.data[
-                    self.entity_description.feature
+                    self.entity_description.node_feature
                 ],
                 f"{self.entity_description.key}_reset"
             )

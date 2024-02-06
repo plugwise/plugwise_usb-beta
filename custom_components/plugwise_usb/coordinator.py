@@ -1,7 +1,5 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
 
-from asyncio import TimeoutError
-from collections.abc import Callable
 from datetime import timedelta
 import logging
 from typing import Any
@@ -15,7 +13,7 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 
-from .plugwise_usb.api import PUSHING_FEATURES, NodeFeature
+from .plugwise_usb.api import NodeFeature
 from .plugwise_usb.exceptions import NodeError, NodeTimeout, StickError
 from .plugwise_usb.nodes import PlugwiseNode
 
@@ -32,81 +30,55 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         update_interval: timedelta | None = None,
     ) -> None:
         """Initialize Plugwise USB data update coordinator."""
+        self._initial_update_done = False
+        self.node = node
         if node.node_info.battery_powered:
             _LOGGER.debug("Create battery powered DUC for %s", node.mac)
             super().__init__(
                 hass,
                 _LOGGER,
-                name=f"Plugwise USB node {node.mac}",
+                name=f"Battery powered Plugwise node {node.mac}",
                 update_method=self.async_node_update,
-                always_update=False,
+                always_update=True,
             )
+
         else:
             _LOGGER.debug("Create normal powered DUC for %s: %s", node.mac, str(update_interval))
             super().__init__(
                 hass,
                 _LOGGER,
-                name=f"Plugwise USB node {node.mac}",
+                name=f"Normal powered Plugwise node {node.mac}",
                 update_interval=timedelta(seconds=15),
                 update_method=self.async_node_update,
                 always_update=True,
             )
-        self.node = node
-        self._initial_update = False
-
-        # Subscribe to events
-        push_features = tuple(
-            push_feature for push_feature in PUSHING_FEATURES
-            if push_feature in node.features
-        )
-        self.unsubscribe_push_events: Callable[[], None] = node.subscribe_to_feature_update(
-            self.async_push_event,
-            push_features,
-        )
-
-
-    async def async_push_event(self, feature: NodeFeature, state: Any) -> None:
-        """"Callback to be notified for subscribed events."""
-        await self.async_set_updated_data(
-            {
-                feature: state,
-            }
-        )
 
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""
         try:
             async with async_timeout.timeout(30):
-                if not self._initial_update:
+                if not self._initial_update_done:
                     _LOGGER.debug(
                         "Initial coordinator update for %s", self.node.mac
-                     )
-                    self._initial_update = await self.node.load()
-                    return await self.node.get_state((NodeFeature.INFO,))
-                else:
-                    features = set(self.async_contexts())
-                    if not features:
-                        _LOGGER.debug(
-                            "Coordinator update for %s, context=<empty>",
-                            self.node.mac,
-                        )
-                        features.add(NodeFeature.INFO)
-                    _LOGGER.debug(
-                        "Coordinator update for %s, context=%s",
-                        self.node.mac,
-                        str(features),
                     )
-                    return await self.node.get_state(features)
+                    self._initial_update_done = await self.node.node_info_update()
+                    states: dict[NodeFeature, Any] = {}
+                    states[NodeFeature.INFO] = self.node.node_info
+                    if self.node.node_info.battery_powered:
+                        self.always_update = False
+                    return states
+                features = set(self.async_contexts())
+                _LOGGER.debug(
+                    "Coordinator update for %s, context=%s",
+                    self.node.mac,
+                    str(features),
+                )
+                return await self.node.get_state(features)
         except StickError as err:
             raise ConfigEntryNotReady from err
         except NodeTimeout as err:
             raise TimeoutError from err
         except NodeError as err:
             raise UpdateFailed(
-                f"Failed to retrieve data from Plugwise node: {err}"
+                f"Failed to pull data from Plugwise node: {err}"
             ) from err
-
-    async def async_shutdown(self) -> None:
-        """Shutdown the coordinator."""
-        self.unsubscribe_push_events()
-        await super().async_shutdown()
