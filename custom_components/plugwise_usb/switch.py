@@ -11,47 +11,43 @@ from homeassistant.components.switch import (
     SwitchEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, NODES, STICK
+from .const import DOMAIN, NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
-from .entity import (
-    PlugwiseUSBEntity,
-    PlugwiseUSBEntityDescription,
-)
-from .plugwise_usb.api import NodeFeature
-from .plugwise_usb.nodes import PlugwiseNode
+from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
+
+from .plugwise_usb.api import NodeEvent, NodeFeature
+
+_LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 2
+SCAN_INTERVAL = timedelta(seconds=30)
 
 
-@dataclass
-class PlugwiseSwitchEntityDescription(
-    SwitchEntityDescription, PlugwiseUSBEntityDescription
-):
+@dataclass(kw_only=True)
+class PlugwiseSwitchEntityDescription(PlugwiseUSBEntityDescription, SwitchEntityDescription):
     """Describes Plugwise switch entity."""
 
     async_switch_fn: str = ""
 
 
-_LOGGER = logging.getLogger(__name__)
-PARALLEL_UPDATES = 0
-SCAN_INTERVAL = timedelta(seconds=30)
 SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
         key="relay_state",
-        name="Relay",
+        translation_key="relay",
         device_class=SwitchDeviceClass.OUTLET,
         async_switch_fn="switch_relay",
-        feature=NodeFeature.RELAY,
+        node_feature=NodeFeature.RELAY,
     ),
     PlugwiseSwitchEntityDescription(
-        key="relay init",
-        name="Relay startup state",
+        key="relay_init_state",
+        translation_key="relay_init",
         device_class=SwitchDeviceClass.OUTLET,
         async_switch_fn="switch_relay_init",
         entity_category=EntityCategory.CONFIG,
-        feature=NodeFeature.RELAY_INIT,
+        node_feature=NodeFeature.RELAY_INIT,
     ),
 )
 
@@ -62,25 +58,50 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the USB switches from a config entry."""
+
+    async def async_add_switch(node_event: NodeEvent, mac: str) -> None:
+        """Initialize DUC for switch."""
+        if node_event != NodeEvent.LOADED:
+            return
+        entities: list[PlugwiseUSBEntity] = []
+        if (node_duc := hass.data[DOMAIN][config_entry.entry_id][NODES].get(mac)) is not None:
+            if node_duc.data[NodeFeature.INFO] is not None:
+                _LOGGER.debug("Add switch entities for %s | duc=%s", mac, node_duc.name)
+                entities.extend(
+                    [
+                        PlugwiseUSBSwitchEntity(node_duc, entity_description)
+                        for entity_description in SWITCH_TYPES
+                        if entity_description.node_feature in node_duc.data[
+                            NodeFeature.INFO
+                        ].features
+                    ]
+                )
+        if entities:
+            async_add_entities(entities, update_before_add=True)
+
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
 
-    entities: list[PlugwiseUSBEntity] = []
-    plugwise_nodes = hass.data[DOMAIN][config_entry.entry_id][NODES]
-    for mac, node in plugwise_nodes.items():
-        if node.data[NodeFeature.INFO] is not None:
-            entities.extend(
-                [
-                    PlugwiseUSBSwitchEntity(
-                        node, entity_description, api_stick.nodes[mac]
-                    )
-                    for entity_description in SWITCH_TYPES
-                    if entity_description.feature in node.data[
-                        NodeFeature.INFO
-                    ].features
-                ]
+    # Listen for loaded nodes
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH] = {}
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH][UNSUB_NODE_LOADED] = (
+        api_stick.subscribe_to_node_events(
+            async_add_switch,
+            (NodeEvent.LOADED,),
             )
-    if entities:
-        async_add_entities(entities, update_before_add=True)
+    )
+
+    # load any current nodes
+    for mac, node in api_stick.nodes.items():
+        if node.loaded:
+            await async_add_switch(NodeEvent.LOADED, mac)
+
+
+async def async_unload_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+) -> None:
+    """Unload a config entry."""
+    hass.data[DOMAIN][config_entry.entry_id][Platform.SWITCH][UNSUB_NODE_LOADED]()
 
 
 class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
@@ -88,37 +109,36 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
 
     def __init__(
         self,
-        coordinator: PlugwiseUSBDataUpdateCoordinator,
+        node_duc: PlugwiseUSBDataUpdateCoordinator,
         entity_description: PlugwiseSwitchEntityDescription,
-        node: PlugwiseNode,
     ) -> None:
         """Initialize a switch entity."""
-        super().__init__(coordinator, entity_description)
-        self._async_switch_fn = getattr(
-            node, entity_description.async_switch_fn
+        super().__init__(node_duc, entity_description)
+        self.async_switch_fn = getattr(
+            node_duc.node, entity_description.async_switch_fn
         )
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        if self.coordinator.data[self.entity_description.feature] is None:
+        if self.coordinator.data[self.entity_description.node_feature] is None:
             _LOGGER.warning(
                 "No switch data for %s",
-                str(self.entity_description.feature)
+                str(self.entity_description.node_feature)
             )
             return
         self._attr_is_on = getattr(
-            self.coordinator.data[self.entity_description.feature],
+            self.coordinator.data[self.entity_description.node_feature],
             self.entity_description.key
         )
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs):
-        """Turn the switch on"""
-        self._attr_is_on = await self._async_switch_fn(True)
+        """Turn the switch on."""
+        self._attr_is_on = await self.async_switch_fn(True)
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
-        """Turn the switch off"""
-        self._attr_is_on = await self._async_switch_fn(False)
+        """Turn the switch off."""
+        self._attr_is_on = await self.async_switch_fn(False)
         self.async_write_ha_state()

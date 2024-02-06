@@ -97,5 +97,38 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "power_last_second": {
+        "name": "[%key:component::sensor::entity_component::power::name%]"
+      },
+      "power_last_8_seconds": {
+        "name": "Power usage last 8 seconds"
+      },
+      "energy_hour_consumption": {
+        "name": "Energy consumption this hour"
+      },
+      "energy_day_consumption": {
+        "name": "Energy consumption today"
+      },
+      "ping_rrt": {
+        "name": "Network roundtrip time"
+      },
+      "ping_rssi_in": {
+        "name": "RSSI level inbound"
+      },
+      "ping_rssi_out": {
+        "name": "RSSI level outbound"
+      }
+    },
+    "switch": {
+      "relay": {
+        "name": "[%key:component::switch::entity_component::outlet::name%]"
+      },
+      "relay_init": {
+        "name": "Relay startup"
+      }
+    }
   }
 }
