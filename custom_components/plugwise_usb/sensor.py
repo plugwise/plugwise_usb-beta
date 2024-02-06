@@ -59,6 +59,16 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
+        key="hour_consumption",
+        translation_key="energy_hour_consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=3,
+        node_feature=NodeFeature.ENERGY,
+        entity_registry_enabled_default=False,
+    ),
+    PlugwiseSensorEntityDescription(
         key="day_consumption",
         translation_key="energy_day_consumption",
         device_class=SensorDeviceClass.ENERGY,
@@ -95,6 +105,22 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    PlugwiseSensorEntityDescription(
+        key="temperature",
+        translation_key="temperature",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        node_feature=NodeFeature.TEMPERATURE,
+        suggested_display_precision=2,
+    ),
+    PlugwiseSensorEntityDescription(
+        key="humidity",
+        translation_key="humidity",
+        device_class=SensorDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
+        node_feature=NodeFeature.HUMIDITY,
+        suggested_display_precision=2,
     ),
 )
 
