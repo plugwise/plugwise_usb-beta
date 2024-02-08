@@ -69,7 +69,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         """"Update data on pushed event."""
         if self.node_duc is None:
             _LOGGER.warning("Unable to push event=%s, state=%s, mac=%s", feature, state, self._node_info.mac)
-        await self.node_duc.async_set_updated_data(
+        self.node_duc.async_set_updated_data(
             {
                 feature: state,
             }
