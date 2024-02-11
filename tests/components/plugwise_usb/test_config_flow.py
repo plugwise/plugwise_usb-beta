@@ -3,14 +3,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 import serial.tools.list_ports
-from voluptuous.error import MultipleInvalid
 
 from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from plugwise_usb.exceptions import NetworkDown, StickInitError, TimeoutException
 
 TEST_USBPORT = "/dev/ttyUSB1"
@@ -157,7 +156,7 @@ async def test_empty_connection(hass):
             {CONF_USB_PATH: None},
         )
         pytest.fail("Empty connection was accepted")
-    except MultipleInvalid:
+    except InvalidData:
         assert True
 
     assert result["type"] == FlowResultType.FORM
