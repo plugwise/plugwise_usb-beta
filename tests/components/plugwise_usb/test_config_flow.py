@@ -157,7 +157,7 @@ async def test_empty_connection(hass):
             {CONF_USB_PATH: None},
         )
         pytest.fail("Empty connection was accepted")
-    except InvalidData:
+    except MultipleInvalid:
         assert True
 
     assert result["type"] == FlowResultType.FORM
