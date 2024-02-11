@@ -3,7 +3,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 import serial.tools.list_ports
-from voluptuous.error import MultipleInvalid
 
 from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
