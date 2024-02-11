@@ -1,5 +1,4 @@
 """Constants for Plugwise USB component."""
-from datetime import timedelta
 import logging
 from typing import Final
 
@@ -12,52 +11,11 @@ DOMAIN: Final = "plugwise_usb"
 
 LOGGER = logging.getLogger(__package__)
 
-COORDINATOR: Final = "coordinator"
 CONF_MANUAL_PATH: Final = "Enter Manually"
-GATEWAY: Final = "gateway"
 STICK: Final = "stick"
 USB: Final = "usb"
 
 UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
-
-# Default directives
-DEFAULT_PORT: Final = 80
-DEFAULT_SCAN_INTERVAL: Final[dict[str, timedelta]] = {
-    "power": timedelta(seconds=10),
-    "stretch": timedelta(seconds=60),
-    "thermostat": timedelta(seconds=60),
-}
-DEFAULT_TIMEOUT: Final = 10
-DEFAULT_USERNAME: Final = "smile"
-
-# --- Const for Plugwise Smile and Stretch
-PLATFORMS_GATEWAY: Final[list[str]] = [
-    Platform.BINARY_SENSOR,
-    Platform.CLIMATE,
-    Platform.NUMBER,
-    Platform.SELECT,
-    Platform.SENSOR,
-    Platform.SWITCH,
-]
-SENSOR_PLATFORMS: Final[list[str]] = [Platform.SENSOR, Platform.SWITCH]
-SERVICE_DELETE: Final = "delete_notification"
-SEVERITIES: Final[list[str]] = ["other", "info", "message", "warning", "error"]
-
-# Climate const:
-MASTER_THERMOSTATS: Final[list[str]] = [
-    "thermostat",
-    "zone_thermometer",
-    "zone_thermostat",
-    "thermostatic_radiator_valve",
-]
-
-# Config_flow const:
-ZEROCONF_MAP: Final[dict[str, str]] = {
-    "smile": "Smile P1",
-    "smile_thermo": "Smile Anna",
-    "smile_open_therm": "Adam",
-    "stretch": "Stretch",
-}
 
 # --- Const for Plugwise USB-stick.
 
