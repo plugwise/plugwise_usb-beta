@@ -122,7 +122,7 @@
         "name": "RSSI level outbound"
       },
       "temperature": {
-        "temperature": "[%key:component::sensor::entity_component::temperature::name%]"
+        "name": "[%key:component::sensor::entity_component::temperature::name%]"
       },
       "humidity": {
         "name": "[%key:component::sensor::entity_component::humidity::name%]"
@@ -130,7 +130,7 @@
     },
     "switch": {
       "relay": {
-        "name": "[%key:component::switch::entity_component::outlet::name%]"
+        "name": "Relay"
       },
       "relay_init": {
         "name": "Relay startup"
