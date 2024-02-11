@@ -111,7 +111,7 @@ overgeneral-exceptions = [
 [tool.ruff]
 target-version = "py312"
 
-select = [
+lint.select = [
     "B007", # Loop control variable {name} not used within loop body
     "B014", # Exception handler with duplicate exception
     "C",  # complexity
@@ -153,7 +153,7 @@ select = [
     "W",  # pycodestyle
 ]
 
-ignore = [
+lint.ignore = [
     "D202",  # No blank lines allowed after function docstring
     "D203",  # 1 blank line required before class docstring
     "D213",  # Multi-line docstring summary should start at the second line
@@ -167,7 +167,7 @@ ignore = [
     "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
 ]
 
-[tool.ruff.flake8-import-conventions.extend-aliases]
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
 voluptuous = "vol"
 "homeassistant.helpers.area_registry" = "ar"
 "homeassistant.helpers.config_validation" = "cv"
@@ -176,10 +176,10 @@ voluptuous = "vol"
 "homeassistant.helpers.issue_registry" = "ir"
 "homeassistant.util.dt" = "dt_util"
 
-[tool.ruff.flake8-pytest-style]
+[tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 force-sort-within-sections = true
 known-first-party = [
     "homeassistant",
@@ -187,6 +187,6 @@ known-first-party = [
 ]
 combine-as-imports = true
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 25
 
