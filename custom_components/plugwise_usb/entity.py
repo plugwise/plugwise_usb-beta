@@ -40,7 +40,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         self._node_info: NodeInfo = self.coordinator.data[NodeFeature.INFO]
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self._node_info.mac)},
-            "name": f"{self._node_info.model} {self._node_info.name}",
+            "name": f"{self._node_info.name}",
             "manufacturer": "Plugwise",
             "model": self._node_info.model,
             "sw_version": f"{self._node_info.firmware}",
