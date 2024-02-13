@@ -10,7 +10,7 @@ from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
-from plugwise_usb.exceptions import NetworkDown, StickInitError, TimeoutException
+from plugwise_usb.exceptions import StickError
 
 TEST_USBPORT = "/dev/ttyUSB1"
 TEST_USBPORT2 = "/dev/ttyUSB2"
@@ -164,7 +164,7 @@ async def test_empty_connection(hass):
 
 
 @patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickInitError)))
+@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
 async def test_failed_initialization(hass):
     """Test we handle failed initialization of Plugwise USB-stick."""
     result = await hass.config_entries.flow.async_init(
@@ -184,7 +184,7 @@ async def test_failed_initialization(hass):
 
 
 @patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(NetworkDown)))
+@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
 async def test_network_down_exception(hass):
     """Test we handle network_down exception."""
     result = await hass.config_entries.flow.async_init(
@@ -204,7 +204,7 @@ async def test_network_down_exception(hass):
 
 
 @patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(TimeoutException)))
+@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
 async def test_timeout_exception(hass):
     """Test we handle time exception."""
     result = await hass.config_entries.flow.async_init(
