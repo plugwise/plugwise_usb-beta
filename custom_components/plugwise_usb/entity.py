@@ -9,11 +9,10 @@ from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
+from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
 
 from .const import DOMAIN
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
-
-from .plugwise_usb.api import NodeFeature, NodeInfo, PUSHING_FEATURES
 
 _LOGGER = logging.getLogger(__name__)
 
