@@ -31,8 +31,15 @@ class NodeConfigEntry(TypedDict):
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
-    hass.data.setdefault(DOMAIN, {})
 
+    @callback
+    def _async_migrate_entity_entry(entity_entry: er.RegistryEntry) -> dict[str, Any] | None:
+        """Migrate Plugwise entity entry."""
+        return async_migrate_entity_entry(config_entry, entity_entry)
+
+    await er.async_migrate_entries(hass, config_entry.entry_id, _async_migrate_entity_entry)
+
+    hass.data.setdefault(DOMAIN, {})
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
@@ -99,3 +106,29 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
     await api_stick.disconnect()
     return unload
+
+
+@callback
+def async_migrate_entity_entry(
+    config_entry: ConfigEntry, entity_entry: er.RegistryEntry
+) -> dict[str, Any] | None:
+    """Migrate Plugwise USB entity entries.
+
+    - Migrates unique ID for sensors based on entity description name to key.
+    """
+
+    # Conversion list of unique ID suffixes
+    for old, new in (
+        ("power_1s", "last_second"),
+        ("power_8s", "last_8_seconds"),
+        ("energy_consumption_today", "day_consumption"),
+        ("ping", "rtt"),
+        ("RSSI_in", "rssi_in"),
+        ("RSSI_out", "rssi_out"),
+        ("relay", "relay_state"),
+    ):
+        if entity_entry.unique_id.endswith(old):
+            return {"new_unique_id": entity_entry.unique_id.replace(old, new)}
+
+    # No migration needed
+    return None
