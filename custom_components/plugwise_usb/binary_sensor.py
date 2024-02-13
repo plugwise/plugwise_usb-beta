@@ -14,11 +14,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import DOMAIN, NODES, STICK, UNSUB_NODE_LOADED
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
-
-from .plugwise_usb.api import NodeEvent, NodeFeature, NodeFeature
 
 _LOGGER = logging.getLogger(__name__)
 PARALLEL_UPDATES = 2
