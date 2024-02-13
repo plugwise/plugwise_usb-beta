@@ -11,10 +11,10 @@ from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from plugwise_usb import Stick
+from plugwise_usb.exceptions import StickError
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
-from .plugwise_usb import Stick
-from .plugwise_usb.exceptions import StickError
 
 
 @callback

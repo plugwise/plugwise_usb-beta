@@ -12,10 +12,9 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-
-from .plugwise_usb.api import NodeFeature
-from .plugwise_usb.exceptions import NodeError, NodeTimeout, StickError
-from .plugwise_usb.nodes import PlugwiseNode
+from plugwise_usb.api import NodeFeature
+from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError
+from plugwise_usb.nodes import PlugwiseNode
 
 _LOGGER = logging.getLogger(__name__)
 

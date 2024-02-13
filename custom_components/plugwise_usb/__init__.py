@@ -1,11 +1,15 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 import logging
-from typing import TypedDict
+from typing import Any, TypedDict
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
+from plugwise_usb import Stick
+from plugwise_usb.api import NodeEvent
+from plugwise_usb.exceptions import StickError
 
 from .const import (
     CONF_USB_PATH,
@@ -15,12 +19,10 @@ from .const import (
     STICK,
 )
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
-from .plugwise_usb import Stick
-from .plugwise_usb.api import NodeEvent
-from .plugwise_usb.exceptions import StickError
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
+
 
 class NodeConfigEntry(TypedDict):
     """Plugwise node config entry."""
