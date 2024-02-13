@@ -83,7 +83,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(f"{mac_stick}-test") # todo: fix id
+                await self.async_set_unique_id(mac_stick)
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
