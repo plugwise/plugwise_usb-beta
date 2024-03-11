@@ -1,12 +1,13 @@
 """Support for Plugwise USB devices connected to a Plugwise USB-stick."""
 import asyncio
 import logging
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP, Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.entity import Entity
 from plugwise_usb import Stick
 from plugwise_usb.exceptions import (
@@ -40,6 +41,15 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
+
+    @callback
+    def _async_migrate_entity_entry(entity_entry: er.RegistryEntry) -> dict[str, Any] | None:
+        """Migrate Plugwise entity entry."""
+        return async_migrate_entity_entry(config_entry, entity_entry)
+
+    # Migrate entity
+    await er.async_migrate_entries(hass, config_entry.entry_id, _async_migrate_entity_entry)
+
     hass.data.setdefault(DOMAIN, {})
     device_registry = dr.async_get(hass)
 
@@ -182,6 +192,32 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 async def _async_update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
     """Handle options update."""
     await hass.config_entries.async_reload(config_entry.entry_id)
+
+
+@callback
+def async_migrate_entity_entry(
+    config_entry: ConfigEntry, entity_entry: er.RegistryEntry
+) -> dict[str, Any] | None:
+    """Migrate Plugwise USB entity entries.
+
+    - Migrates unique IDs migrated by async version back to IDs used by this threaded version.
+    """
+
+    # Conversion list of unique ID suffixes
+    for old, new in (
+        ("last_second", "power_1s"),
+        ("last_8_seconds", "power_8s"),
+        ("day_consumption", "energy_consumption_today"),
+        ("rtt", "ping"),
+        ("rssi_in", "RSSI_in"),
+        ("rssi_out", "RSSI_out"),
+        ("relay_state", "relay"),
+    ):
+        if entity_entry.unique_id.endswith(old):
+            return {"new_unique_id": entity_entry.unique_id.replace(old, new)}
+
+    # No migration needed
+    return None
 
 
 class PlugwiseUSBEntity(Entity):
