@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from plugwise_usb.api import NodeFeature, NodeInfo
+from plugwise_usb.api import NodeFeature
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
 from plugwise_usb.nodes import PlugwiseNode
 
@@ -28,7 +28,6 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         update_interval: timedelta | None = None,
     ) -> None:
         """Initialize Plugwise USB data update coordinator."""
-        self._initial_update_done = False
         self.node = node
         if node.node_info.battery_powered:
             _LOGGER.debug("Create battery powered DUC for %s", node.mac)
@@ -39,7 +38,6 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 update_method=self.async_node_update,
                 always_update=True,
             )
-
         else:
             _LOGGER.debug("Create normal powered DUC for %s: %s", node.mac, str(update_interval))
             super().__init__(
@@ -51,24 +49,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 always_update=True,
             )
 
-    async def get_node_info(self) -> NodeInfo:
-        """Return node information."""
-        node_info: NodeInfo | None = None
-        if (node_info := await self.node.node_info_update()) is None:
-            raise UpdateFailed(f"Failed to pull node information from Plugwise node: {self.node.mac}")
-        if node_info.battery_powered:
-            self.always_update = False
-        return node_info
-
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""
         states: dict[NodeFeature, Any] = {}
-        if not self._initial_update_done:
-            _LOGGER.debug("Initial coordinator update for %s", self.node.mac)
-            states[NodeFeature.INFO] = await self.get_node_info()
-            self._initial_update_done = True
-            return states
-
         features = tuple(self.async_contexts())
         _LOGGER.debug("Coordinator update for %s, context=%s", self.node.mac, features)
         try:
