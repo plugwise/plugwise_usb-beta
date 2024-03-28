@@ -68,7 +68,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         _LOGGER.debug("async_node_discovered | node_info=%s", node.node_info)
         coordinator = PlugwiseUSBDataUpdateCoordinator(hass, node)
         hass.data[DOMAIN][config_entry.entry_id][NODES][mac] = coordinator
-        await coordinator.async_config_entry_first_refresh()
         await node.load()
 
     hass.data[DOMAIN][config_entry.entry_id][UNSUBSCRIBE_DISCOVERY] = (
