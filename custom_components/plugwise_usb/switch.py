@@ -64,17 +64,14 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := hass.data[DOMAIN][config_entry.entry_id][NODES].get(mac)) is not None:
-            if node_duc.data[NodeFeature.INFO] is not None:
-                _LOGGER.debug("Add switch entities for %s | duc=%s", mac, node_duc.name)
-                entities.extend(
-                    [
-                        PlugwiseUSBSwitchEntity(node_duc, entity_description)
-                        for entity_description in SWITCH_TYPES
-                        if entity_description.node_feature in node_duc.data[
-                            NodeFeature.INFO
-                        ].features
-                    ]
-                )
+            _LOGGER.debug("Add switch entities for %s | duc=%s", mac, node_duc.name)
+            entities.extend(
+                [
+                    PlugwiseUSBSwitchEntity(node_duc, entity_description)
+                    for entity_description in SWITCH_TYPES
+                    if entity_description.node_feature in node_duc.node.features
+                ]
+            )
         if entities:
             async_add_entities(entities, update_before_add=True)
 
