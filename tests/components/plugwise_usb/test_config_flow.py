@@ -34,7 +34,7 @@ async def test_form_flow_usb(
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}
     )
-    assert result.get("type") == FlowResultType.FORM
+    assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user"
     assert "flow_id" in result
@@ -42,7 +42,7 @@ async def test_form_flow_usb(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
     )
-    assert result.get("type") == FlowResultType.FORM
+    assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {}
     assert result.get("step_id") == "user"
 
@@ -61,10 +61,10 @@ async def test_user_flow_select(hass):
         context={CONF_SOURCE: SOURCE_USER},
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USB_PATH: port_select}
+        result["flow_id"], data={CONF_USB_PATH: port_select}
     )
-    assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["data"] == {CONF_USB_PATH: TEST_USBPORT}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT}
 
     # Retry to ensure configuring the same port is not allowed
     result = await hass.config_entries.flow.async_init(
@@ -74,8 +74,8 @@ async def test_user_flow_select(hass):
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input={CONF_USB_PATH: port_select}
     )
-    assert result["type"] == FlowResultType.FORM
-    assert result["errors"] == {"base": "already_configured"}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": "already_configured"}
 
 
 async def test_user_flow_manual_selected_show_form(hass):
@@ -88,8 +88,8 @@ async def test_user_flow_manual_selected_show_form(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
-    assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "manual_path"
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("step_id") == "manual_path"
 
 
 async def test_user_flow_manual(hass):
@@ -109,14 +109,14 @@ async def test_user_flow_manual(hass):
         usb_mock.return_value.connect = AsyncMock(return_value=None)
         usb_mock.return_value.initialize = AsyncMock(return_value=None)
         usb_mock.return_value.disconnect = AsyncMock(return_value=None)
-        usb_mock.return_value.mac_stick = "01:23:45:67:AB"
+        usb_mock.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
 
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
-    assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["data"] == {CONF_USB_PATH: TEST_USBPORT2}
+    assert result.get("type") is FlowResultType.CREATE_ENTRY
+    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT2}
 
 
 async def test_invalid_connection(hass):
@@ -135,8 +135,8 @@ async def test_invalid_connection(hass):
         {CONF_USB_PATH: "/dev/null"},
     )
 
-    assert result["type"] == FlowResultType.FORM
-    assert result["errors"] == {"base": "cannot_connect"}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": "cannot_connect"}
 
 
 async def test_empty_connection(hass):
@@ -159,8 +159,8 @@ async def test_empty_connection(hass):
     except InvalidData:
         assert True
 
-    assert result["type"] == FlowResultType.FORM
-    assert result["errors"] == {}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {}
 
 
 @patch("plugwise_usb.Stick.connect", AsyncMock(side_effect=(StickError)))
@@ -179,8 +179,8 @@ async def test_failed_connect(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: "/dev/null"},
     )
-    assert result["type"] == "form"
-    assert result["errors"] == {"base": "cannot_connect"}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": "cannot_connect"}
 
 
 @patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
@@ -199,5 +199,5 @@ async def test_failed_initialization(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: "/dev/null"},
     )
-    assert result["type"] == "form"
-    assert result["errors"] == {"base": "stick_init"}
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": "stick_init"}
