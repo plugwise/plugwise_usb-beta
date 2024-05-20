@@ -104,9 +104,9 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(api_stick.mac)
+                await self.async_set_unique_id(mac_stick)
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
