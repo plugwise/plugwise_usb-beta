@@ -4,8 +4,8 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 7
-  DEFAULT_PYTHON: "3.11"
+  CACHE_VERSION: 8
+  DEFAULT_PYTHON: "3.12"
 
 on:
   workflow_dispatch:
@@ -21,15 +21,15 @@ jobs:
     name: Setup for HA-core
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.1
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
         id: cache-hacore
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-hacore
         with:
@@ -37,7 +37,7 @@ jobs:
           key: >-
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
             steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise/manifest.json') }}-${{
+            hashFiles('./custom_components/plugwise_usb/manifest.json') }}-${{
             hashFiles('./ha-core/.git/plugwise-tracking') }}
           restore-keys: |
             ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
@@ -61,6 +61,6 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.1
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
