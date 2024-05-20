@@ -1,20 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# By default assumes running against 'master' branch of Core-HA
-# as requested by @bouwew for on-par development with the releases
-# version of HA
-#
-# Override by setting HABRANCH environment variable to run against
-# a different branch of core
-#
-# Github flows are run against both 'dev' and 'master'
-core_branch="master"
-if [ "x${BRANCH}" != "x" ]; then
-	core_branch="${BRANCH}"
-fi
-echo "Working on HA-core branch ${core_branch}"
-
 # If you want full pytest output run as
 # DEBUG=1 scripts/core-testing.sh
 
@@ -40,7 +26,7 @@ which git || ( echo "You should have git installed, exiting"; exit 1)
 
 which jq || ( echo "You should have jq installed, exiting"; exit 1)
 
-# Cloned/adjusted code from plugwise-beta, note that we don't actually
+# Cloned/adjusted code from python-plugwise-usb, note that we don't actually
 # use the 'venv', but instantiate it to ensure it works in the
 # ha-core testing later on
 
@@ -51,16 +37,41 @@ which jq || ( echo "You should have jq installed, exiting"; exit 1)
 # - quality
 
 
+pyversions=("3.11" "3.10" 3.9 dummy) 
 my_path=$(git rev-parse --show-toplevel)
+my_venv=${my_path}/venv
 
-# Ensure environment is set-up
-# shellcheck disable=SC1091
-source "${my_path}/scripts/setup.sh"
-# shellcheck disable=SC1091
-source "${my_path}/scripts/python-venv.sh"
+if [ -z "${GITHUB_ACTIONS}" ] ; then 
+	# Ensures a python virtualenv is available at the highest available python3 version
+	for pv in "${pyversions[@]};"; do
+	    if [ "$(which "python$pv")" ]; then
+		# If not (yet) available instantiate python virtualenv
+		if [ ! -d "${my_venv}" ]; then
+		    "python${pv}" -m venv "${my_venv}"
+		    # Ensure wheel is installed (preventing local issues)
+		    # shellcheck disable=SC1091
+		    . "${my_venv}/bin/activate"
+		fi
+		break
+	    fi
+	done
 
+	# shellcheck source=/dev/null
+	. "${my_venv}/bin/activate"
+	# shellcheck disable=2145
+	which python3 || ( echo "You should have python3 (${pyversions[@]}) installed, or change the script yourself, exiting"; exit 1)
+	python3 --version
+
+	# Failsafe
+	if [ ! -d "${my_venv}" ]; then
+	    echo "Unable to instantiate venv, check your base python3 version and if you have python3-venv installed"
+	    exit 1
+	fi
+	# /Cloned code
+fi
+
+# Skip targeting for github
 # i.e. args used for functions, not directions 
-set +u
 if [ -z "${GITHUB_ACTIONS}" ] ; then
 	# Handle variables
 	subject=""
@@ -75,10 +86,8 @@ fi
 
 # Ensure ha-core exists
 coredir="${my_path}/ha-core/"
-manualdir="${my_path}/manual_clone_ha/"
 mkdir -p "${coredir}"
 
-set +u
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
@@ -111,43 +120,48 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		fi
 		cd "${coredir}" || exit
 		echo ""
+		echo " ** Resetting to dev **"
+		echo ""
 		git config pull.rebase true
-		echo " ** Resetting to ${core_branch} (just cloned) **"
-		git reset --hard || echo " - Should have nothing to reset to after cloning"
-		git checkout "${core_branch}"
+		git checkout dev
+		echo ""
+		echo " ** Running setup script from HA core **"
+		echo ""
+		if [ -z "${GITHUB_ACTIONS}" ] ; then 
+			# shellcheck source=/dev/null
+			. "${my_path}/venv/bin/activate"
+			python3 -m venv venv
+		fi
+		python3 -m pip install --upgrade pip 
+		# Not a typo, core setup script resets back to pip 20.3
+		script/setup || python3 -m pip install --upgrade pip 
+		if [ -z "${GITHUB_ACTIONS}" ] ; then 
+			# shellcheck source=/dev/null
+			. venv/bin/activate
+		fi
+		echo ""
+		echo " ** Installing test requirements **"
+		echo ""
+		pip install --upgrade -r requirements_test.txt
 	else
 		cd "${coredir}" || exit
 		echo ""
 		echo " ** Resetting/rebasing core (reusing clone)**"
 		echo ""
-		# Always start from ${core_branch}, dropping any leftovers
+		# Always start from dev, dropping any leftovers
 		git stash || echo " - Nothing to stash"
-		git stash drop -q || echo " - Nothing to stash drop"
-		git clean -nfd || echo " - Nothing to clean up (show/dry-run)"
-		git clean -fd || echo " - Nothing to clean up (clean)"
-		git checkout "${core_branch}" || echo " - Already in ${core_branch}-branch"
+		git stash drop -q || echo " - Nothing in stash"
+		git checkout dev || echo " - Already in dev-branch"
 		git branch -D fake_branch || echo " - No fake_branch to delete"
 		# Force pull
 		git config pull.rebase true
 		git reset --hard
 		git pull
 	fi
-	cd "${coredir}" || exit
 	# Add tracker
 	git log -1 | head -1 > "${coredir}/.git/plugwise_usb-tracking"
 	# Fake branch
 	git checkout -b fake_branch
-
-	echo ""
-	echo "Ensure HA-core venv"
-	# shellcheck disable=SC1091
-	source "${my_path}/scripts/python-venv.sh"
-	# shellcheck disable=SC1091
-	source ./venv/bin/activate
-
-	echo "Bootstrap pip parts of HA-core"
-	grep -v "^#" "${coredir}/script/bootstrap" | grep "pip install" | sed 's/python3 -m pip install/uv pip install/g' | sh
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 
 	echo ""
 	echo "Cleaning existing plugwise_usb from HA core"
@@ -166,47 +180,36 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 fi # core_prep
 
-set +u
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then 
 	cd "${coredir}" || exit
-	echo ""
-	echo "Ensure HA-core venv"
-	# shellcheck disable=SC1091
-	source "./venv/bin/activate"
+	if [ -z "${GITHUB_ACTIONS}" ] ; then 
+		echo "Activating venv and installing selected test modules (pyserial, etc)"
+		echo ""
+		# shellcheck source=/dev/null
+		. venv/bin/activate
+		echo ""
+	fi
+	python3 -m pip install -q --upgrade pip
 	mkdir -p ./tmp
 	echo ""
-	echo "Ensure translations are there"
-	echo ""
-	python3 -m script.translations develop --all > /dev/null 2>&1
-	echo ""
-	echo "Ensure uv is there"
-	echo ""
-	python3 -m pip install pip uv
-	echo "Installing pip modules (using uv)"
+	echo "Installing pip modules"
 	echo ""
 	echo " - HA requirements (core and test)"
-	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
+	pip install --upgrade -q --disable-pip-version-check -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise_usb"
-	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
-        echo " - home assistant basics"
-        uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	pip install --upgrade -q --disable-pip-version-check -r ./tmp/requirements_test_extra.txt
 	echo ""
         # When using test.py prettier makes multi-line, so use jq
 	#module=$(grep require ../custom_components/plugwise_usb/manifest.json | cut -f 4 -d '"')
         module=$(jq '.requirements[]' ../custom_components/plugwise_usb/manifest.json | tr -d '"')
 	echo "Checking manifest for current python-plugwise-usb to install: ${module}"
 	echo ""
-	uv pip install --upgrade "${module}"
+	pip install --upgrade -q --disable-pip-version-check "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
-	set +u
 	cd "${coredir}" || exit
-	echo ""
-	echo "Ensure HA-core venv"
-	# shellcheck disable=SC1091
-	source "./venv/bin/activate"
 	echo ""
 	echo "Test commencing ..."
 	echo ""
@@ -215,29 +218,22 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
 	# shellcheck disable=SC2086
-	pytest ${debug_params} ${subject} tests/components/plugwise_usb/${basedir} --snapshot-update --cov=homeassistant/components/plugwise_usb/ --cov-report term-missing || exit
+	pytest ${debug_params} ${subject} --cov=homeassistant/components/plugwise_usb/ --cov-report term-missing -- "tests/components/plugwise_usb/${basedir}" || exit
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
-	echo "Ensure HA-core venv"
-	# shellcheck disable=SC1091
-	source "./venv/bin/activate"
-	echo ""
 	set +e
 	echo "... ruff-ing component..."
-	ruff check --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
+	ruff --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
 	echo "... ruff-ing tests..."
-	ruff check --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
+	ruff --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
 	set -e
-	echo "***"
-	echo "***"
+	echo "... black-ing ..."
+	black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
 	echo "... mypy ..."
-	#script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
-	echo "NOT RUNNING MYPY (i.e. not up to par any longer)"
-	echo "***"
-	echo "***"
+	script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
 	pre-commit run --all-files --hook-stage manual markdownlint
@@ -247,10 +243,6 @@ fi # quality
 # hassfest is another action
 if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
-	echo ""
-	echo "Ensure HA-core venv"
-	# shellcheck disable=SC1091
-	source "./venv/bin/activate"
 	echo ""
 	echo "Copy back modified files ..."
 	echo ""
@@ -267,14 +259,8 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  # shellcheck disable=SC2090
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise_usb/manifest.json
 	)
-
-        # Hassfest already runs on Github
-        if [ -n "${GITHUB_ACTIONS}" ] ; then
-                echo "Running hassfest for plugwise_usb"
-		# 20240804 Apparently running --requirements in hassfest now checks 'all'? (Or at least a lot and it takes a lot of time)
-                #python3 -m script.hassfest --requirements --action validate
-                python3 -m script.hassfest --action validate
-        fi
+	echo "Running hassfest for plugwise_usb"
+	python3 -m script.hassfest --requirements --action validate
 fi
 
 # pylint was removed from 'quality' some time ago
