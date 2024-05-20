@@ -48,9 +48,9 @@ async def test_form_flow_usb(
 
 
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
-@patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.disconnect", MagicMock(return_value=None))
+@patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
+@patch("plugwise_usb.Stick.initialize", AsyncMock(return_value=None))
+@patch("plugwise_usb.Stick.disconnect", AsyncMock(return_value=None))
 async def test_user_flow_select(hass):
     """Test user flow when USB-stick is selected from list."""
     port = com_port()
@@ -106,10 +106,10 @@ async def test_user_flow_manual(hass):
     with patch(
         "homeassistant.components.plugwise_usb.config_flow.Stick",
     ) as usb_mock:
-        usb_mock.return_value.connect = MagicMock(return_value=True)
-        usb_mock.return_value.initialize_stick = MagicMock(return_value=True)
-        usb_mock.return_value.disconnect = MagicMock(return_value=True)
-        usb_mock.return_value.mac = "01:23:45:67:AB"
+        usb_mock.return_value.connect = AsyncMock(return_value=None)
+        usb_mock.return_value.initialize = AsyncMock(return_value=None)
+        usb_mock.return_value.disconnect = AsyncMock(return_value=None)
+        usb_mock.return_value.mac_stick = "01:23:45:67:AB"
 
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
@@ -163,8 +163,28 @@ async def test_empty_connection(hass):
     assert result["errors"] == {}
 
 
-@patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
+@patch("plugwise_usb.Stick.connect", AsyncMock(side_effect=(StickError)))
+@patch("plugwise_usb.Stick.initialize", AsyncMock(return_value=None))
+async def test_failed_connect(hass):
+    """Test we handle failed connection."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={CONF_SOURCE: SOURCE_USER},
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={CONF_USB_PATH: "/dev/null"},
+    )
+    assert result["type"] == "form"
+    assert result["errors"] == {"base": "cannot_connect"}
+
+
+@patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
+@patch("plugwise_usb.Stick.initialize", AsyncMock(side_effect=(StickError)))
 async def test_failed_initialization(hass):
     """Test we handle failed initialization of Plugwise USB-stick."""
     result = await hass.config_entries.flow.async_init(
@@ -181,43 +201,3 @@ async def test_failed_initialization(hass):
     )
     assert result["type"] == "form"
     assert result["errors"] == {"base": "stick_init"}
-
-
-@patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
-async def test_network_down_exception(hass):
-    """Test we handle network_down exception."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: "/dev/null"},
-    )
-    assert result["type"] == "form"
-    assert result["errors"] == {"base": "network_down"}
-
-
-@patch("plugwise_usb.Stick.connect", MagicMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize_stick", MagicMock(side_effect=(StickError)))
-async def test_timeout_exception(hass):
-    """Test we handle time exception."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        user_input={CONF_USB_PATH: "/dev/null"},
-    )
-    assert result["type"] == "form"
-    assert result["errors"] == {"base": "network_timeout"}
