@@ -184,32 +184,20 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	python3 -m pip install pip uv
 	echo "Installing pip modules (using uv)"
 	echo ""
-	cd "${coredir}" || exit
-	if [ -z "${GITHUB_ACTIONS}" ] ; then 
-		echo "Activating venv and installing selected test modules (pyserial, etc)"
-		echo ""
-		# shellcheck source=/dev/null
-		. venv/bin/activate
-		echo ""
-	fi
-	python3 -m pip install -q --upgrade pip
-	pip install uv
-	mkdir -p ./tmp
-	echo ""
-	echo "Installing pip modules"
-	echo ""
 	echo " - HA requirements (core and test)"
-	uv pip install --upgrade -q -r requirements.txt -r requirements_test.txt
+	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
 	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
 	echo " - extra's required for plugwise_usb"
-	uv pip install --upgrade -q -r ./tmp/requirements_test_extra.txt
+	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
+        echo " - home assistant basics"
+        uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
 	echo ""
         # When using test.py prettier makes multi-line, so use jq
 	#module=$(grep require ../custom_components/plugwise_usb/manifest.json | cut -f 4 -d '"')
         module=$(jq '.requirements[]' ../custom_components/plugwise_usb/manifest.json | tr -d '"')
 	echo "Checking manifest for current python-plugwise-usb to install: ${module}"
 	echo ""
-	uv pip install --upgrade -q "${module}"
+	uv pip install --upgrade "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
@@ -227,7 +215,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
         	debug_params="-rpP --log-cli-level=DEBUG"
 	fi
 	# shellcheck disable=SC2086
-       pytest ${debug_params} ${subject} tests/components/plugwise_usb/${basedir} --snapshot-update --cov=homeassistant/components/plugwise_usb/ --cov-report term-missing || exit
+	pytest ${debug_params} ${subject} tests/components/plugwise_usb/${basedir} --snapshot-update --cov=homeassistant/components/plugwise_usb/ --cov-report term-missing || exit
 fi # testing
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then 
@@ -279,10 +267,14 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  # shellcheck disable=SC2090
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise_usb/manifest.json
 	)
-	echo "Running hassfest for plugwise_usb"
-	# 20240804 Apparently running --requirements in hassfest now checks 'all'? (Or at least a lot and it takes a lot of time)
-	#python3 -m script.hassfest --requirements --action validate
-	python3 -m script.hassfest --action validate
+
+        # Hassfest already runs on Github
+        if [ -n "${GITHUB_ACTIONS}" ] ; then
+                echo "Running hassfest for plugwise_usb"
+		# 20240804 Apparently running --requirements in hassfest now checks 'all'? (Or at least a lot and it takes a lot of time)
+                #python3 -m script.hassfest --requirements --action validate
+                python3 -m script.hassfest --action validate
+        fi
 fi
 
 # pylint was removed from 'quality' some time ago
