@@ -4,7 +4,7 @@
 name: Test with HA-core
 
 env:
-  CACHE_VERSION: 8
+  CACHE_VERSION: 9
   DEFAULT_PYTHON: "3.12"
 
 on:
@@ -13,7 +13,6 @@ on:
   schedule:
     - cron: "0 0 * * 0"
 # pull_request:
-
 jobs:
   # Prepare default python version environment
   ha-core-prepare:

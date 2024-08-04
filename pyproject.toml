@@ -1,3 +1,27 @@
+[project]
+name = "plugwise_usb-beta"
+version = "0.40.7"
+description = "Plugwise USB custom_component (BETA)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+keywords = ["Plugwise", "Switch", "Circle", "Plus"]
+authors = [
+        { name = "Plugwise device owners"}
+]
+maintainers = [
+        { name = "arnoutd_77" },
+        { name = "bouwew"},
+        { name = "brefra"},
+        { name = "CoMPaTech" },
+        { name = "dirixmjm" }
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+dependencies = ["homeassistant", "plugwise-usb"]
+
 [project.urls]
 "Source Code" = "https://github.com/plugwise/plugwise_usb-beta"
 "Bug Reports" = "https://github.com/plugwise/plugwise_usb-beta/issues"
