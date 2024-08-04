@@ -11,8 +11,9 @@ if [ -f "${my_venv}/bin/activate" ]; then
     # shellcheck disable=SC1091
     . "${my_venv}/bin/activate"
     # Install commit requirements
-    pip install wheel
-    pip install --upgrade -r requirements_commit.txt
+    pip install uv
+    uv pip install wheel
+    uv pip install --upgrade -r requirements_commit.txt
     # Install pre-commit hook
     "${my_venv}/bin/pre-commit" install
 else

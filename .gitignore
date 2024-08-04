@@ -6,3 +6,4 @@ venv
 *.swp
 *.rej
 *.orig
+manual_clone_ha

@@ -28,7 +28,7 @@ repos:
         args:
           - --branch=main
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.17.0
     hooks:
       - id: pyupgrade
         name: "Checking pyupgrade"
@@ -58,11 +58,12 @@ repos:
     hooks:
       - id: yamllint
         name: "Linting yaml"
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v0.4.0
     hooks:
-      - id: prettier
-        name: "Verifying/updating code with prettier"
+      - id: biome-lint
+        additional_dependencies: ["@biomejs/biome@1.8.3"]
+        name: "Verifying/updating code with biome (improved prettier)"
   - repo: https://github.com/cdce8p/python-typing-update
     rev: v0.6.0
     hooks:
