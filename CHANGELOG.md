@@ -2,6 +2,12 @@
 
 ## Versions from 0.4x
 
+### Ongoing
+
+- Fix `pre-commit` `prettier` (replace with `biome`)
+- Fix python`3.12` compatibility, use of `uv` and improved ha-core handling from `plugwise-beta`
+- TODO: running hasfest with `--requirements` takes forever (apparently checking all), skipped it for now
+
 ### 0.40.6
 
 - Update backend-library to v0.31.3: fix midnight rollover, by @dirixmjm
