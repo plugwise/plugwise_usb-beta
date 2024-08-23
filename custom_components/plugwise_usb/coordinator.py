@@ -68,5 +68,5 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed from err
 
         if not states[NodeFeature.AVAILABLE]:
-            raise UpdateFailed(f"Plugwise node {self.node.mac} is not on-line.")
+            raise UpdateFailed("Device is not responding")
         return states
