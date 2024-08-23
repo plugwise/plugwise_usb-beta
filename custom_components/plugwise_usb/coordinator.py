@@ -34,7 +34,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             super().__init__(
                 hass,
                 _LOGGER,
-                name=f"Battery powered Plugwise node {node.mac}",
+                name=node.node_info.name,
                 update_method=self.async_node_update,
                 always_update=True,
             )
@@ -43,7 +43,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             super().__init__(
                 hass,
                 _LOGGER,
-                name=f"Normal powered Plugwise node {node.mac}",
+                name=node.node_info.name,
                 update_interval=timedelta(seconds=15),
                 update_method=self.async_node_update,
                 always_update=True,
