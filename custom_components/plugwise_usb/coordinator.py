@@ -39,7 +39,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 always_update=True,
             )
         else:
-            _LOGGER.debug("Create normal powered DUC for %s: %s", node.mac, str(update_interval))
+            _LOGGER.debug("Create DUC for %s with update interval %s", node.mac, update_interval)
             super().__init__(
                 hass,
                 _LOGGER,
@@ -53,7 +53,6 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         """Request status update for Plugwise Node."""
         states: dict[NodeFeature, Any] = {}
         features = tuple(self.async_contexts())
-        _LOGGER.debug("Coordinator update for %s, context=%s", self.node.mac, features)
         try:
             states = await self.node.get_state(features)
         except StickError as err:

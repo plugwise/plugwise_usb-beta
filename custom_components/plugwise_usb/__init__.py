@@ -48,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     )
     hass.data[DOMAIN][config_entry.entry_id] = {STICK: api_stick}
 
-    _LOGGER.debug("Connect & initialize Plugwise USB-Stick")
+    _LOGGER.info("Connect & initialize Plugwise USB-Stick...")
     try:
         await api_stick.connect()
         await api_stick.initialize()
@@ -77,7 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         )
     )
 
-    _LOGGER.debug("Discover network coordinator")
+    _LOGGER.info("Start to discover the Plugwise network coordinator (Circle+)")
     try:
         await api_stick.discover_coordinator(load=False)
     except StickError:
