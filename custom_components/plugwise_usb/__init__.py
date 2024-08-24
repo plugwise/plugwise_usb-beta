@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     _LOGGER.info("Connect & initialize Plugwise USB-Stick...")
     try:
         await api_stick.connect()
-        await api_stick.initialize()
+        await api_stick.initialize(create_root_cache_folder=True)
     except StickError:
         raise ConfigEntryNotReady(
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
