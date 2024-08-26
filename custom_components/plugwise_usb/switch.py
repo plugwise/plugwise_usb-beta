@@ -118,7 +118,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.coordinator.data[self.entity_description.node_feature] is None:
-            _LOGGER.warning(
+            _LOGGER.info(
                 "No switch data for %s",
                 str(self.entity_description.node_feature)
             )

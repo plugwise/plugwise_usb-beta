@@ -185,7 +185,7 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
         """Handle updated data from the coordinator."""
         data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
-            _LOGGER.warning(
+            _LOGGER.info(
                 "No %s sensor data for %s",
                 self.entity_description.node_feature,
                 self._node_info.mac,
