@@ -61,7 +61,7 @@ async def test_user_flow_select(hass):
         context={CONF_SOURCE: SOURCE_USER},
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], data={CONF_USB_PATH: port_select}
+        result["flow_id"], user_input={CONF_USB_PATH: port_select}
     )
     assert result.get("type") is FlowResultType.FORM
     assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT}
