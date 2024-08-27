@@ -51,7 +51,7 @@ async def async_setup_entry(
         if node_event != NodeEvent.LOADED:
             return
         entities: list[PlugwiseUSBEntity] = []
-        if (node_duc := hass.data[DOMAIN][config_entry.entry_id][NODES].get(mac)) is not None:
+        if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
             _LOGGER.debug("Add binary_sensor entities for %s | duc=%s", mac, node_duc.name)
             entities.extend(
                 [
@@ -63,11 +63,11 @@ async def async_setup_entry(
         if entities:
             async_add_entities(entities, update_before_add=True)
 
-    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
+    api_stick = config_entry.runtime_data[STICK]
 
     # Listen for loaded nodes
-    hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR] = {}
-    hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR][UNSUB_NODE_LOADED] = (
+    config_entry.runtime_data[Platform.BINARY_SENSOR] = {}
+    config_entry.runtime_data[Platform.BINARY_SENSOR][UNSUB_NODE_LOADED] = (
         api_stick.subscribe_to_node_events(
             async_add_binary_sensor,
             (NodeEvent.LOADED,),
@@ -85,7 +85,7 @@ async def async_unload_entry(
     config_entry: ConfigEntry,
 ) -> None:
     """Unload a config entry."""
-    hass.data[DOMAIN][config_entry.entry_id][Platform.SENSOR][UNSUB_NODE_LOADED]()
+    config_entry.runtime_data[Platform.SENSOR][UNSUB_NODE_LOADED]()
 
 
 class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
