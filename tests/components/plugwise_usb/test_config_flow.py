@@ -64,7 +64,7 @@ async def test_user_flow_select(hass):
         result["flow_id"], user_input={CONF_USB_PATH: port_select}
     )
     assert result.get("type") is FlowResultType.FORM
-    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT}
+    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT}
 
     # Retry to ensure configuring the same port is not allowed
     result = await hass.config_entries.flow.async_init(
@@ -116,7 +116,7 @@ async def test_user_flow_manual(hass):
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
     assert result.get("type") is FlowResultType.CREATE_ENTRY
-    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT2}
+    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT2}
 
 
 async def test_invalid_connection(hass):
