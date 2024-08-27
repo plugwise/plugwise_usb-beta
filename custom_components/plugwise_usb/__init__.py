@@ -41,12 +41,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     await er.async_migrate_entries(hass, config_entry.entry_id, _async_migrate_entity_entry)
 
-    hass.data.setdefault(DOMAIN, {})
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
     )
-    hass.data[DOMAIN][config_entry.entry_id] = {STICK: api_stick}
+    config_entry.runtime_data = {STICK: api_stick}
 
     _LOGGER.info("Connect & initialize Plugwise USB-Stick...")
     try:
@@ -57,7 +56,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
         ) from StickError
 
-    hass.data[DOMAIN][config_entry.entry_id][NODES]: NodeConfigEntry = {}
+    config_entry.runtime_data[NODES]: NodeConfigEntry = {}
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
         """Node is detected."""
@@ -67,10 +66,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         node = api_stick.nodes[mac]
         _LOGGER.debug("async_node_discovered | node_info=%s", node.node_info)
         coordinator = PlugwiseUSBDataUpdateCoordinator(hass, node)
-        hass.data[DOMAIN][config_entry.entry_id][NODES][mac] = coordinator
+        config_entry.runtime_data[NODES][mac] = coordinator
         await node.load()
 
-    hass.data[DOMAIN][config_entry.entry_id][UNSUBSCRIBE_DISCOVERY] = (
+    config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY] = (
         api_stick.subscribe_to_node_events(
             async_node_discovered,
             (NodeEvent.DISCOVERED,),
@@ -100,12 +99,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Unload the Plugwise USB stick connection."""
-    hass.data[DOMAIN][config_entry.entry_id][UNSUBSCRIBE_DISCOVERY]()
+    config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
     unload = await hass.config_entries.async_unload_platforms(
         config_entry, PLUGWISE_USB_PLATFORMS
     )
-    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
-    await api_stick.disconnect()
+    await config_entry.runtime_data[STICK].disconnect()
     return unload
 
 
