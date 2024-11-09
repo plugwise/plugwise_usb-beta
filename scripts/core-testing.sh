@@ -244,8 +244,12 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  # shellcheck disable=SC2090
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise_usb/manifest.json
 	)
-	echo "Running hassfest for plugwise_usb"
-	python3 -m script.hassfest --requirements --action validate
+
+	# Hassfest already runs on Github
+	if [ -n "${GITHUB_ACTIONS}" ] ; then
+		echo -e "${CINFO}Running hassfest for plugwise${CNORM}"
+		python3 -m script.hassfest --requirements --action validate 
+	fi
 fi
 
 # pylint was removed from 'quality' some time ago
