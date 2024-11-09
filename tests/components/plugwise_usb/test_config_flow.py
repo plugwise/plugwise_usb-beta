@@ -48,9 +48,6 @@ async def test_form_flow_usb(
 
 
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
-@patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize", AsyncMock(return_value=None))
-@patch("plugwise_usb.Stick.disconnect", AsyncMock(return_value=None))
 async def test_user_flow_select(hass):
     """Test user flow when USB-stick is selected from list."""
     port = com_port()
@@ -60,11 +57,21 @@ async def test_user_flow_select(hass):
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
     )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USB_PATH: port_select}
-    )
-    assert result.get("type") is FlowResultType.FORM
-    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT}
+
+    with patch(
+        "homeassistant.components.plugwise_usb.config_flow.Stick",
+    ) as usb_mock:
+        usb_mock.return_value.connect = AsyncMock(return_value=None)
+        usb_mock.return_value.initialize = AsyncMock(return_value=None)
+        usb_mock.return_value.disconnect = AsyncMock(return_value=None)
+        usb_mock.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
+    
+        result_2 = await hass.config_entries.flow.async_configure(
+            result["flow_id"], user_input={CONF_USB_PATH: port_select}
+        )
+        await hass.async_block_till_done()
+        assert result_2.get("type") is FlowResultType.CREATE_ENTRY
+        assert result_2.get("data") == {CONF_USB_PATH: TEST_USBPORT}
 
     # Retry to ensure configuring the same port is not allowed
     result = await hass.config_entries.flow.async_init(
@@ -98,7 +105,7 @@ async def test_user_flow_manual(hass):
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
     )
-    result = await hass.config_entries.flow.async_configure(
+    result_2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
@@ -111,12 +118,12 @@ async def test_user_flow_manual(hass):
         usb_mock.return_value.disconnect = AsyncMock(return_value=None)
         usb_mock.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
 
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
+        result_3 = await hass.config_entries.flow.async_configure(
+            result_2["flow_id"],
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
-    assert result.get("type") is FlowResultType.CREATE_ENTRY
-    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT2}
+    assert result_3.get("type") is FlowResultType.CREATE_ENTRY
+    assert result_3.get("data") == {CONF_USB_PATH: TEST_USBPORT2}
 
 
 async def test_invalid_connection(hass):
