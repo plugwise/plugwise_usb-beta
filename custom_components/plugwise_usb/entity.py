@@ -7,9 +7,7 @@ import logging
 from typing import Any
 
 from homeassistant.helpers.entity import EntityDescription
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
 
 from .const import DOMAIN
