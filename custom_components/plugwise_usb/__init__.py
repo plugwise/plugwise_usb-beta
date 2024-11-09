@@ -13,7 +13,6 @@ from plugwise_usb.exceptions import StickError
 
 from .const import (
     CONF_USB_PATH,
-    DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
     STICK,
