@@ -226,9 +226,9 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	set +e
 	echo "... ruff-ing component..."
-	ruff --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
+	ruff check --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
 	echo "... ruff-ing tests..."
-	ruff --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
+	ruff check --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
 	set -e
 	echo "... black-ing ..."
 	black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
