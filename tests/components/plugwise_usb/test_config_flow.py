@@ -48,7 +48,7 @@ async def test_user_flow_select(hass):
         usb_mock.return_value.initialize = AsyncMock(return_value=None)
         usb_mock.return_value.disconnect = AsyncMock(return_value=None)
         usb_mock.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
-    
+
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], user_input={CONF_USB_PATH: port_select}
         )

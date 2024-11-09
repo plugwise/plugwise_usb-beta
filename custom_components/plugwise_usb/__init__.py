@@ -11,7 +11,7 @@ from plugwise_usb import Stick
 from plugwise_usb.api import NodeEvent
 from plugwise_usb.exceptions import StickError
 
-from .const import (
+from .const import CONF_USB_PATH, NODES, PLUGWISE_USB_PLATFORMS, STICK
     CONF_USB_PATH,
     NODES,
     PLUGWISE_USB_PLATFORMS,

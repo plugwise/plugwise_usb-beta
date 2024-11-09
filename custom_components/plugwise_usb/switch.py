@@ -16,7 +16,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
-from .const import DOMAIN, NODES, STICK, UNSUB_NODE_LOADED
+from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
