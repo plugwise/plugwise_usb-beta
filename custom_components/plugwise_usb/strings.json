@@ -15,13 +15,11 @@
       }
     },
     "error": {
+      "already_configured": "This device is already configured",
       "cannot_connect": "Failed to connect",
       "network_down": "Plugwise Zigbee network is down",
       "network_timeout": "Network communication timeout",
       "stick_init": "Initialization of Plugwise USB-stick failed"
-    },
-    "abort": {
-      "already_configured": "This device is already configured"
     }
   },
   "services": {
