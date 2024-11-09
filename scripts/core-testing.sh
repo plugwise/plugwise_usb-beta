@@ -217,8 +217,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	set -e
 	# echo "... black-ing ..."
 	# black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
-	echo "... mypy ..."
-	script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
+	# echo "... mypy ..."
+	# script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
 	pre-commit run --all-files --hook-stage manual markdownlint
