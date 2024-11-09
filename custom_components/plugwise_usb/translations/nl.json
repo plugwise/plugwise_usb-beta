@@ -15,13 +15,11 @@
       }
     },
     "error": {
+      "already_configured": "Dit apparaat is al geconfigureerd",
       "cannot_connect": "Verbinden is mislukt",
       "network_down": "Plugwise Zigbee netwerk is onbereikbaar",
       "network_timeout": "Network communicatie timeout",
       "stick_init": "Initaliseren van USB-stick mislukt"
-    },
-    "abort": {
-      "already_configured": "Dit apparaat is al geconfigureerd"
     }
   },
   "services": {
