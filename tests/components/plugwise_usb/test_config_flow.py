@@ -8,7 +8,6 @@ from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
-from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from plugwise_usb.exceptions import StickError
 
