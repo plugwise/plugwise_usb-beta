@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
+import asyncio
 
 from collections import Counter
 from datetime import timedelta
@@ -62,7 +63,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         except StickError as err:
             raise ConfigEntryError from err
         except (StickTimeout, NodeTimeout) as err:
-            raise TimeoutError from err
+            raise asyncio.TimeoutError from err
         except NodeError as err:
             raise UpdateFailed from err
 
