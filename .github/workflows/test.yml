@@ -29,13 +29,13 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Prepare virtual env for testing
         run: |
-          scripts/setup-test.sh
+          scripts/setup_test.sh
       - name: Test
         run: |
-          scripts/tests-and-coverage.sh testing
+          scripts/tests_and_coverage.sh testing
       - name: Quality
         run: |
-          scripts/tests-and-coverage.sh linting
+          scripts/tests_and_coverage.sh linting
 
   shellcheck:
     name: Shellcheck
