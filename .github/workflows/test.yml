@@ -27,12 +27,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Create HA-core Python virtual environment
-        run: |
-          scripts/core-testing.sh core_prep
       - name: Prepare virtual env for testing
         run: |
-          scripts/setup-test
+          scripts/setup-test.sh
       - name: Test
         run: |
           scripts/tests-and-coverage.sh testing
