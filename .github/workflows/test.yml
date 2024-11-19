@@ -27,35 +27,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Restore base HA-core Python ${{ env.DEFAULT_PYTHON }} environment
-        id: cache-hacore
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-hacore
-        with:
-          path: ./
-          key: >-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{
-            steps.python.outputs.python-version }}-${{
-            hashFiles('./custom_components/plugwise_usb/manifest.json') }}-${{
-            hashFiles('./ha-core/.git/plugwise-tracking') }}
-          restore-keys: |
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore-${{ steps.python.outputs.python-version }}-
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}-base-hacore
-            ${{ env.CACHE_VERSION}}-${{ runner.os }}
-            ${{ env.CACHE_VERSION}}
       - name: Create HA-core Python virtual environment
         run: |
           scripts/core-testing.sh core_prep
-      - name: Prepare HA-core Python virtual environment
+      - name: Prepare virtual env for testing
         run: |
-          scripts/core-testing.sh pip_prep
+          scripts/setup-test
       - name: Test
         run: |
-          scripts/core-testing.sh testing
+          scripts/tests-and-coverage.sh testing
       - name: Quality
         run: |
-          scripts/core-testing.sh quality
+          scripts/tests-and-coverage.sh linting
 
   shellcheck:
     name: Shellcheck
