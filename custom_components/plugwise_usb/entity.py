@@ -1,4 +1,5 @@
 """Plugwise USB stick base entity."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -54,7 +55,8 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         """Subscribe for push updates."""
         await super().async_added_to_hass()
         push_features = tuple(
-            push_feature for push_feature in PUSHING_FEATURES
+            push_feature
+            for push_feature in PUSHING_FEATURES
             if push_feature in self._node_info.features
         )
         # Subscribe to events
@@ -65,9 +67,14 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             )
 
     async def async_push_event(self, feature: NodeFeature, state: Any) -> None:
-        """"Update data on pushed event."""
+        """Update data on pushed event."""
         if self.node_duc is None:
-            _LOGGER.warning("Unable to push event=%s, state=%s, mac=%s", feature, state, self._node_info.mac)
+            _LOGGER.warning(
+                "Unable to push event=%s, state=%s, mac=%s",
+                feature,
+                state,
+                self._node_info.mac,
+            )
         self.node_duc.async_set_updated_data(
             {
                 feature: state,

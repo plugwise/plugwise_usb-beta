@@ -1,4 +1,5 @@
 """Plugwise USN Sensor component for Home Assistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -35,7 +36,9 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 
 @dataclass(kw_only=True)
-class PlugwiseSensorEntityDescription(PlugwiseUSBEntityDescription, SensorEntityDescription):
+class PlugwiseSensorEntityDescription(
+    PlugwiseUSBEntityDescription, SensorEntityDescription
+):
     """Describes Plugwise sensor entity."""
 
 
@@ -160,7 +163,7 @@ async def async_setup_entry(
         api_stick.subscribe_to_node_events(
             async_add_sensor,
             (NodeEvent.LOADED,),
-            )
+        )
     )
 
     # load current nodes
@@ -192,16 +195,12 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
             )
             return
         self._attr_native_value = getattr(
-            self.coordinator.data[
-                self.entity_description.node_feature
-            ],
-            self.entity_description.key
+            self.coordinator.data[self.entity_description.node_feature],
+            self.entity_description.key,
         )
         if self.entity_description.node_feature == NodeFeature.ENERGY:
             self._attr_last_reset = getattr(
-                self.coordinator.data[
-                    self.entity_description.node_feature
-                ],
-                f"{self.entity_description.key}_reset"
+                self.coordinator.data[self.entity_description.node_feature],
+                f"{self.entity_description.key}_reset",
             )
         self.async_write_ha_state()
