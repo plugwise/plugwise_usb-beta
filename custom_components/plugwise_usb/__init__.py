@@ -1,4 +1,5 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
+
 import logging
 from typing import Any, TypedDict
 
@@ -29,11 +30,15 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Establish connection with plugwise USB-stick."""
 
     @callback
-    def _async_migrate_entity_entry(entity_entry: er.RegistryEntry) -> dict[str, Any] | None:
+    def _async_migrate_entity_entry(
+        entity_entry: er.RegistryEntry,
+    ) -> dict[str, Any] | None:
         """Migrate Plugwise entity entry."""
         return async_migrate_entity_entry(config_entry, entity_entry)
 
-    await er.async_migrate_entries(hass, config_entry.entry_id, _async_migrate_entity_entry)
+    await er.async_migrate_entries(
+        hass, config_entry.entry_id, _async_migrate_entity_entry
+    )
 
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
@@ -75,9 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         await api_stick.discover_coordinator(load=False)
     except StickError:
         await api_stick.disconnect()
-        raise ConfigEntryNotReady(
-            "Failed to connect to Circle+"
-        ) from StickError
+        raise ConfigEntryNotReady("Failed to connect to Circle+") from StickError
 
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
@@ -85,9 +88,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     )
 
     # Initiate background discovery task
-    hass.async_create_task(
-        api_stick.discover_nodes(load=True)
-    )
+    hass.async_create_task(api_stick.discover_nodes(load=True))
     return True
 
 

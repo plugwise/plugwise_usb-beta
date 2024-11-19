@@ -1,4 +1,5 @@
 """Plugwise USB Switch component for HomeAssistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -26,7 +27,9 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 
 @dataclass(kw_only=True)
-class PlugwiseSwitchEntityDescription(PlugwiseUSBEntityDescription, SwitchEntityDescription):
+class PlugwiseSwitchEntityDescription(
+    PlugwiseUSBEntityDescription, SwitchEntityDescription
+):
     """Describes Plugwise switch entity."""
 
     async_switch_fn: str = ""
@@ -83,7 +86,7 @@ async def async_setup_entry(
         api_stick.subscribe_to_node_events(
             async_add_switch,
             (NodeEvent.LOADED,),
-            )
+        )
     )
 
     # load any current nodes
@@ -119,13 +122,12 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         """Handle updated data from the coordinator."""
         if self.coordinator.data[self.entity_description.node_feature] is None:
             _LOGGER.info(
-                "No switch data for %s",
-                str(self.entity_description.node_feature)
+                "No switch data for %s", str(self.entity_description.node_feature)
             )
             return
         self._attr_is_on = getattr(
             self.coordinator.data[self.entity_description.node_feature],
-            self.entity_description.key
+            self.entity_description.key,
         )
         self.async_write_ha_state()
 

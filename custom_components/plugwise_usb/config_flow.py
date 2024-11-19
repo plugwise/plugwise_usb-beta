@@ -1,4 +1,5 @@
 """Config flow for Plugwise USB integration."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -21,12 +22,13 @@ from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
 
-    return [entry.data.get(CONF_USB_PATH) for entry in hass.config_entries.async_entries(DOMAIN)]
+    return [
+        entry.data.get(CONF_USB_PATH)
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    ]
 
 
-async def validate_usb_connection(
-    self, device_path=None
-) -> tuple[dict[str, str], str]:
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -111,9 +113,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="manual_path",
             data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str
-                }
+                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
             errors=errors,
         )
