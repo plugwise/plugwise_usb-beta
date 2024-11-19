@@ -1,4 +1,5 @@
 """Plugwise USB Binary Sensor component for Home Assistant."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -25,7 +26,9 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 
 @dataclass(kw_only=True)
-class PlugwiseBinarySensorEntityDescription(PlugwiseUSBEntityDescription, BinarySensorEntityDescription):
+class PlugwiseBinarySensorEntityDescription(
+    PlugwiseUSBEntityDescription, BinarySensorEntityDescription
+):
     """Describes Plugwise binary sensor entity."""
 
 
@@ -52,7 +55,9 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add binary_sensor entities for %s | duc=%s", mac, node_duc.name)
+            _LOGGER.debug(
+                "Add binary_sensor entities for %s | duc=%s", mac, node_duc.name
+            )
             entities.extend(
                 [
                     PlugwiseUSBBinarySensor(node_duc, entity_description)
@@ -71,7 +76,7 @@ async def async_setup_entry(
         api_stick.subscribe_to_node_events(
             async_add_binary_sensor,
             (NodeEvent.LOADED,),
-            )
+        )
     )
 
     # load current nodes
@@ -97,11 +102,11 @@ class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
         if self.coordinator.data[self.entity_description.node_feature] is None:
             _LOGGER.info(
                 "No binary sensor data for %s",
-                str(self.entity_description.node_feature)
+                str(self.entity_description.node_feature),
             )
             return
         self._attr_is_on = getattr(
             self.coordinator.data[self.entity_description.node_feature],
-            self.entity_description.key
+            self.entity_description.key,
         )
         self.async_write_ha_state()

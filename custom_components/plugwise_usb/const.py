@@ -1,4 +1,5 @@
 """Constants for Plugwise USB component."""
+
 import logging
 from typing import Final
 
