@@ -13,6 +13,7 @@ if [ -f "${my_venv}/bin/activate" ]; then
     # Install test requirements
     pip install uv
     uv pip install --upgrade -e . -r requirements_test.txt
+    uv pip install ruff
 else
     echo "Virtualenv available, bailing out"
     exit 2
