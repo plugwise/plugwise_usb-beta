@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+pytest-asyncio
+pytest-homeassistant-custom-component
+# From our manifest.json for our custom component
+plugwise_usb @ https://test-files.pythonhosted.org/packages/90/5f/9cdaa7c322da4987c3820b54eacebad2911b6e7a06550c56b7921944ee90/plugwise_usb-0.40.0a21.tar.gz#plugwise-usb==0.40.0a21

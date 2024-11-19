@@ -214,3 +214,14 @@ combine-as-imports = true
 [tool.ruff.lint.mccabe]
 max-complexity = 25
 
+[tool.pytest]
+addopts = [
+    "--auto",
+    "--cov=custom_components"
+]
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+norecursedirs = ".git"
+asyncio_mode = "auto"
+log_cli = true
