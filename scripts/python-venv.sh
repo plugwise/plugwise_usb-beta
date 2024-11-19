@@ -3,7 +3,7 @@ set -eu
 
 pyversions=(3.12)
 my_path=$(git rev-parse --show-toplevel)
-my_venv=${my_path}/venv
+my_venv=${my_path}/.venv
 
 # Ensures a python virtualenv is available at the highest available python3 version
 for pv in "${pyversions[@]}"; do
@@ -11,11 +11,10 @@ for pv in "${pyversions[@]}"; do
         # If not (yet) available instantiate python virtualenv
         if [ ! -d "${my_venv}" ]; then
             "python${pv}" -m pip install pip uv || pip install uv
-            uv venv -p "${pv}" "${my_venv}"
+            uv venv -p "${pv}" --seed
+            uv pip install uv
             # shellcheck disable=SC1091
             . "${my_venv}/bin/activate"
-            # Ensure wheel is installed (preventing local issues)
-            uv pip install wheel
             break
         fi
     fi

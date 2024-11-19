@@ -10,8 +10,9 @@ my_path=$(git rev-parse --show-toplevel)
 if [ -f "${my_venv}/bin/activate" ]; then
     # shellcheck disable=SC1091
     . "${my_venv}/bin/activate"
-    # Install commit requirements
-    uv pip install --upgrade -r requirements_commit.txt
+    # Install test requirements
+    pip install uv
+    uv pip install --upgrade -e . -r requirements_test.txt
     # Install pre-commit hook
     "${my_venv}/bin/pre-commit" install
 else
