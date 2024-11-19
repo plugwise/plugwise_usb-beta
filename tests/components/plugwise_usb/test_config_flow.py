@@ -8,7 +8,6 @@ from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
-from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from plugwise_usb.exceptions import StickError
 
@@ -26,31 +25,7 @@ def com_port():
     return port
 
 
-async def test_form_flow_usb(
-    hass: HomeAssistant,
-    mock_setup_entry: AsyncMock,
-) -> None:
-    """Test we get the form for Plugwise USB product type."""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={CONF_SOURCE: SOURCE_USER}
-    )
-    assert result.get("type") is FlowResultType.FORM
-    assert result.get("errors") == {}
-    assert result.get("step_id") == "user"
-    assert "flow_id" in result
-
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-    )
-    assert result.get("type") is FlowResultType.FORM
-    assert result.get("errors") == {}
-    assert result.get("step_id") == "user"
-
-
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
-@patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize", AsyncMock(return_value=None))
-@patch("plugwise_usb.Stick.disconnect", AsyncMock(return_value=None))
 async def test_user_flow_select(hass):
     """Test user flow when USB-stick is selected from list."""
     port = com_port()
@@ -60,22 +35,37 @@ async def test_user_flow_select(hass):
         DOMAIN,
         context={CONF_SOURCE: SOURCE_USER},
     )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USB_PATH: port_select}
-    )
     assert result.get("type") is FlowResultType.FORM
-    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT}
+    assert result.get("errors") == {}
+    assert result.get("step_id") == "user"
+    assert "flow_id" in result
 
-    # Retry to ensure configuring the same port is not allowed
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN,
-        context={CONF_SOURCE: SOURCE_USER},
-    )
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USB_PATH: port_select}
-    )
-    assert result.get("type") is FlowResultType.FORM
-    assert result.get("errors") == {"base": "already_configured"}
+    with patch(
+        "homeassistant.components.plugwise_usb.config_flow.Stick",
+    ) as usb_mock:
+        usb_mock.return_value.connect = AsyncMock(return_value=None)
+        usb_mock.return_value.initialize = AsyncMock(return_value=None)
+        usb_mock.return_value.disconnect = AsyncMock(return_value=None)
+        usb_mock.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], user_input={CONF_USB_PATH: port_select}
+        )
+        await hass.async_block_till_done()
+        assert result.get("type") is FlowResultType.CREATE_ENTRY
+        assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT}
+
+        # Retry to ensure configuring the same port is not allowed
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={CONF_SOURCE: SOURCE_USER},
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], user_input={CONF_USB_PATH: port_select}
+        )
+        await hass.async_block_till_done()
+        assert result.get("type") is FlowResultType.FORM
+        assert result.get("errors") == {"base": "already_configured"}
 
 
 async def test_user_flow_manual_selected_show_form(hass):
@@ -115,8 +105,9 @@ async def test_user_flow_manual(hass):
             result["flow_id"],
             user_input={CONF_USB_PATH: TEST_USBPORT2},
         )
-    assert result.get("type") is FlowResultType.CREATE_ENTRY
-    assert result.get("user_input") == {CONF_USB_PATH: TEST_USBPORT2}
+        await hass.async_block_till_done()
+        assert result.get("type") is FlowResultType.CREATE_ENTRY
+        assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT2}
 
 
 async def test_invalid_connection(hass):
@@ -129,12 +120,13 @@ async def test_invalid_connection(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
+    await hass.async_block_till_done()
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {CONF_USB_PATH: "/dev/null"},
     )
-
+    await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": "cannot_connect"}
 
@@ -149,6 +141,7 @@ async def test_empty_connection(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
+    await hass.async_block_till_done()
 
     try:
         result = await hass.config_entries.flow.async_configure(
@@ -175,10 +168,12 @@ async def test_failed_connect(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
+    await hass.async_block_till_done()
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         user_input={CONF_USB_PATH: "/dev/null"},
     )
+    await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": "cannot_connect"}
 
@@ -195,9 +190,11 @@ async def test_failed_initialization(hass):
         result["flow_id"],
         user_input={CONF_USB_PATH: CONF_MANUAL_PATH},
     )
+    await hass.async_block_till_done()
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         user_input={CONF_USB_PATH: "/dev/null"},
     )
+    await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": "stick_init"}

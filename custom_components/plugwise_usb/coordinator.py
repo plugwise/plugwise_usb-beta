@@ -1,6 +1,4 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
-
-import asyncio
 from collections import Counter
 from datetime import timedelta
 import logging
@@ -53,7 +51,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""
         states: dict[NodeFeature, Any] = {}
-        
+
         # Only unique features
         freq_features = Counter(self.async_contexts())
         features = tuple(freq_features.keys())
@@ -63,7 +61,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         except StickError as err:
             raise ConfigEntryError from err
         except (StickTimeout, NodeTimeout) as err:
-            raise asyncio.TimeoutError from err
+            raise TimeoutError from err
         except NodeError as err:
             raise UpdateFailed from err
 

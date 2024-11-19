@@ -11,6 +11,7 @@ if [ -f "${my_venv}/bin/activate" ]; then
     # shellcheck disable=SC1091
     . "${my_venv}/bin/activate"
     # Install commit requirements
+    python3 -m ensurepip --upgrade
     pip install uv
     uv pip install wheel
     uv pip install --upgrade -r requirements_commit.txt

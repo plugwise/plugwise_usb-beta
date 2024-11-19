@@ -20,10 +20,8 @@ from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
 @callback
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
-    sticks = []
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        sticks.append(entry.data.get(CONF_USB_PATH))
-    return sticks
+
+    return [entry.data.get(CONF_USB_PATH) for entry in hass.config_entries.async_entries(DOMAIN)]
 
 
 async def validate_usb_connection(
@@ -114,9 +112,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="manual_path",
             data_schema=vol.Schema(
                 {
-                    vol.Required(
-                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
-                    ): str
+                    vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str
                 }
             ),
             errors=errors,

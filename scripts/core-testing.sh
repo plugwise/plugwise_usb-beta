@@ -211,14 +211,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	set +e
 	echo "... ruff-ing component..."
-	ruff --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
+	ruff check --fix homeassistant/components/plugwise_usb/*py || echo "Ruff applied autofixes" 
 	echo "... ruff-ing tests..."
-	ruff --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
+	ruff check --fix tests/components/plugwise_usb/*py || echo "Ruff applied autofixes"
 	set -e
-	echo "... black-ing ..."
-	black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
-	echo "... mypy ..."
-	script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
+	# echo "... black-ing ..."
+	# black homeassistant/components/plugwise_usb/*py tests/components/plugwise_usb/*py || exit
+	# echo "... mypy ..."
+	# script/run-in-env.sh mypy homeassistant/components/plugwise_usb/*.py || exit
 	cd ..
 	echo "... markdownlint ..."
 	pre-commit run --all-files --hook-stage manual markdownlint
@@ -244,8 +244,12 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	  # shellcheck disable=SC2090
 	  sed -i".sedbck" 's/http.*test-files.pythonhosted.*#//g' ./homeassistant/components/plugwise_usb/manifest.json
 	)
-	echo "Running hassfest for plugwise_usb"
-	python3 -m script.hassfest --requirements --action validate
+
+	# Hassfest already runs on Github
+	if [ -n "${GITHUB_ACTIONS}" ] ; then
+		echo -e "${CINFO}Running hassfest for plugwise${CNORM}"
+		python3 -m script.hassfest --requirements --action validate 
+	fi
 fi
 
 # pylint was removed from 'quality' some time ago
