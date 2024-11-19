@@ -13,8 +13,6 @@ if [ -f "${my_venv}/bin/activate" ]; then
     # Install test requirements
     pip install uv
     uv pip install --upgrade -e . -r requirements_test.txt
-    # Install pre-commit hook
-    "${my_venv}/bin/pre-commit" install
 else
     echo "Virtualenv available, bailing out"
     exit 2
