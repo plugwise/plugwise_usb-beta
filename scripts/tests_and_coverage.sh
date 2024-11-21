@@ -28,12 +28,12 @@ fi
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "linting" ] ; then
     # Black first to ensure nothings roughing up ruff
-    echo "... ruff checking ..." 
+    echo "... ruff checking ..."
     ruff check -fix
 
     # TODO: Skip ruff checks as there are too many for now (mainly missing docstrings)
     # echo "... ruff-ing ..."
     # ruff check --fix plugwise_usb/ tests
-    echo "... ruff format ..." 
+    echo "... ruff format ..."
     ruff format
 fi

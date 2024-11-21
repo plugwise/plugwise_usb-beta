@@ -57,6 +57,9 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise USB."""
 
     VERSION = 1
+    MINOR_VERSION = 0
+
+    # no async_step_zeroconf this USB is physical
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -83,7 +86,8 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(mac_stick)
+                await self.async_set_unique_id(unique_id=mac_stick, raise_on_progress=False)
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
