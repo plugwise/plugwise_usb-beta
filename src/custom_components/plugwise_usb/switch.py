@@ -55,7 +55,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -67,7 +67,8 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add switch entities for %s | duc=%s", mac, node_duc.name)
+            _LOGGER.debug("Add switch entities for %s | duc=%s",
+                          mac, node_duc.name)
             entities.extend(
                 [
                     PlugwiseUSBSwitchEntity(node_duc, entity_description)
@@ -96,7 +97,7 @@ async def async_setup_entry(
 
 
 async def async_unload_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     config_entry: ConfigEntry,
 ) -> None:
     """Unload a config entry."""
@@ -122,7 +123,8 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         """Handle updated data from the coordinator."""
         if self.coordinator.data[self.entity_description.node_feature] is None:
             _LOGGER.info(
-                "No switch data for %s", str(self.entity_description.node_feature)
+                "No switch data for %s", str(
+                    self.entity_description.node_feature)
             )
             return
         self._attr_is_on = getattr(
