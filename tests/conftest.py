@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
@@ -11,6 +12,9 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.core import HomeAssistant
 from plugwise_usb.exceptions import StickError
+
+TEST_MAC: Final[str] = "01:23:45:67:AB"
+STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
 
 
 @pytest.fixture
@@ -68,15 +72,13 @@ async def init_integration(
 def mock_usb_stick() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
-    with patch(
-        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
-    ) as mock_usb:
+    with patch(STICK_IMPORT_MOCK, autospec=True) as mock_usb:
         usb = mock_usb.return_value
 
         usb.connect = AsyncMock(return_value=None)
         usb.initialize = AsyncMock(return_value=None)
         usb.disconnect = AsyncMock(return_value=None)
-        usb.mac_stick = "01:23:45:67:AB"
+        usb.mac_stick = TEST_MAC
 
         yield usb
 
@@ -85,15 +87,13 @@ def mock_usb_stick() -> Generator[MagicMock]:
 def mock_usb_stick_error() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
-    with patch(
-        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
-    ) as mock_usb:
+    with patch(STICK_IMPORT_MOCK, autospec=True) as mock_usb:
         usb = mock_usb.return_value
 
         usb.connect = AsyncMock(side_effect=(StickError))
         usb.initialize = AsyncMock(return_value=None)
         usb.disconnect = AsyncMock(return_value=None)
-        usb.mac_stick = "01:23:45:67:AB"
+        usb.mac_stick = TEST_MAC
 
         yield usb
 
@@ -102,15 +102,13 @@ def mock_usb_stick_error() -> Generator[MagicMock]:
 def mock_usb_stick_init_error() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
-    with patch(
-        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
-    ) as mock_usb:
+    with patch(STICK_IMPORT_MOCK, autospec=True) as mock_usb:
         usb = mock_usb.return_value
 
         usb.connect = AsyncMock(return_value=None)
         usb.initialize = AsyncMock(side_effect=(StickError))
         usb.disconnect = AsyncMock(return_value=None)
-        usb.mac_stick = "01:23:45:67:AB"
+        usb.mac_stick = TEST_MAC
 
         yield usb
 
