@@ -9,6 +9,7 @@ keywords = ["Plugwise", "Switch", "Circle", "Plus"]
 authors = [
         { name = "Plugwise device owners"}
 ]
+
 maintainers = [
         { name = "arnoutd_77" },
         { name = "bouwew"},
@@ -34,6 +35,7 @@ exclude = 'generated'
 ignore = [
     "tests",
 ]
+
 # Use a conservative default here; 2 should speed up most setups and not hurt
 # any too bad. Override on command line as appropriate.
 # Disabled for now: https://github.com/PyCQA/pylint/issues/3584
@@ -221,6 +223,7 @@ addopts = [
 asyncio_default_fixture_loop_scope = "session"
 
 [tool.pytest.ini_options]
+pythonpath = "src"
 testpaths = "tests"
 norecursedirs = ".git"
 asyncio_mode = "auto"
