@@ -1,6 +1,6 @@
 """Test the Plugwise config flow."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
@@ -11,7 +11,6 @@ import serial.tools.list_ports
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
-from plugwise_usb.exceptions import StickError
 
 TEST_USBPORT = "/dev/ttyUSB1"
 TEST_USBPORT2 = "/dev/ttyUSB2"
@@ -29,7 +28,7 @@ def com_port():
 
 
 @patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
-async def test_user_flow_select(hass, mock_usb: MagicMock):
+async def test_user_flow_select(hass, mock_usb_stick: MagicMock):
     """Test user flow when USB-stick is selected from list."""
     port = com_port()
     port_select = f"{port}, s/n: {port.serial_number} - {port.manufacturer}"
@@ -78,7 +77,7 @@ async def test_user_flow_manual_selected_show_form(hass):
 
 
 async def test_user_flow_manual(
-    hass, mock_usb: MagicMock, init_integration: MockConfigEntry
+    hass, mock_usb_stick: MagicMock, init_integration: MockConfigEntry
 ):
     """Test user flow when USB-stick is manually entered."""
 
@@ -146,9 +145,7 @@ async def test_empty_connection(hass):
     assert result.get("errors") == {}
 
 
-@patch("plugwise_usb.Stick.connect", AsyncMock(side_effect=(StickError)))
-@patch("plugwise_usb.Stick.initialize", AsyncMock(return_value=None))
-async def test_failed_connect(hass):
+async def test_failed_connect(hass, mock_usb_stick_error: MagicMock):
     """Test we handle failed connection."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
@@ -168,9 +165,7 @@ async def test_failed_connect(hass):
     assert result.get("errors") == {"base": "cannot_connect"}
 
 
-@patch("plugwise_usb.Stick.connect", AsyncMock(return_value=None))
-@patch("plugwise_usb.Stick.initialize", AsyncMock(side_effect=(StickError)))
-async def test_failed_initialization(hass):
+async def test_failed_initialization(hass, mock_usb_stick_init_error: MagicMock):
     """Test we handle failed initialization of Plugwise USB-stick."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN,

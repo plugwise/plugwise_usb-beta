@@ -2,8 +2,10 @@ __pycache__
 .vscode
 ha-core
 venv
+.venv
 *.sedbck
 *.swp
 *.rej
 *.orig
 manual_clone_ha
+.coverage

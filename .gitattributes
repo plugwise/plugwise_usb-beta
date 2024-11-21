@@ -1,0 +1,9 @@
+# Autodetect text files
+* text=auto eol=lf
+
+# ...Unless the name matches the following
+# overriding patterns
+
+# Definitively text files
+*.py text
+*.sh lf
