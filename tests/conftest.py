@@ -10,6 +10,7 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from homeassistant.core import HomeAssistant
+from plugwise_usb.exceptions import StickError
 
 
 @pytest.fixture
@@ -63,18 +64,57 @@ async def init_integration(
 
 
 @pytest.fixture
-def mock_usb() -> Generator[MagicMock]:
+def mock_usb_stick() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
     with patch(
         "custom_components.plugwise_usb.config_flow.Stick",
+        autospec=True
     ) as mock_usb:
-        mock_usb.return_value.connect = AsyncMock(return_value=None)
-        mock_usb.return_value.initialize = AsyncMock(return_value=None)
-        mock_usb.return_value.disconnect = AsyncMock(return_value=None)
-        mock_usb.return_value.mac_stick = MagicMock(return_value="01:23:45:67:AB")
+        usb = mock_usb.return_value
 
-        yield mock_usb
+        usb.connect = AsyncMock(return_value=None)
+        usb.initialize = AsyncMock(return_value=None)
+        usb.disconnect = AsyncMock(return_value=None)
+        usb.mac_stick = "01:23:45:67:AB"
+
+        yield usb
+
+
+@pytest.fixture
+def mock_usb_stick_error() -> Generator[MagicMock]:
+    """Return a mocked usb_mock."""
+
+    with patch(
+        "custom_components.plugwise_usb.config_flow.Stick",
+        autospec=True
+    ) as mock_usb:
+        usb = mock_usb.return_value
+
+        usb.connect = AsyncMock(side_effect=(StickError))
+        usb.initialize = AsyncMock(return_value=None)
+        usb.disconnect = AsyncMock(return_value=None)
+        usb.mac_stick = "01:23:45:67:AB"
+
+        yield usb
+
+
+@pytest.fixture
+def mock_usb_stick_init_error() -> Generator[MagicMock]:
+    """Return a mocked usb_mock."""
+
+    with patch(
+        "custom_components.plugwise_usb.config_flow.Stick",
+        autospec=True
+    ) as mock_usb:
+        usb = mock_usb.return_value
+
+        usb.connect = AsyncMock(return_value=None)
+        usb.initialize = AsyncMock(side_effect=(StickError))
+        usb.disconnect = AsyncMock(return_value=None)
+        usb.mac_stick = "01:23:45:67:AB"
+
+        yield usb
 
 
 async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:

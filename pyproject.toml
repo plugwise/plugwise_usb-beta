@@ -216,7 +216,6 @@ max-complexity = 25
 
 [tool.pytest]
 addopts = [
-    "--auto",
     "--cov=custom_components"
 ]
 
