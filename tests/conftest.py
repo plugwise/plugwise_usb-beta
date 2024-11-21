@@ -49,6 +49,7 @@ async def init_integration(
 
     return mock_config_entry
 
+
 # @pytest.fixture
 # def mock_comport() -> Generator[MagicMock]:
 #    """Return a mocked comport."""
@@ -68,8 +69,7 @@ def mock_usb_stick() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
     with patch(
-        "custom_components.plugwise_usb.config_flow.Stick",
-        autospec=True
+        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
     ) as mock_usb:
         usb = mock_usb.return_value
 
@@ -86,8 +86,7 @@ def mock_usb_stick_error() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
     with patch(
-        "custom_components.plugwise_usb.config_flow.Stick",
-        autospec=True
+        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
     ) as mock_usb:
         usb = mock_usb.return_value
 
@@ -104,8 +103,7 @@ def mock_usb_stick_init_error() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
     with patch(
-        "custom_components.plugwise_usb.config_flow.Stick",
-        autospec=True
+        "custom_components.plugwise_usb.config_flow.Stick", autospec=True
     ) as mock_usb:
         usb = mock_usb.return_value
 

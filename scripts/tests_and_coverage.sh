@@ -29,7 +29,7 @@ fi
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "linting" ] ; then
     # Black first to ensure nothings roughing up ruff
     echo "... ruff checking ..."
-    ruff check -fix
+    ruff check --fix
 
     # TODO: Skip ruff checks as there are too many for now (mainly missing docstrings)
     # echo "... ruff-ing ..."
