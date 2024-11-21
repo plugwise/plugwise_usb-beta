@@ -128,7 +128,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -141,7 +141,8 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add sensor entities for %s | duc=%s", mac, node_duc.name)
+            _LOGGER.debug("Add sensor entities for %s | duc=%s",
+                          mac, node_duc.name)
             entities.extend(
                 [
                     PlugwiseUSBSensorEntity(node_duc, entity_description)
@@ -173,7 +174,7 @@ async def async_setup_entry(
 
 
 async def async_unload_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     config_entry: ConfigEntry,
 ) -> None:
     """Unload a config entry."""
@@ -186,7 +187,8 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(self.entity_description.node_feature, None)
+        data = self.coordinator.data.get(
+            self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.info(
                 "No %s sensor data for %s",
