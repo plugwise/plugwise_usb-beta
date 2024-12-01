@@ -91,8 +91,47 @@
         },
         "clock_interval": {
           "name": "Interval kloksyncronisatie",
-          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als clock_sync gezet is."
+          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als Clock-sync gezet is."
         }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "power_last_second": {
+        "name": "Energie"
+      },
+      "power_last_8_seconds": {
+        "name": "Energie laatste 8 seconden"
+      },
+      "energy_hour_consumption": {
+        "name": "Energie cumulatief dit uur"
+      },
+      "energy_day_consumption": {
+        "name": "Energie cumulatief vandaag"
+      },
+      "ping_rrt": {
+        "name": "Netwerk retourtijd"
+      },
+      "ping_rssi_in": {
+        "name": "RSSI-niveau inkomend"
+      },
+      "ping_rssi_out": {
+        "name": "RSSI-niveau uitgaand"
+      },
+      "temperature": {
+        "name": "Temperatuur"
+      },
+      "humidity": {
+        "name": "Luchtvochtigheid"
+      }
+    },
+    "switch": {
+      "relay": {
+        "name": "Schakelaar"
+      },
+      "relay_init": {
+        "name": "Initialisatie schakelaar"
       }
     }
   }
