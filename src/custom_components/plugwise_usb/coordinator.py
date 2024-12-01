@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
+
 from collections import Counter
 from datetime import timedelta
 import logging
@@ -38,7 +39,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 always_update=True,
             )
         else:
-            _LOGGER.debug("Create DUC for %s with update interval %s", node.mac, update_interval)
+            _LOGGER.debug(
+                "Create DUC for %s with update interval %s", node.mac, update_interval
+            )
             super().__init__(
                 hass,
                 _LOGGER,

@@ -1,4 +1,5 @@
 """Plugwise USB stick base entity."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -45,7 +46,8 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             "model_id": self._node_info.model_type,
             "sw_version": f"{self._node_info.firmware}",
         }
-        self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
+        self._attr_unique_id = f"{
+            self._node_info.mac}-{entity_description.key}"
         self.entity_description = entity_description
         self._subscribe_to_feature_fn = node_duc.node.subscribe_to_feature_update
         self.unsubscribe_push_events: Callable[[], None] | None = None
@@ -54,7 +56,8 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         """Subscribe for push updates."""
         await super().async_added_to_hass()
         push_features = tuple(
-            push_feature for push_feature in PUSHING_FEATURES
+            push_feature
+            for push_feature in PUSHING_FEATURES
             if push_feature in self._node_info.features
         )
         # Subscribe to events
@@ -65,14 +68,20 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             )
 
     async def async_push_event(self, feature: NodeFeature, state: Any) -> None:
-        """"Update data on pushed event."""
+        """Update data on pushed event."""
         if self.node_duc is None:
-            _LOGGER.warning("Unable to push event=%s, state=%s, mac=%s", feature, state, self._node_info.mac)
-        self.node_duc.async_set_updated_data(
-            {
-                feature: state,
-            }
-        )
+            _LOGGER.warning(
+                "Unable to push event=%s, state=%s, mac=%s",
+                feature,
+                state,
+                self._node_info.mac,
+            )
+        else:
+            self.node_duc.async_set_updated_data(
+                {
+                    feature: state,
+                }
+            )
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe to updates."""

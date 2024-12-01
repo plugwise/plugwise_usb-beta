@@ -1,4 +1,5 @@
 """Config flow for Plugwise USB integration."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -21,12 +22,13 @@ from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
 
-    return [entry.data.get(CONF_USB_PATH) for entry in hass.config_entries.async_entries(DOMAIN)]
+    return [
+        entry.data.get(CONF_USB_PATH)
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    ]
 
 
-async def validate_usb_connection(
-    self, device_path=None
-) -> tuple[dict[str, str], str]:
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -55,6 +57,9 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise USB."""
 
     VERSION = 1
+    MINOR_VERSION = 0
+
+    # no async_step_zeroconf this USB is physical
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -81,7 +86,10 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(mac_stick)
+                await self.async_set_unique_id(
+                    unique_id=mac_stick, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
@@ -111,9 +119,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="manual_path",
             data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str
-                }
+                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
             errors=errors,
         )
