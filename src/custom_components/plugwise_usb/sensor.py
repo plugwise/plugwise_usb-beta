@@ -198,7 +198,7 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
             self.entity_description.node_feature, None
         )
         if data is None:
-            _LOGGER.info(
+            _LOGGER.debug(
                 "No %s sensor data for %s",
                 self.entity_description.node_feature,
                 self._node_info.mac,
