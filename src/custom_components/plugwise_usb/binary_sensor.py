@@ -31,6 +31,8 @@ class PlugwiseBinarySensorEntityDescription(
 ):
     """Describes Plugwise binary sensor entity."""
 
+    api_attribute: str = ""
+
 
 BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
     PlugwiseBinarySensorEntityDescription(
@@ -38,6 +40,7 @@ BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         name=None,
         device_class=BinarySensorDeviceClass.MOTION,
         node_feature=NodeFeature.MOTION,
+        api_attribute="state",
     ),
 )
 
@@ -81,7 +84,7 @@ async def async_setup_entry(
 
     # load current nodes
     for mac, node in api_stick.nodes.items():
-        if node.loaded:
+        if node.is_loaded:
             await async_add_binary_sensor(NodeEvent.LOADED, mac)
 
 
@@ -99,6 +102,14 @@ class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        data = self.coordinator.data.get(self.entity_description.node_feature, None)
+        if data is None:
+            _LOGGER.debug(
+                "No %s binary sensor data for %s",
+                self.entity_description.node_feature,
+                self._node_info.mac,
+            )
+            return
         if self.coordinator.data[self.entity_description.node_feature] is None:
             _LOGGER.info(
                 "No binary sensor data for %s",
@@ -107,6 +118,6 @@ class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
             return
         self._attr_is_on = getattr(
             self.coordinator.data[self.entity_description.node_feature],
-            self.entity_description.key,
+            self.entity_description.api_attribute,
         )
         self.async_write_ha_state()

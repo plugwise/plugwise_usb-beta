@@ -32,24 +32,34 @@ class PlugwiseSwitchEntityDescription(
 ):
     """Describes Plugwise switch entity."""
 
+    api_attribute: str = ""
     async_switch_fn: str = ""
 
 
 SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     PlugwiseSwitchEntityDescription(
-        key="relay_state",
+        key="relay",
         translation_key="relay",
         device_class=SwitchDeviceClass.OUTLET,
-        async_switch_fn="switch_relay",
+        async_switch_fn="set_relay",
         node_feature=NodeFeature.RELAY,
+        api_attribute="state",
     ),
     PlugwiseSwitchEntityDescription(
-        key="relay_init_state",
+        key="relay_init",
         translation_key="relay_init",
-        device_class=SwitchDeviceClass.OUTLET,
-        async_switch_fn="switch_relay_init",
+        async_switch_fn="set_relay_init",
         entity_category=EntityCategory.CONFIG,
         node_feature=NodeFeature.RELAY_INIT,
+        api_attribute="state",
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="daylight_mode",
+        translation_key="motion_daylight_mode",
+        async_switch_fn="set_motion_daylight_mode",
+        entity_category=EntityCategory.CONFIG,
+        node_feature=NodeFeature.MOTION_CONFIG,
+        api_attribute="daylight_mode",
     ),
 )
 
@@ -92,7 +102,7 @@ async def async_setup_entry(
 
     # load any current nodes
     for mac, node in api_stick.nodes.items():
-        if node.loaded:
+        if node.is_loaded:
             await async_add_switch(NodeEvent.LOADED, mac)
 
 
@@ -121,15 +131,18 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        if self.coordinator.data[self.entity_description.node_feature] is None:
-            _LOGGER.info(
+        data = self.coordinator.data.get(
+            self.entity_description.node_feature, None
+        )
+        if data is None:
+            _LOGGER.debug(
                 "No switch data for %s", str(
                     self.entity_description.node_feature)
             )
             return
         self._attr_is_on = getattr(
             self.coordinator.data[self.entity_description.node_feature],
-            self.entity_description.key,
+            self.entity_description.api_attribute,
         )
         self.async_write_ha_state()
 
