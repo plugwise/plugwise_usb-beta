@@ -94,7 +94,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
-            step_id="user",
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
             ),
@@ -117,7 +116,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
-            step_id="manual_path",
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
