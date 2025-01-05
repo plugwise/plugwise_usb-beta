@@ -97,6 +97,11 @@
     }
   },
   "entity": {
+    "binary_sensor": {
+      "motion": {
+        "name": "Motion"
+      }
+    },
     "sensor": {
       "power_last_second": {
         "name": "Power"
@@ -109,6 +114,9 @@
       },
       "energy_day_consumption": {
         "name": "Energy consumption today"
+      },
+      "last_seen": {
+        "name": "Last seen"
       },
       "ping_rrt": {
         "name": "Network roundtrip time"
@@ -124,6 +132,12 @@
       },
       "humidity": {
         "name": "Humidity"
+      },
+      "awake_timestamp": {
+        "name": "Last awake"
+      },
+      "awake_reason": {
+        "name": "Awake reason"
       }
     },
     "switch": {
@@ -132,6 +146,26 @@
       },
       "relay_init": {
         "name": "Relay startup"
+      },
+      "motion_daylight_mode": {
+        "name": "Daylight mode"
+      }
+    },
+    "number": {
+      "motion_reset_timer": {
+        "name": "Motion reset timer"
+      },
+      "sed_maintenance_interval": {
+        "name": "Maintenance interval"
+      },
+      "sed_sleep_duration": {
+        "name": "Sleep duration"
+      },
+      "sed_awake_duration": {
+        "name": "Awake duration"
+      },
+      "sed_clock_interval": {
+        "name": "Clock interval"
       }
     }
   }
