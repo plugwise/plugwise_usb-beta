@@ -125,7 +125,7 @@ def async_migrate_entity_entry(
         ("ping", "rtt"),
         ("RSSI_in", "rssi_in"),
         ("RSSI_out", "rssi_out"),
-        ("relay", "relay_state"),
+        ("relay_state", "relay"),
     ):
         if entity_entry.unique_id.endswith(old):
             return {"new_unique_id": entity_entry.unique_id.replace(old, new)}
