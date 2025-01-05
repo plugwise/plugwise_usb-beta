@@ -149,8 +149,7 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add sensor entities for %s | duc=%s",
-                          mac, node_duc.name)
+            _LOGGER.debug("Add sensor entities for %s | duc=%s", mac, node_duc.name)
             entities.extend(
                 [
                     PlugwiseUSBSensorEntity(node_duc, entity_description)
@@ -196,7 +195,8 @@ class PlugwiseUSBSensorEntity(PlugwiseUSBEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         data = self.coordinator.data.get(
-            self.entity_description.node_feature, None)
+            self.entity_description.node_feature, None
+        )
         if data is None:
             _LOGGER.info(
                 "No %s sensor data for %s",
