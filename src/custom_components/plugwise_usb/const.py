@@ -22,6 +22,7 @@ UNDO_UPDATE_LISTENER: Final = "undo_update_listener"
 
 PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
     Platform.BINARY_SENSOR,
+    Platform.NUMBER,
     Platform.SENSOR,
     Platform.SWITCH,
 ]
