@@ -124,6 +124,14 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         node_feature=NodeFeature.HUMIDITY,
         suggested_display_precision=2,
     ),
+    PlugwiseSensorEntityDescription(
+        key="last_seen",
+        translation_key="last_seen",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        node_feature=NodeFeature.AVAILABLE,
+        entity_registry_enabled_default=False,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 )
 
 
@@ -169,7 +177,7 @@ async def async_setup_entry(
 
     # load current nodes
     for mac, node in api_stick.nodes.items():
-        if node.loaded:
+        if node.is_loaded:
             await async_add_sensor(NodeEvent.LOADED, mac)
 
 

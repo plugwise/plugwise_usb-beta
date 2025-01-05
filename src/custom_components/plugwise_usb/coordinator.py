@@ -11,9 +11,8 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from plugwise_usb.api import NodeFeature
+from plugwise_usb.api import NodeFeature, PlugwiseNode
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
-from plugwise_usb.nodes import PlugwiseNode
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     ) -> None:
         """Initialize Plugwise USB data update coordinator."""
         self.node = node
-        if node.node_info.battery_powered:
+        if node.node_info.is_battery_powered:
             _LOGGER.debug("Create battery powered DUC for %s", node.mac)
             super().__init__(
                 hass,
@@ -68,6 +67,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         except NodeError as err:
             raise UpdateFailed from err
 
-        if not states[NodeFeature.AVAILABLE]:
+        if (
+            not self.node.node_info.is_battery_powered
+            and not states[NodeFeature.AVAILABLE].state
+        ):
             raise UpdateFailed("Device is not responding")
         return states
