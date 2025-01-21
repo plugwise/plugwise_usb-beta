@@ -97,6 +97,11 @@
     }
   },
   "entity": {
+    "binary_sensor": {
+      "motion": {
+        "name": "Beweging"
+      }
+    },
     "sensor": {
       "power_last_second": {
         "name": "Energie"
@@ -109,6 +114,9 @@
       },
       "energy_day_consumption": {
         "name": "Energie cumulatief vandaag"
+      },
+      "last_seen": {
+        "name": "Laatst gezien"
       },
       "ping_rrt": {
         "name": "Netwerk retourtijd"
@@ -124,6 +132,12 @@
       },
       "humidity": {
         "name": "Luchtvochtigheid"
+      },
+      "awake_timestamp": {
+        "name": "Laatst wakker"
+      },
+      "awake_reason": {
+        "name": "Wakker door"
       }
     },
     "switch": {
@@ -132,6 +146,28 @@
       },
       "relay_init": {
         "name": "Initialisatie schakelaar"
+      },
+      "motion_daylight_mode": {
+        "name": "Daglichtmodus
+
+"
+      }
+    },
+    "number": {
+      "motion_reset_timer": {
+        "name": "Bewegingsreset timer"
+      },
+      "sed_maintenance_interval": {
+        "name": "Onderhoudsinterval"
+      },
+      "sed_sleep_duration": {
+        "name": "Slaapduur"
+      },
+      "sed_awake_duration": {
+        "name": "Wakker duur"
+      },
+      "sed_clock_interval": {
+        "name": "Klokinterval"
       }
     }
   }
