@@ -7,12 +7,12 @@ ci:
 
 default_language_version:
   # force all unspecified python hooks to run python3
-  python: python3.12
+  python: python3.13
 
 repos:
   # Run manually in CI skipping the branch checks
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.4
+    rev: v0.9.5
     hooks:
       - id: ruff
         name: "Ruff-ing code"
@@ -28,13 +28,13 @@ repos:
         args:
           - --branch=main
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
         name: "Checking pyupgrade"
         args: [--py39-plus]
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         name: "Verifying/updating code for spelling issues"
@@ -44,7 +44,7 @@ repos:
           - --quiet-level=2
         exclude_types: [csv, json]
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.10
+    rev: 1.8.2
     hooks:
       - id: bandit
         name: "Linting with bandit"
@@ -86,7 +86,7 @@ repos:
         language: script
         pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.42.0
+    rev: v0.44.0
     hooks:
       - id: markdownlint
         name: "Linting Markdown"

@@ -3,7 +3,7 @@ name = "plugwise_usb-beta"
 version = "0.40.8b1"
 description = "Plugwise USB custom_component (BETA)"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 license = {file = "LICENSE"}
 keywords = ["Plugwise", "Switch", "Circle", "Plus"]
 authors = [
@@ -28,7 +28,7 @@ dependencies = ["homeassistant", "plugwise-usb"]
 "Bug Reports" = "https://github.com/plugwise/plugwise_usb-beta/issues"
 
 [tool.black]
-target-version = ["py312"]
+target-version = ["py313"]
 exclude = 'generated'
 
 [tool.pylint.MASTER]
@@ -135,7 +135,7 @@ overgeneral-exceptions = [
 ]
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 
 lint.select = [
     "B007", # Loop control variable {name} not used within loop body
@@ -216,13 +216,9 @@ combine-as-imports = true
 [tool.ruff.lint.mccabe]
 max-complexity = 25
 
-[tool.pytest]
-addopts = [
-    "--cov=custom_components"
-]
-asyncio_default_fixture_loop_scope = "session"
-
 [tool.pytest.ini_options]
+addopts = "--cov=plugwise_usb"
+asyncio_default_fixture_loop_scope = "function"
 pythonpath = "src"
 testpaths = "tests"
 norecursedirs = ".git"

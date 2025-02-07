@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__package__)
 UNSUB_NODE_LOADED: Final = "Unsubcribe_from_node_loaded_event"
 COORDINATOR: Final = "coordinator"
 CONF_MANUAL_PATH: Final = "Enter Manually"
+MANUAL_PATH: Final = "manual_path"
 STICK: Final = "stick"
 NODES: Final = "nodes"
 USB: Final = "usb"
