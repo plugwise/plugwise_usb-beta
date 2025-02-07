@@ -1,6 +1,6 @@
 [project]
 name = "plugwise_usb-beta"
-version = "0.40.8b1"
+version = "0.40.9b1"
 description = "Plugwise USB custom_component (BETA)"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -219,7 +219,6 @@ max-complexity = 25
 [tool.pytest.ini_options]
 addopts = "--cov=plugwise_usb"
 asyncio_default_fixture_loop_scope = "function"
-pythonpath = "."
 testpaths = "tests"
 norecursedirs = ".git"
 asyncio_mode = "auto"
