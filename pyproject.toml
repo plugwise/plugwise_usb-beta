@@ -219,7 +219,7 @@ max-complexity = 25
 [tool.pytest.ini_options]
 addopts = "--cov=plugwise_usb"
 asyncio_default_fixture_loop_scope = "function"
-pythonpath = "src"
+pythonpath = "."
 testpaths = "tests"
 norecursedirs = ".git"
 asyncio_mode = "auto"
