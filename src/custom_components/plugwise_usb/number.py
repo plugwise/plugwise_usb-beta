@@ -166,9 +166,7 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(
-            self.entity_description.node_feature, None
-        )
+        data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.debug(
                 "No %s number data for %s",
