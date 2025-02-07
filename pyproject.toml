@@ -216,13 +216,9 @@ combine-as-imports = true
 [tool.ruff.lint.mccabe]
 max-complexity = 25
 
-[tool.pytest]
-addopts = [
-    "--cov=custom_components"
-]
-asyncio_default_fixture_loop_scope = "session"
-
 [tool.pytest.ini_options]
+addopts = "--cov=plugwise_usb"
+asyncio_default_fixture_loop_scope = "function"
 pythonpath = "src"
 testpaths = "tests"
 norecursedirs = ".git"
