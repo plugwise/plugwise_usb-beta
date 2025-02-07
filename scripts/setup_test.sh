@@ -12,7 +12,7 @@ if [ -f "${my_venv}/bin/activate" ]; then
     . "${my_venv}/bin/activate"
     # Install test requirements
     pip install uv
-    uv pip install --upgrade -e . -r requirements_test.txt
+    uv pip install --upgrade -r requirements_test.txt
     uv pip install ruff
 else
     echo "Virtualenv available, bailing out"
