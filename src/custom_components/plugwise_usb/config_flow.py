@@ -8,14 +8,14 @@ import serial.tools.list_ports
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.config_entries import ConfigFlow
+from homeassistant.config_entries import SOURCE_USER, ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from plugwise_usb import Stick
 from plugwise_usb.exceptions import StickError
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
 
 @callback
@@ -94,6 +94,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
+            step_id=SOURCE_USER,
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
             ),
@@ -116,6 +117,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
+            step_id=MANUAL_PATH,
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
