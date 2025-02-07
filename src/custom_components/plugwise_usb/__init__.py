@@ -1,6 +1,5 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 
-
 import logging
 from typing import Any, TypedDict
 

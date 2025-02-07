@@ -46,8 +46,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             "model_id": self._node_info.model_type,
             "sw_version": f"{self._node_info.firmware}",
         }
-        self._attr_unique_id = f"{
-            self._node_info.mac}-{entity_description.key}"
+        self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
         self.entity_description = entity_description
         self._subscribe_to_feature_fn = node_duc.node.subscribe_to_feature_update
         self.unsubscribe_push_events: Callable[[], None] | None = None

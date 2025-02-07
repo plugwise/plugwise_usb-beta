@@ -77,8 +77,7 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add switch entities for %s | duc=%s",
-                          mac, node_duc.name)
+            _LOGGER.debug("Add switch entities for %s | duc=%s", mac, node_duc.name)
             entities.extend(
                 [
                     PlugwiseUSBSwitchEntity(node_duc, entity_description)
@@ -131,13 +130,10 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(
-            self.entity_description.node_feature, None
-        )
+        data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.debug(
-                "No switch data for %s", str(
-                    self.entity_description.node_feature)
+                "No switch data for %s", str(self.entity_description.node_feature)
             )
             return
         self._attr_is_on = getattr(
