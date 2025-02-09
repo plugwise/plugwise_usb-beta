@@ -6,7 +6,7 @@ from typing import Any, TypedDict
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import evice_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
 from plugwise_usb import Stick
 from plugwise_usb.api import NodeEvent
@@ -61,6 +61,18 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         ) from StickError
 
     config_entry.runtime_data[NODES]: NodeConfigEntry = {}
+
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry.entry_id,
+        hw_version=api_stick.hardware,
+        identifiers={(DOMAIN, str(api_stick.mac))},
+        manufacturer="Plugwise",
+        model="Stick",
+        model_id=None,
+        name="Stick"
+        sw_version=str(api_stick.firmware),
+    )
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
         """Node is detected."""
