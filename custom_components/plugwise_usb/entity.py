@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import logging
 from typing import Any
 
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
@@ -38,15 +39,16 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         self.node_duc = node_duc
         super().__init__(node_duc, context=entity_description.node_feature)
         self._node_info: NodeInfo = node_duc.node.node_info
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, self._node_info.mac)},
-            "hw_version": self._node_info.version,
-            "name": f"{self._node_info.name}",
-            "manufacturer": "Plugwise",
-            "model": self._node_info.model,
-            "model_id": self._node_info.model_type,
-            "sw_version": f"{self._node_info.firmware}",
-        }
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._node_info.mac)},
+            hw_version=self._node_info.version,
+            name=f"{self._node_info.name}",
+            manufacturer="Plugwise",
+            model=self._node_info.model,
+            model_id=self._node_info.model_type,
+            sw_version=f"{self._node_info.firmware}",
+            via_device=node_duc.api_stick.mac_stick
+        )
         self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
         self.entity_description = entity_description
         self._subscribe_to_feature_fn = node_duc.node.subscribe_to_feature_update
