@@ -11,8 +11,11 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from plugwise_usb import Stick
 from plugwise_usb.api import NodeFeature, PlugwiseNode
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
+
+from .const import CONF_USB_PATH
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +52,8 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 update_method=self.async_node_update,
                 always_update=True,
             )
+
+        self.api_stick = Stick(config_entry.data[CONF_USB_PATH])
 
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""
