@@ -11,14 +11,13 @@ from homeassistant.components.switch import (
     SwitchEntity,
     SwitchEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
-from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
@@ -66,7 +65,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the USB switches from a config entry."""
@@ -107,7 +106,7 @@ async def async_setup_entry(
 
 async def async_unload_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
     config_entry.runtime_data[Platform.SWITCH][UNSUB_NODE_LOADED]()
