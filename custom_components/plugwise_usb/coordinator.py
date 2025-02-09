@@ -5,6 +5,7 @@ from datetime import timedelta
 import logging
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
     ConfigEntryError,
@@ -22,6 +23,8 @@ _LOGGER = logging.getLogger(__name__)
 
 class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from a Plugwise node."""
+
+    config_entry: ConfigEntry
 
     def __init__(
         self,
@@ -53,7 +56,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 always_update=True,
             )
 
-        self.api_stick = Stick(config_entry.data[CONF_USB_PATH])
+        self.api_stick = Stick(self.config_entry.data[CONF_USB_PATH])
 
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""

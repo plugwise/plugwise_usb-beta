@@ -14,11 +14,16 @@ from plugwise_usb.exceptions import StickError
 
 from .const import (
     CONF_USB_PATH,
+    DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
     STICK,
 )
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
+
+
+type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
+
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
@@ -31,7 +36,7 @@ class NodeConfigEntry(TypedDict):
     coordinator: PlugwiseUSBDataUpdateCoordinator
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
     """Establish connection with plugwise USB-stick."""
 
     @callback
@@ -65,13 +70,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        hw_version=api_stick.hardware,
-        identifiers={(DOMAIN, str(api_stick.mac))},
+        hw_version=api_stick.hardware_stick,
+        identifiers={(DOMAIN, str(api_stick.mac_stick))},
         manufacturer="Plugwise",
         model="Stick",
         model_id=None,
         name="Stick",
-        sw_version=str(api_stick.firmware),
+        sw_version=str(api_stick.firmware_stick),
     )
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
