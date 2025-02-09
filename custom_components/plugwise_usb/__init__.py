@@ -6,7 +6,7 @@ from typing import Any, TypedDict
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
 from plugwise_usb import Stick
 from plugwise_usb.api import NodeEvent
@@ -87,6 +87,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         await api_stick.disconnect()
         raise ConfigEntryNotReady("Failed to connect to Circle+") from StickError
 
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry.entry_id,
+        identifiers={(DOMAIN, str(api_stick.mac_stick))},
+        manufacturer="Plugwise",
+        model="Stick",
+        model_id=None,
+        name="Stick",
+    )
+
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
         config_entry, PLUGWISE_USB_PLATFORMS
@@ -94,6 +104,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     # Initiate background discovery task
     hass.async_create_task(api_stick.discover_nodes(load=True))
+
     return True
 
 
