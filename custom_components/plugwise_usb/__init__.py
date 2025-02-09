@@ -3,7 +3,6 @@
 import logging
 from typing import Any, TypedDict
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -14,11 +13,12 @@ from plugwise_usb.exceptions import StickError
 
 from .const import (
     CONF_USB_PATH,
+    DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
     STICK,
 )
-from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
@@ -31,7 +31,7 @@ class NodeConfigEntry(TypedDict):
     coordinator: PlugwiseUSBDataUpdateCoordinator
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
     """Establish connection with plugwise USB-stick."""
 
     @callback
@@ -108,7 +108,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
     """Unload the Plugwise USB stick connection."""
     config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
     unload = await hass.config_entries.async_unload_platforms(
@@ -120,7 +120,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
 @callback
 def async_migrate_entity_entry(
-    config_entry: ConfigEntry, entity_entry: er.RegistryEntry
+    config_entry: PlugwiseUSBConfigEntry, entity_entry: er.RegistryEntry
 ) -> dict[str, Any] | None:
     """Migrate Plugwise USB entity entries.
 
