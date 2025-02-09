@@ -87,6 +87,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MILLISECONDS,
         node_feature=NodeFeature.PING,
         suggested_display_precision=2,
+        state_class=SensorStateClass.MEASUREMENT,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
