@@ -11,13 +11,13 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
+from .coordinator import PlugwiseUSBConfigEntry
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Plugwise USB binary sensor based on config_entry."""
@@ -90,7 +90,7 @@ async def async_setup_entry(
 
 async def async_unload_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
     config_entry.runtime_data[Platform.SENSOR][UNSUB_NODE_LOADED]()
