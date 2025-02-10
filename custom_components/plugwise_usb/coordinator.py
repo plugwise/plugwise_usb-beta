@@ -84,5 +84,4 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         ):
             raise UpdateFailed("Device is not responding")
 
-        _LOGGER.debug("HOI mac_stick: %s", self.api_stick.mac_stick)
         return states
