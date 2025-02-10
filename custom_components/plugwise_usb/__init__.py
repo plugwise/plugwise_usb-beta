@@ -60,6 +60,15 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
         ) from StickError
 
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry.entry_id,
+        identifiers={(DOMAIN, str(api_stick.mac_stick))},
+        manufacturer="Plugwise",
+        model=None,
+        name="Stick",
+    )
+
     config_entry.runtime_data[NODES]: NodeConfigEntry = {}
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
@@ -86,16 +95,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     except StickError:
         await api_stick.disconnect()
         raise ConfigEntryNotReady("Failed to connect to Circle+") from StickError
-
-    device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, str(api_stick.mac_stick))},
-        manufacturer="Plugwise",
-        model="Stick",
-        model_id=None,
-        name="Stick",
-    )
 
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
