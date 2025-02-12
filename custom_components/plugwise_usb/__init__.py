@@ -63,7 +63,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, str(api_stick.mac_stick))},
+        connections={(dr.CONNECTION_ZIGBEE, api_stick.mac_stick)},
+        identifiers={(DOMAIN, api_stick.mac_stick)},
         manufacturer="Plugwise",
         model=None,
         name="Stick",
