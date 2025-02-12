@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import logging
 from typing import Any
 
-from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE, DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
@@ -40,6 +40,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         super().__init__(node_duc, context=entity_description.node_feature)
         self._node_info: NodeInfo = node_duc.node.node_info
         self._attr_device_info = DeviceInfo(
+            connections={(CONNECTION_ZIGBEE, self._node_info.mac)},
             identifiers={(DOMAIN, self._node_info.mac)},
             hw_version=self._node_info.version,
             name=f"{self._node_info.name}",
