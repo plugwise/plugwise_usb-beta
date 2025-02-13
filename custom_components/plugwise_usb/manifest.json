@@ -9,7 +9,7 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise_usb"],
   "requirements": [
-    "https://test-files.pythonhosted.org/packages/88/84/43718d63f40bf4c42a80adc2802d192d646f65813abed2b1495fea5cedb7/plugwise_usb-0.40.0a31.tar.gz#plugwise-usb==0.40.0a31"
+    "https://test-files.pythonhosted.org/packages/4f/b3/a1de64f1e397159a5b37a921d03520f44c02f6a5232a85162cfa539f2131/plugwise_usb-0.40.0a32.tar.gz#plugwise-usb==0.40.0a32"
   ],
   "version": "0.50.0a11"
 }
