@@ -47,6 +47,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
 
     @property
     def device_info(self) -> DeviceInfo:
+        """Return DeviceInfo for each created entity."""
         return DeviceInfo(
             identifiers={(DOMAIN, str(self._node_info.mac))},
             name=str(self._node_info.name),
