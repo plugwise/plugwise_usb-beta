@@ -38,22 +38,26 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         """Initialize a Plugwise USB entity."""
         self.node_duc = node_duc
         super().__init__(node_duc, context=entity_description.node_feature)
-        self._node_info: NodeInfo = node_duc.node.node_info
-        self._attr_device_info = DeviceInfo(
-            connections={(CONNECTION_ZIGBEE, self._node_info.mac)},
-            identifiers={(DOMAIN, self._node_info.mac)},
-            hw_version=self._node_info.version,
-            name=f"{self._node_info.name}",
-            manufacturer="Plugwise",
-            model=self._node_info.model,
-            model_id=self._node_info.model_type,
-            sw_version=f"{self._node_info.firmware}",
-            via_device=(DOMAIN, node_duc.api_stick.mac_stick),
-        )
+        self._node_info: NodeInfo = node_duc.node.node_info,
+        self._via_device = (DOMAIN, str(node_duc.api_stick.mac_stick)),
         self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
         self.entity_description = entity_description
         self._subscribe_to_feature_fn = node_duc.node.subscribe_to_feature_update
         self.unsubscribe_push_events: Callable[[], None] | None = None
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        return DeviceInfo(
+            identifiers={(DOMAIN, str(self._node_info.mac))},
+            name=str(self._node_info.name),
+            connections={(CONNECTION_ZIGBEE, str(self._node_info.mac))},
+            hw_version=str(self._node_info.version),
+            manufacturer="Plugwise",
+            model=str(self._node_info.model),
+            model_id=str(self._node_info.model_type),
+            sw_version=str(self._node_info.firmware),
+            via_device=self._via_device,
+        )
 
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
