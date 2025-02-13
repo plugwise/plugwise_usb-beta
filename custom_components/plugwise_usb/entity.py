@@ -54,7 +54,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             identifiers={(DOMAIN, str(self._node_info.mac))},
             manufacturer="Plugwise",
             model=str(self._node_info.model),
-            model_id=str(self._node_info.model_type),
+            model_id=self._node_info.model_type,
             name=str(self._node_info.name),
             sw_version=str(self._node_info.firmware),
             via_device=self._via_device,
