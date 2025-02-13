@@ -38,8 +38,8 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         """Initialize a Plugwise USB entity."""
         self.node_duc = node_duc
         super().__init__(node_duc, context=entity_description.node_feature)
-        self._node_info: NodeInfo = node_duc.node.node_info,
-        self._via_device = (DOMAIN, str(node_duc.api_stick.mac_stick)),
+        self._node_info: NodeInfo = node_duc.node.node_info
+        self._via_device = (DOMAIN, str(node_duc.api_stick.mac_stick))
         self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
         self.entity_description = entity_description
         self._subscribe_to_feature_fn = node_duc.node.subscribe_to_feature_update
