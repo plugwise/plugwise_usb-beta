@@ -68,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         identifiers={(DOMAIN, api_stick.mac_stick)},
         manufacturer="Plugwise",
         model="Stick",
-        name="Stick",
+        name=api_stick.name,
         sw_version=api_stick.firmware_stick,
     )
 
