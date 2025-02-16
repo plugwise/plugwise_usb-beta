@@ -2,14 +2,15 @@
 
 :warning::warning::warning: Always **read** the [release notes](https://github.com/plugwise/plugwise_usb-beta/releases) before upgrading, in case there are BREAKING changes! **Do note** the release title on alpha releases and only install them if specifically instructed by our team! :warning::warning::warning:
 
-## Help wanted
+## Testers wanted
 
-:no_entry::triangular_flag_on_post: As a team we have been unable to maintain communications with the main tester and developer for the USB legacy devices. If you want to help us maintain the USB code by joining (or reaching out to @brefra) contact us through [this issue](https://github.com/plugwise/plugwise_usb-beta/issues/67). :triangular_flag_on_post::no_entry:
+As a team we are making progress in out efforts, more users open to testing are appreciated! If you want to help us maintain the USB code by joining contact us on ![Static Badge](https://img.shields.io/badge/Plugwise_Discord--purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A).
 
 ## About
 
 A fully asynchronous approach to supporting Plugwise devices in Home-Assistant. This repository is **meant** for use of beta-testing. As of March 2021 we include testing against latest `dev` in Home-Assistant Core, the above batches should indicate compatibility and compliance.
 
+![Static Badge](https://img.shields.io/badge/Plugwise_Discord-Join_now-purple?style=social&logo=discord&link=https%3A%2F%2Fdiscord.gg%2FmFVhF8Ar6A)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/plugwise)
 [![Generic badge](https://img.shields.io/github/v/release/plugwise/plugwise_usb-beta)](https://github.com/plugwise/plugwise_usb-beta)
 
