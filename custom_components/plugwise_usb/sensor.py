@@ -155,7 +155,6 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="last_seen",
         translation_key="last_seen",
         device_class=SensorDeviceClass.TIMESTAMP,
-        state_class=SensorStateClass.MEASUREMENT,
         node_feature=NodeFeature.AVAILABLE,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
