@@ -11,14 +11,13 @@ from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform, UnitOfTime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
-from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
@@ -102,7 +101,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the USB Number from a config entry."""
@@ -143,7 +142,7 @@ async def async_setup_entry(
 
 async def async_unload_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
     config_entry.runtime_data[Platform.NUMBER][UNSUB_NODE_LOADED]()

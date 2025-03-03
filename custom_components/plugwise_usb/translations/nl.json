@@ -110,10 +110,16 @@
         "name": "Energie laatste 8 seconden"
       },
       "energy_hour_consumption": {
-        "name": "Energie cumulatief dit uur"
+        "name": "Energie consumptie dit uur"
       },
       "energy_day_consumption": {
-        "name": "Energie cumulatief vandaag"
+        "name": "Energie consumptie vandaag"
+      },
+      "energy_hour_production": {
+        "name": "Energie productie dit uur"
+      },
+      "energy_day_production": {
+        "name": "Energie productie vandaag"
       },
       "last_seen": {
         "name": "Laatst gezien"

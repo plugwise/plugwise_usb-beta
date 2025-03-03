@@ -115,6 +115,12 @@
       "energy_day_consumption": {
         "name": "Energy consumption today"
       },
+      "energy_hour_production": {
+        "name": "Energy production this hour"
+      },
+      "energy_day_production": {
+        "name": "Energy production today"
+      },
       "last_seen": {
         "name": "Last seen"
       },

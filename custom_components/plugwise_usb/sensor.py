@@ -12,7 +12,6 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
@@ -28,6 +27,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
+from .coordinator import PlugwiseUSBConfigEntry
 from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
 
 _LOGGER = logging.getLogger(__name__)
@@ -73,6 +73,16 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
+        key="hour_production",
+        translation_key="energy_hour_production",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=3,
+        node_feature=NodeFeature.ENERGY,
+        entity_registry_enabled_default=False,
+    ),
+    PlugwiseSensorEntityDescription(
         key="day_consumption",
         translation_key="energy_day_consumption",
         device_class=SensorDeviceClass.ENERGY,
@@ -80,6 +90,16 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         suggested_display_precision=3,
         node_feature=NodeFeature.ENERGY,
+    ),
+    PlugwiseSensorEntityDescription(
+        key="day_production",
+        translation_key="energy_day_production",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=3,
+        node_feature=NodeFeature.ENERGY,
+        entity_registry_enabled_default=False,
     ),
     PlugwiseSensorEntityDescription(
         key="rtt",
@@ -135,7 +155,6 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         key="last_seen",
         translation_key="last_seen",
         device_class=SensorDeviceClass.TIMESTAMP,
-        state_class=SensorStateClass.MEASUREMENT,
         node_feature=NodeFeature.AVAILABLE,
         entity_registry_enabled_default=False,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -145,7 +164,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Plugwise USB sensor based on config_entry."""
@@ -190,7 +209,7 @@ async def async_setup_entry(
 
 async def async_unload_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
     config_entry.runtime_data[Platform.SENSOR][UNSUB_NODE_LOADED]()
