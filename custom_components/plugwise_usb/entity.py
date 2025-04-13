@@ -60,6 +60,11 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             via_device=self._via_device,
         )
 
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.node_duc.node_info.available and super().available
+
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
         await super().async_added_to_hass()
