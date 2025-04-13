@@ -46,6 +46,11 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         self._via_device = (DOMAIN, str(node_duc.api_stick.mac_stick))
 
     @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.node_duc.node.available and super().available
+
+    @property
     def device_info(self) -> DeviceInfo:
         """Return DeviceInfo for each created entity."""
         return DeviceInfo(
@@ -59,11 +64,6 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             sw_version=str(self._node_info.firmware),
             via_device=self._via_device,
         )
-
-    @property
-    def available(self) -> bool:
-        """Return if entity is available."""
-        return self.node_duc.node_info.available and super().available
 
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
