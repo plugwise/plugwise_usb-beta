@@ -61,6 +61,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             model=str(self._node_info.model),
             model_id=self._node_info.model_type,
             name=str(self._node_info.name),
+            serial_number=str(self._node_info.mac),
             sw_version=str(self._node_info.firmware),
             via_device=self._via_device,
         )
