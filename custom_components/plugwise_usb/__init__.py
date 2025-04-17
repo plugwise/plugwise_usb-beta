@@ -3,10 +3,9 @@
 import logging
 from typing import Any, TypedDict
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
 from plugwise_usb import Stick
 from plugwise_usb.api import NodeEvent
@@ -14,11 +13,12 @@ from plugwise_usb.exceptions import StickError
 
 from .const import (
     CONF_USB_PATH,
+    DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
     STICK,
 )
-from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
@@ -31,7 +31,7 @@ class NodeConfigEntry(TypedDict):
     coordinator: PlugwiseUSBDataUpdateCoordinator
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
     """Establish connection with plugwise USB-stick."""
 
     @callback
@@ -60,6 +60,19 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
         ) from StickError
 
+    device_registry = dr.async_get(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry.entry_id,
+        connections={(dr.CONNECTION_ZIGBEE, str(api_stick.mac_stick))},
+        hw_version=str(api_stick.hardware),
+        identifiers={(DOMAIN, str(api_stick.mac_stick))},
+        manufacturer="Plugwise",
+        model="Stick",
+        name=str(api_stick.name),
+        serial_number=str(api_stick.mac_stick),
+        sw_version=str(api_stick.firmware),
+    )
+
     config_entry.runtime_data[NODES]: NodeConfigEntry = {}
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
@@ -69,7 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         _LOGGER.debug("async_node_discovered | mac=%s", mac)
         node = api_stick.nodes[mac]
         _LOGGER.debug("async_node_discovered | node_info=%s", node.node_info)
-        coordinator = PlugwiseUSBDataUpdateCoordinator(hass, node)
+        coordinator = PlugwiseUSBDataUpdateCoordinator(hass, config_entry, node)
         config_entry.runtime_data[NODES][mac] = coordinator
         await node.load()
 
@@ -94,10 +107,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     # Initiate background discovery task
     hass.async_create_task(api_stick.discover_nodes(load=True))
+
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
     """Unload the Plugwise USB stick connection."""
     config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
     unload = await hass.config_entries.async_unload_platforms(
@@ -109,7 +123,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
 @callback
 def async_migrate_entity_entry(
-    config_entry: ConfigEntry, entity_entry: er.RegistryEntry
+    config_entry: PlugwiseUSBConfigEntry, entity_entry: er.RegistryEntry
 ) -> dict[str, Any] | None:
     """Migrate Plugwise USB entity entries.
 

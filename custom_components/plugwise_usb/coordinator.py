@@ -5,6 +5,7 @@ from datetime import timedelta
 import logging
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
     ConfigEntryError,
@@ -14,15 +15,22 @@ from homeassistant.helpers.update_coordinator import (
 from plugwise_usb.api import NodeFeature, PlugwiseNode
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
 
+from .const import STICK
+
 _LOGGER = logging.getLogger(__name__)
+
+type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
 
 
 class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from a Plugwise node."""
 
+    config_entry: PlugwiseUSBConfigEntry
+
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: PlugwiseUSBConfigEntry,
         node: PlugwiseNode,
         update_interval: timedelta | None = None,
     ) -> None:
@@ -33,6 +41,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             super().__init__(
                 hass,
                 _LOGGER,
+                config_entry=config_entry,
                 name=node.node_info.name,
                 update_method=self.async_node_update,
                 always_update=True,
@@ -49,6 +58,8 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
                 update_method=self.async_node_update,
                 always_update=True,
             )
+
+        self.api_stick = config_entry.runtime_data[STICK]
 
     async def async_node_update(self) -> dict[NodeFeature, Any]:
         """Request status update for Plugwise Node."""
@@ -72,4 +83,5 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             and not states[NodeFeature.AVAILABLE].state
         ):
             raise UpdateFailed("Device is not responding")
+
         return states
