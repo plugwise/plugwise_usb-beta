@@ -84,7 +84,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	if [ ! -f "${coredir}/requirements_test_all.txt" ]; then
 		if [ -d "${manualdir}" ]; then
 			echo ""
-			echo " ** Re-using copy, rebasing and copy to HA core**"
+			echo " ** Reusing copy, rebasing and copy to HA core**"
 			echo ""
 			cd "${manualdir}" || exit
 			echo ""
@@ -118,7 +118,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	else
 		cd "${coredir}" || exit
 		echo ""
-		echo " ** Resetting/rebasing core (re-using clone)**"
+		echo " ** Resetting/rebasing core (reusing clone)**"
 		echo ""
 		# Always start from ${core_branch}, dropping any leftovers
 		git stash || echo " - Nothing to stash"
