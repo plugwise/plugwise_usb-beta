@@ -2,7 +2,7 @@
 ci:
   # Defer autoupdate to quarterly (there is no 'off' button) to have renovate pick up first
   autoupdate_schedule: quarterly
-  skip: [testing]
+  skip: [test-core-prep, test-pip-prep, testing, quality]
   submodules: true
 
 default_language_version:
@@ -61,8 +61,9 @@ repos:
   - repo: https://github.com/biomejs/pre-commit
     rev: v1.9.4
     hooks:
-      - id: prettier
-        name: "Verifying/updating code with prettier"
+      - id: biome-lint
+        additional_dependencies: ["@biomejs/biome@1.8.3"]
+        name: "Verifying/updating code with biome (improved prettier)"
   - repo: https://github.com/cdce8p/python-typing-update
     rev: v0.7.1
     hooks:
@@ -79,10 +80,32 @@ repos:
         files: ^(custom_components|tests)/.+\.py$
   - repo: local
     hooks:
-      - id: testing
-        name: "Local Testing - Performing Tests"
+      - id: test-core-prep
         # yamllint disable-line rule:line-length
-        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/tests_and_coverage.sh test_and_coverage'
+        name: "Home Assistant Core Testing - Cloning/updating HA core#dev - patience!"
+        # yamllint disable-line rule:line-length
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh core_prep'
+        language: script
+        pass_filenames: false
+      - id: test-pip-prep
+        # yamllint disable-line rule:line-length
+        name: "Home Assistant Core Testing - Installing dependencies - patience!"
+        # yamllint disable-line rule:line-length
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh pip_prep'
+        language: script
+        pass_filenames: false
+      - id: testing
+        # yamllint disable-line rule:line-length
+        name: "Home Assistant Core Testing - Performing Tests"
+        # yamllint disable-line rule:line-length
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh testing'
+        language: script
+        pass_filenames: false
+      - id: quality
+        # yamllint disable-line rule:line-length
+        name: "Home Assistant Core Testing - Quality checks - might need patience"
+        # yamllint disable-line rule:line-length
+        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/core-testing.sh quality'
         language: script
         pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli
