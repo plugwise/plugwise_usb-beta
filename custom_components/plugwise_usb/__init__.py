@@ -93,6 +93,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         )
     )
 
+    # Enable/disable automatic joining of available devices
+    if config_entry.pref_disable_new_entities:
+        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
+        api_stick.accept_join_request = False
+    else:
+        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
+        api_stick.accept_join_request = True
+
     _LOGGER.info("Start to discover the Plugwise network coordinator (Circle+)")
     try:
         await api_stick.discover_coordinator(load=False)
