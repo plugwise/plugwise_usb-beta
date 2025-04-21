@@ -1,6 +1,5 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 
-import asyncio
 import logging
 from typing import Any, TypedDict
 
@@ -112,8 +111,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         api_stick.discover_nodes(load=True),
         f"{DOMAIN}_{config_entry.title}_discover_nodes",
     )
-
-    done, pending = await asyncio.wait(discover_nodes_task, return_when=asyncio.ALL_COMPLETED)
 
     # Enable/disable automatic joining of available devices when nodes discovery has finished
     if discover_nodes_task.done():
