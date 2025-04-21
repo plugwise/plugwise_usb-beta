@@ -106,15 +106,19 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
 
     # Initiate background discovery task
-    hass.async_create_task(api_stick.discover_nodes(load=True))
+    discover_nodes_task = config_entry.async_create_background_task(
+        hass,
+        api_stick.discover_nodes(load=True),
+        f"{DOMAIN}_{config_entry.title}_discover_nodes",
+    )
 
     # Enable/disable automatic joining of available devices
-    if config_entry.pref_disable_new_entities:
-        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
-        api_stick.accept_join_request = False
-    else:
-        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
-        api_stick.accept_join_request = True
+    # if config_entry.pref_disable_new_entities:
+    #     _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
+    #     api_stick.accept_join_request = False
+    # else:
+    #     _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
+    #     api_stick.accept_join_request = True
 
     return True
 
