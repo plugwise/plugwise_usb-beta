@@ -112,11 +112,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         f"{DOMAIN}_{config_entry.title}_discover_nodes",
     )
 
-    bool = False
-    while bool == False:
+    while True:
+        asyncio.sleep(1)
         if api_stick.network_discovered:
-            asyncio.sleep(5)
-            bool = True
             break
     # Enable/disable automatic joining of available devices when the network is up
     if config_entry.pref_disable_new_entities:
