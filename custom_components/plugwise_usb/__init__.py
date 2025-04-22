@@ -114,7 +114,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
 
     while True:
-        asyncio.sleep(1)
+        await asyncio.sleep(1)
         if api_stick.network_discovered:
             break
     # Enable/disable automatic joining of available devices when the network is up
