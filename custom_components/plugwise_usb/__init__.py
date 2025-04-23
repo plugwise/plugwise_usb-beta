@@ -107,7 +107,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
 
     # Initiate background nodes discovery task
-    discover_nodes_task = config_entry.async_create_task(
+    _ = config_entry.async_create_task(
         hass,
         api_stick.discover_nodes(load=True),
         f"{DOMAIN}_{config_entry.title}_discover_nodes",
