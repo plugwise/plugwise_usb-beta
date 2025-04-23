@@ -46,6 +46,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         hass, config_entry.entry_id, _async_migrate_entity_entry
     )
 
+    # Disable adding new entities
+    hass.config_entries.async_update_entry(config_entry, pref_disable_new_entities=True)
+
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
@@ -107,10 +110,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
 
     # Initiate background nodes discovery task
-    _ = config_entry.async_create_task(
+    config_entry.async_create_task(
         hass,
         api_stick.discover_nodes(load=True),
-        f"{DOMAIN}_{config_entry.title}_discover_nodes",
+        "discover_nodes",
     )
 
     while True:
