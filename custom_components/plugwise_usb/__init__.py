@@ -13,10 +13,14 @@ from plugwise_usb.api import NodeEvent
 from plugwise_usb.exceptions import StickError
 
 from .const import (
+    ATTR_MAC_ADDRESS,
     CONF_USB_PATH,
     DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
+    SERVICE_USB_DEVICE_ADD,
+    SERVICE_USB_DEVICE_REMOVE,
+    SERVICE_USB_DEVICE_SCHEMA,
     STICK,
 )
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -127,6 +131,35 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     else:
         _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
         api_stick.accept_join_request = True
+
+    async def device_add(service):
+        """Manually add device to Plugwise zigbee network."""
+        api_stick.register_node(service.data[ATTR_MAC_ADDRESS])
+
+    async def device_remove(service):
+        """Manually remove device from Plugwise zigbee network."""
+        api_stick.unregister_node(service.data[ATTR_MAC_ADDRESS])
+        _LOGGER.debug(
+            "Send request to remove device using mac %s from Plugwise network",
+            service.data[ATTR_MAC_ADDRESS],
+        )
+        device_entry = device_registry.async_get_device(
+            {(DOMAIN, service.data[ATTR_MAC_ADDRESS])}, set()
+        )
+        if device_entry:
+            _LOGGER.debug(
+                "Remove device %s from Home Assistant", service.data[ATTR_MAC_ADDRESS]
+            )
+            device_registry.async_update_device(
+                device_entry.id, remove_config_entry_id=config_entry.entry_id
+            )
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_USB_DEVICE_REMOVE, device_remove, SERVICE_USB_DEVICE_SCHEMA
+    )
 
     return True
 
