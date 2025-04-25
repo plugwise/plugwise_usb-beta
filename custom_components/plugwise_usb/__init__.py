@@ -1,5 +1,6 @@
 """Support for Plugwise devices connected to a Plugwise USB-stick."""
 
+import asyncio
 import logging
 from typing import Any, TypedDict
 
@@ -44,6 +45,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     await er.async_migrate_entries(
         hass, config_entry.entry_id, _async_migrate_entity_entry
     )
+
+    # Disable adding new entities
+    hass.config_entries.async_update_entry(config_entry, pref_disable_new_entities=True)
 
     api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
@@ -105,8 +109,24 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
-    # Initiate background discovery task
-    hass.async_create_task(api_stick.discover_nodes(load=True))
+    # Initiate background nodes discovery task
+    config_entry.async_create_task(
+        hass,
+        api_stick.discover_nodes(load=True),
+        "discover_nodes",
+    )
+
+    while True:
+        await asyncio.sleep(1)
+        if api_stick.network_discovered:
+            break
+    # Enable/disable automatic joining of available devices when the network is up
+    if config_entry.pref_disable_new_entities:
+        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
+        api_stick.accept_join_request = False
+    else:
+        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
+        api_stick.accept_join_request = True
 
     return True
 

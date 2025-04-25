@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4.2.2
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.5.0
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Prepare virtual env for testing
