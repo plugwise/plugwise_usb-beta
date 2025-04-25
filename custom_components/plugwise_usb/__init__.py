@@ -113,25 +113,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
-    # Initiate background nodes discovery task
-    config_entry.async_create_task(
-        hass,
-        api_stick.discover_nodes(load=True),
-        "discover_nodes",
-    )
-
-    while True:
-        await asyncio.sleep(1)
-        if api_stick.network_discovered:
-            break
-    # Enable/disable automatic joining of available devices when the network is up
-    if config_entry.pref_disable_new_entities:
-        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
-        api_stick.accept_join_request = False
-    else:
-        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
-        api_stick.accept_join_request = True
-
     async def device_add(service):
         """Manually add device to Plugwise zigbee network."""
         await api_stick.register_node(service.data[ATTR_MAC_ADDRESS])
@@ -160,6 +141,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_REMOVE, device_remove, SERVICE_USB_DEVICE_SCHEMA
     )
+
+    # Initiate background nodes discovery task
+    config_entry.async_create_task(
+        hass,
+        api_stick.discover_nodes(load=True),
+        "discover_nodes",
+    )
+
+    while True:
+        await asyncio.sleep(1)
+        if api_stick.network_discovered:
+            break
+    # Enable/disable automatic joining of available devices when the network is up
+    if config_entry.pref_disable_new_entities:
+        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
+        api_stick.accept_join_request = False
+    else:
+        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
+        api_stick.accept_join_request = True
 
     return True
 
