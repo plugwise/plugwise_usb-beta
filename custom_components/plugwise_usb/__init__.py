@@ -115,13 +115,21 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def device_add(service):
         """Manually add device to Plugwise zigbee network."""
-        await api_stick.register_node(service.data[ATTR_MAC_ADDRESS])
+        if not await api_stick.register_node(service.data[ATTR_MAC_ADDRESS]):
+            return
+
+        _LOGGER.debug(
+            "Succesfully sent request to add device using mac %s from Plugwise network",
+            service.data[ATTR_MAC_ADDRESS],
+        )
 
     async def device_remove(service):
         """Manually remove device from Plugwise zigbee network."""
-        await api_stick.unregister_node(service.data[ATTR_MAC_ADDRESS])
+        if not await api_stick.unregister_node(service.data[ATTR_MAC_ADDRESS]):
+            return
+
         _LOGGER.debug(
-            "Send request to remove device using mac %s from Plugwise network",
+            "Succesfully sent request to remove device using mac %s from Plugwise network",
             service.data[ATTR_MAC_ADDRESS],
         )
         device_entry = device_registry.async_get_device(
@@ -129,7 +137,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         )
         if device_entry:
             _LOGGER.debug(
-                "Remove device %s from Home Assistant", service.data[ATTR_MAC_ADDRESS]
+                "Removed Plugwise device with MAC %s from Home Assistant", service.data[ATTR_MAC_ADDRESS]
             )
             device_registry.async_update_device(
                 device_entry.id, remove_config_entry_id=config_entry.entry_id
