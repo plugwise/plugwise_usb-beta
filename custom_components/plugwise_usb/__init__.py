@@ -113,6 +113,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
+    # Listen for entry updates
+    config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
+
     async def device_add(call: ServiceCall) -> None:
         """Manually add device to Plugwise zigbee network."""
         if not await api_stick.register_node(call.data[ATTR_MAC_ADDRESS]):
@@ -170,6 +173,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         api_stick.accept_join_request = True
 
     return True
+
+
+async def update_listener(
+    hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
+) -> None:
+    """Handle options update."""
+    await hass.config_entries.async_reload(config_entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
