@@ -125,9 +125,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def device_remove(call: ServiceCall) -> None:
         """Manually remove device from Plugwise zigbee network."""
-        if not await api_stick.unregister_node(call.data[ATTR_MAC_ADDRESS]):
-            return
-
+        await api_stick.unregister_node(call.data[ATTR_MAC_ADDRESS])
         _LOGGER.debug(
             "Succesfully sent request to remove device using mac %s from Plugwise network",
             call.data[ATTR_MAC_ADDRESS],
