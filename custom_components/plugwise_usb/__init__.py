@@ -182,7 +182,9 @@ async def update_listener(
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
+async def async_unload_entry(
+    hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
+) -> None:
     """Unload the Plugwise USB stick connection."""
     config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
     unload = await hass.config_entries.async_unload_platforms(
