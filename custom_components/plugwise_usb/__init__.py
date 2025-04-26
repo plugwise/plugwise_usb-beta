@@ -132,16 +132,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             "Succesfully sent request to remove device using mac %s from Plugwise network",
             call.data[ATTR_MAC_ADDRESS],
         )
-        device_entry = device_registry.async_get_device(
-            {(DOMAIN, call.data[ATTR_MAC_ADDRESS])}, set()
-        )
-        if device_entry:
-            _LOGGER.debug(
-                "Removed Plugwise device with MAC %s from Home Assistant", call.data[ATTR_MAC_ADDRESS]
-            )
-            device_registry.async_update_device(
-                device_entry.id, remove_config_entry_id=config_entry.entry_id
-            )
+        await remove_deleted_device(hass, call.data[ATTR_MAC_ADDRESS], config_entry)
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
@@ -189,6 +180,21 @@ async def async_unload_entry(
     )
     await config_entry.runtime_data[STICK].disconnect()
     return unload
+
+
+async def remove_deleted_device(
+    hass: HomeAssistant,
+    mac: str,
+    entry: PlugwiseUSBConfigEntry,
+) -> None:
+    """Cleanup removed Plugwise device."""
+    device_registry = dr.async_get(hass)
+    device = device_registry.async_get_device({(DOMAIN, mac)})
+    if device:
+        device_registry.async_update_device(
+            device.id, remove_config_entry_id=entry.entry_id
+        )
+        _LOGGER.debug("Removed Plugwise device with MAC %s from device_registry", mac)
 
 
 @callback
