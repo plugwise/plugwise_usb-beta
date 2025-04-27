@@ -5,12 +5,12 @@ import logging
 from typing import Any, TypedDict
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
 from plugwise_usb import Stick
 from plugwise_usb.api import NodeEvent
-from plugwise_usb.exceptions import StickError
+from plugwise_usb.exceptions import NodeError, StickError
 
 from .const import (
     ATTR_MAC_ADDRESS,
@@ -125,12 +125,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def device_remove(call: ServiceCall) -> None:
         """Manually remove device from Plugwise zigbee network."""
-        await api_stick.unregister_node(call.data[ATTR_MAC_ADDRESS])
-        _LOGGER.debug(
-            "Send request to remove device using mac %s from the Plugwise network",
-            call.data[ATTR_MAC_ADDRESS],
-        )
-        await remove_deleted_device(hass, call.data[ATTR_MAC_ADDRESS], config_entry)
+        mac = call.data[ATTR_MAC_ADDRESS]
+        try:
+            await api_stick.unregister_node(mac)
+        except NodeError as exc:
+            raise HomeAssistantError(
+                f"Plugwise device-removal with MAC {mac} failed due to NodeError"
+            ) from exc
+        await remove_deleted_device(hass, mac, config_entry)
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
@@ -192,7 +194,7 @@ async def remove_deleted_device(
         device_registry.async_update_device(
             device.id, remove_config_entry_id=entry.entry_id
         )
-        _LOGGER.debug("Removed Plugwise device with MAC %s from device_registry", mac)
+        _LOGGER.debug(f"Removed Plugwise device with MAC {mac} from device_registry")
 
 
 @callback
