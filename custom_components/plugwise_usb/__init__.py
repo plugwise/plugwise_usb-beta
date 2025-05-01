@@ -182,6 +182,13 @@ async def async_unload_entry(
     return unload
 
 
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Remove a config entry from a device."""
+    return True
+
+
 async def remove_deleted_device(
     hass: HomeAssistant,
     mac: str,
