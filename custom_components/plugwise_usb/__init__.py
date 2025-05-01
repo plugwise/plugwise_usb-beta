@@ -183,10 +183,19 @@ async def async_unload_entry(
 
 
 async def async_remove_config_entry_device(
-    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: dr.DeviceEntry
+    hass: HomeAssistant,
+    config_entry: PlugwiseUSBConfigEntry,
+    device_entry: dr.DeviceEntry,
 ) -> bool:
     """Remove a config entry from a device."""
-    return True
+    api_stick = config_entry.runtime_data[STICK]
+    return not any(
+        identifier
+        for identifier in device_entry.identifiers
+        if identifier[0] == DOMAIN and identifier[1] in (
+            str(api_stick.mac_stick), str(api_stick.mac_coordinator)
+        )
+    )
 
 
 async def remove_deleted_device(
