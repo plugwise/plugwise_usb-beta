@@ -200,11 +200,14 @@ async def async_remove_config_entry_device(
         try:
             await api_stick.unregister_node(mac)
         except NodeError:
-            _LOGGER.warning(
+            _LOGGER.error(
                 f"Plugwise device-removal with MAC {mac} failed due to NodeError"
             )
             return False
 
+        _LOGGER.debug(
+            f"Plugwise device with MAC {mac} removed"
+        )
         return True
 
     return False
