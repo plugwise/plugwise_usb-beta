@@ -130,7 +130,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             await api_stick.unregister_node(mac)
         except NodeError as exc:
             raise HomeAssistantError(
-                f"Plugwise device-removal with MAC {mac} failed due to NodeError"
+                f"Plugwise device {mac} removal failed with NodeError"
             ) from exc
         await remove_deleted_device(hass, mac, config_entry)
 
@@ -201,12 +201,12 @@ async def async_remove_config_entry_device(
             await api_stick.unregister_node(mac)
         except NodeError:
             _LOGGER.error(
-                f"Plugwise device-removal with MAC {mac} failed due to NodeError"
+                f"Plugwise device {mac} removal failed with NodeError"
             )
             return False
 
         _LOGGER.debug(
-            f"Plugwise device with MAC {mac} removed"
+            f"Plugwise device {mac} succesfully removed"
         )
         return True
 
@@ -225,7 +225,7 @@ async def remove_deleted_device(
         device_registry.async_update_device(
             device.id, remove_config_entry_id=entry.entry_id
         )
-        _LOGGER.debug(f"Removed Plugwise device with MAC {mac} from device_registry")
+        _LOGGER.debug(f"Plugwise device {mac} succesfully removed")
 
 
 @callback
