@@ -155,10 +155,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Enable/disable automatic joining of available devices when the network is up
     if config_entry.pref_disable_new_entities:
         _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
-        api_stick.accept_join_request = False
+        await api_stick.set_accept_join_request(False)
     else:
         _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
-        api_stick.accept_join_request = True
+        await api_stick.set_accept_join_request(True)
 
     return True
 
