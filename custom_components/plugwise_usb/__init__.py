@@ -115,12 +115,17 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def device_add(call: ServiceCall) -> None:
         """Manually add device to Plugwise zigbee network."""
-        if not await api_stick.register_node(call.data[ATTR_MAC_ADDRESS]):
-            return
+        mac = call.data[ATTR_MAC_ADDRESS]
+        try:
+            if not await api_stick.register_node(mac):
+                return
+        except NodeError as exc:
+            raise HomeAssistantError(
+                f"Adding Plugwise device ({mac}) failed: {exc}"
+            ) from exc
 
         _LOGGER.debug(
-            "Succesfully sent request to add device using mac %s from Plugwise network",
-            call.data[ATTR_MAC_ADDRESS],
+            f"Succesfully sent request to add device ({mac}) to Plugwise network"
         )
 
     async def device_remove(call: ServiceCall) -> None:
@@ -130,7 +135,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             await api_stick.unregister_node(mac)
         except NodeError as exc:
             raise HomeAssistantError(
-                f"Plugwise device {mac} removal failed with NodeError"
+                f"Plugwise device ({mac}) removal failed: {exc}"
             ) from exc
         await remove_deleted_device(hass, mac, config_entry)
 
