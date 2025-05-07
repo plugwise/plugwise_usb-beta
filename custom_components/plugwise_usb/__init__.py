@@ -60,10 +60,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     try:
         await api_stick.connect()
         await api_stick.initialize(create_root_cache_folder=True)
-    except StickError:
+    except StickError as exc:
         raise ConfigEntryNotReady(
             f"Failed to open connection to Plugwise USB stick at {config_entry.data[CONF_USB_PATH]}"
-        ) from StickError
+        ) from exc
 
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
@@ -101,9 +101,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     _LOGGER.info("Start to discover the Plugwise network coordinator (Circle+)")
     try:
         await api_stick.discover_coordinator(load=False)
-    except StickError:
+    except StickError as exc
         await api_stick.disconnect()
-        raise ConfigEntryNotReady("Failed to connect to Circle+") from StickError
+        raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
 
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
@@ -160,10 +160,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Enable/disable automatic joining of available devices when the network is up
     if config_entry.pref_disable_new_entities:
         _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
-        await api_stick.set_accept_join_request(False)
+        try:
+            await api_stick.set_accept_join_request(False)
+        except StickError as exc:
+            raise HomeAssistantError(f"Disabling auto-joining failed: {exc}") from exc
     else:
         _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
-        await api_stick.set_accept_join_request(True)
+        try:
+            await api_stick.set_accept_join_request(True)
+        except StickError as exc:
+            raise HomeAssistantError(f"Enabling auto-joining failed: {exc}") from exc
 
     return True
 
