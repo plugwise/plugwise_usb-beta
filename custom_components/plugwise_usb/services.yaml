@@ -2,10 +2,6 @@ device_add:
   fields:
     mac:
       example: 0123456789ABCDEF
-device_remove:
-  fields:
-    mac:
-      example: 0123456789ABCDEF
 configure_scan:
   fields:
     entity_id:
