@@ -112,9 +112,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Listen for entry updates
     config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
 
-    async def device_add(call: ServiceCall) -> None:
+    async def device_add(call: ServiceCall) -> bool:
         """Manually add device to Plugwise zigbee network."""
-        await api_stick.register_node(call.data[ATTR_MAC_ADDRESS])
+        try:
+            result = await api_stick.register_node(call.data[ATTR_MAC_ADDRESS])
+        except NodeError as exc:
+            raise HomeAssistantError(f"Failed to add device with {mac}: {exc}")
+        return result
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
