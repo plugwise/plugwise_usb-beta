@@ -113,10 +113,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Listen for entry updates
     config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
 
-    async def device_add(call: ServiceCall) -> bool:
+    async def device_add(call: ServiceCall) -> None:
         """Manually add device to Plugwise zigbee network."""
         await api_stick.register_node(call.data[ATTR_MAC_ADDRESS])
-        return True
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
