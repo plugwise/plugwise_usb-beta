@@ -113,37 +113,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Listen for entry updates
     config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
 
-    async def device_add(call: ServiceCall) -> None:
+    async def device_add(call: ServiceCall) -> bool:
         """Manually add device to Plugwise zigbee network."""
-        mac = call.data[ATTR_MAC_ADDRESS]
-        try:
-            if not await api_stick.register_node(mac):
-                return
-        except NodeError as exc:
-            raise HomeAssistantError(
-                f"Adding Plugwise device ({mac}) failed: {exc}"
-            ) from exc
-
-        _LOGGER.debug(
-            f"Succesfully sent request to add device ({mac}) to Plugwise network"
-        )
-
-    async def device_remove(call: ServiceCall) -> None:
-        """Manually remove device from Plugwise zigbee network."""
-        mac = call.data[ATTR_MAC_ADDRESS]
-        try:
-            await api_stick.unregister_node(mac)
-        except NodeError as exc:
-            raise HomeAssistantError(
-                f"Plugwise device ({mac}) removal failed: {exc}"
-            ) from exc
-        await remove_deleted_device(hass, mac, config_entry)
+        await api_stick.register_node(call.data[ATTR_MAC_ADDRESS])
+        return True
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_USB_DEVICE_REMOVE, device_remove, SERVICE_USB_DEVICE_SCHEMA
     )
 
     # Initiate background nodes discovery task
@@ -222,21 +198,6 @@ async def async_remove_config_entry_device(
         return True
 
     return False
-
-
-async def remove_deleted_device(
-    hass: HomeAssistant,
-    mac: str,
-    entry: PlugwiseUSBConfigEntry,
-) -> None:
-    """Cleanup removed Plugwise device."""
-    device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device({(DOMAIN, mac)})
-    if device:
-        device_registry.async_update_device(
-            device.id, remove_config_entry_id=entry.entry_id
-        )
-        _LOGGER.debug(f"Plugwise device {mac} succesfully removed")
 
 
 @callback
