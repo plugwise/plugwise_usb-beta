@@ -118,11 +118,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         _LOGGER.debug("Accept-join status: %s", api_stick.accept_join_request)
         if not api_stick.accept_join_request:
             raise HomeAssistantError("Device adding is blocked")
-        try:
-            result = await api_stick.register_node(mac)
-        except NodeError as exc:
-            raise HomeAssistantError(f"Failed to add device with {mac}: {exc}")
-        return result
+        return True
+        #try:
+        #    result = await api_stick.register_node(mac)
+        #except NodeError as exc:
+        #    raise HomeAssistantError(f"Failed to add device with {mac}: {exc}") from exc
+        #return result
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
