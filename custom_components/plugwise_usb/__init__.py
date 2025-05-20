@@ -115,6 +115,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     async def device_add(call: ServiceCall) -> bool:
         """Manually add device to Plugwise zigbee network."""
         mac = call.data[ATTR_MAC_ADDRESS]
+        _LOGGER.debug("Accept-join status: %s", api_stick.accept_join_request)
+        if not api_stick.accept_join_request:
+            raise HomeAssistantError("Device adding is blocked")
         try:
             result = await api_stick.register_node(mac)
         except NodeError as exc:
