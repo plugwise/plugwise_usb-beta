@@ -25,7 +25,7 @@
   "services": {
     "enable_auto_joining": {
       "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)",
-      "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat",
+      "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat"
     },
     "configure_scan": {
       "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
