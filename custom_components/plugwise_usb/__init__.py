@@ -18,8 +18,7 @@ from .const import (
     DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
-    SERVICE_USB_DEVICE_ADD,
-    SERVICE_USB_DEVICE_SCHEMA,
+    SERVICE_AUTO_JOIN,
     STICK,
 )
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -112,30 +111,22 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     # Listen for entry updates
     config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
 
-    async def device_add(call: ServiceCall) -> bool:
-        """Manually add device to Plugwise zigbee network."""
-        join_result = result = False
-        part_mac = call.data[ATTR_MAC_ADDRESS]
-        _LOGGER.debug("Accept-join status: %s", api_stick.accept_join_request)
+    async def enable_auto_joining(call: ServiceCall) -> bool:
+        """Enable auto-joining of devices to Plugwise zigbee network."""
         if not api_stick.accept_join_request:
-            raise HomeAssistantError("Device adding is blocked")
+            raise HomeAssistantError(
+                "Device joining is blocked, enable newly added entities"
+                + "under System options for the Integration"
+            )
 
-        #First enable automatic joining, it will turn off sometime after a restart/reload
         try:
-            join_result = await api_stick.set_accept_join_request(True)
+            result = await api_stick.set_accept_join_request(True)
         except (NodeError, StickError) as exc:
             raise HomeAssistantError(f"Failed to enable auto-joining: {exc}") from exc
-        if not join_result:
-            return False
-
-        try:
-            result = await api_stick.register_node(part_mac)
-        except NodeError as exc:
-            raise HomeAssistantError(f"Failed to add device {part_mac}: {exc}") from exc
         return result
 
     hass.services.async_register(
-        DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
+        DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining, schema=vol.Schema({}
     )
 
     # Initiate background nodes discovery task

@@ -1,7 +1,5 @@
-device_add:
-  fields:
-    mac:
-      example: 0123456789ABCDEF
+enable_auto_joining:
+    description: First enable auto-joining, then reset the Plugwise devices
 configure_scan:
   fields:
     entity_id:
