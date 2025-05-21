@@ -24,7 +24,7 @@
   },
   "services": {
     "enable_auto_joining": {
-      "name": "Enable Plugwise device auto-joining (temporary)",
+      "name": "Enable Plugwise device auto-joining (temporarily)",
       "description": "First enable this service then reset the Plugwise device(s) to join"
     },
     "configure_scan": {
