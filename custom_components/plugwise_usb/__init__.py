@@ -13,7 +13,6 @@ from plugwise_usb.api import NodeEvent
 from plugwise_usb.exceptions import NodeError, StickError
 
 from .const import (
-    ATTR_MAC_ADDRESS,
     CONF_USB_PATH,
     DOMAIN,
     NODES,
