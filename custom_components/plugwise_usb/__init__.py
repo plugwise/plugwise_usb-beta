@@ -125,9 +125,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             raise HomeAssistantError(f"Failed to enable auto-joining: {exc}") from exc
         return result
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining, schema=vol.Schema({})
-    )
+    hass.services.async_register(DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining)
 
     # Initiate background nodes discovery task
     config_entry.async_create_task(
