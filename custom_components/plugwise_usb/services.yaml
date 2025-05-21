@@ -1,5 +1,5 @@
 enable_auto_joining:
-    description: First enable auto-joining, then reset the Plugwise devices
+  description: First enable auto-joining, then reset the Plugwise devices
 configure_scan:
   fields:
     entity_id:
