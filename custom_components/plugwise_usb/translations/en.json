@@ -23,25 +23,9 @@
     }
   },
   "services": {
-    "device_add": {
-      "name": "Manually add a plugwise device",
-      "description": "Manually add a new plugwise device.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
-        }
-      }
-    },
-    "device_remove": {
-      "name": "Manually remove a plugwise device",
-      "description": "Remove and un-register specified device (MAC) from plugwise network.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
-        }
-      }
+    "enable_auto_joining": {
+      "name": "Enable Plugwise device auto-joining (temporary)",
+      "description": "First enable this service then reset the Plugwise device(s) to join",
     },
     "configure_scan": {
       "name": "Configure motion settings",
