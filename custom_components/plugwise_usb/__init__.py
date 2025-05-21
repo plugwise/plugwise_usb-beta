@@ -114,16 +114,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def device_add(call: ServiceCall) -> bool:
         """Manually add device to Plugwise zigbee network."""
-        mac = call.data[ATTR_MAC_ADDRESS]
+        join_result = result = False
+        part_mac = call.data[ATTR_MAC_ADDRESS]
         _LOGGER.debug("Accept-join status: %s", api_stick.accept_join_request)
         if not api_stick.accept_join_request:
             raise HomeAssistantError("Device adding is blocked")
-        return True
-        #try:
-        #    result = await api_stick.register_node(mac)
-        #except NodeError as exc:
-        #    raise HomeAssistantError(f"Failed to add device with {mac}: {exc}") from exc
-        #return result
+
+        #First enable automatic joining, it will turn off sometime after a restart/reload
+        try:
+            join_result = await api_stick.set_accept_join_request(True)
+        except (NodeError, StickError) as exc:
+            raise HomeAssistantError(f"Failed to enable auto-joining: {exc}") from exc
+        if not join_result:
+            return False
+
+        try:
+            result = await api_stick.register_node(part_mac)
+        except NodeError as exc:
+            raise HomeAssistantError(f"Failed to add device {part_mac}: {exc}") from exc
+        return result
 
     hass.services.async_register(
         DOMAIN, SERVICE_USB_DEVICE_ADD, device_add, SERVICE_USB_DEVICE_SCHEMA
