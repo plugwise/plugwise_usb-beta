@@ -126,7 +126,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         return result
 
     hass.services.async_register(
-        DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining, schema=vol.Schema({}
+        DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining, schema=vol.Schema({})
     )
 
     # Initiate background nodes discovery task
