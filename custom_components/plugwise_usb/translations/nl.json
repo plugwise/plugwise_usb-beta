@@ -23,25 +23,9 @@
     }
   },
   "services": {
-    "device_add": {
-      "name": "Voeg handmatig een plugwise apparaat toe",
-      "description": "Voegt handmatig een nieuw plugwise apparaat toe.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
-        }
-      }
-    },
-    "device_remove": {
-      "name": "Verwijder handmatig een plugwise apparaat",
-      "description": "Verwijdert een plugwise apparaat.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
-        }
-      }
+    "enable_auto_joining": {
+      "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)",
+      "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat",
     },
     "configure_scan": {
       "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
