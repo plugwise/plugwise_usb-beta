@@ -115,7 +115,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         if not api_stick.accept_join_request:
             raise HomeAssistantError(
                 "Device joining is blocked, enable newly added entities"
-                + "under System options for the Integration"
+                + " under System options for the Integration"
             )
 
         try:
@@ -192,12 +192,12 @@ async def async_remove_config_entry_device(
             await api_stick.unregister_node(mac)
         except NodeError:
             _LOGGER.error(
-                f"Plugwise device {mac} removal failed with NodeError"
+                "Plugwise device %s removal failed with NodeError", mac
             )
             return False
 
         _LOGGER.debug(
-            f"Plugwise device {mac} successfully removed"
+            "Plugwise device %s successfully removed", mac
         )
         return True
 
