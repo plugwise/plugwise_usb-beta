@@ -5,11 +5,13 @@
 ### v0.50.0
 
 - Link to plugwise_usb v0.40.0 - fully reworked [async version](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.40.0)
+- Rework custom_component code to async
 - Replace the device-add service by the enable auto-joining service
 - Remove device-remove service, remove a device via its DELETE-button (shown in HA)
 - Import and use DeviceInfo, add via_device = Stick, the other devices are linked to the Stick
 - Implement a [HA Core improvement](https://github.com/home-assistant/core/pull/138039)
 - Add support for devices showing energy production data
+- Add initial support for Scan and Sense (untested)
 - Bump python to `3.13`
 - Improve test-code
 - Fix `pre-commit` `prettier` (replace with `biome`)
