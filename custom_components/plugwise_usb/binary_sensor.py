@@ -1,140 +1,123 @@
 """Plugwise USB Binary Sensor component for Home Assistant."""
+
 from __future__ import annotations
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_platform
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.nodes import PlugwiseNode
+from dataclasses import dataclass
+from datetime import timedelta
+import logging
 
-from . import PlugwiseUSBEntity
-from .const import (
-    ATTR_SCAN_DAYLIGHT_MODE,
-    ATTR_SCAN_RESET_TIMER,
-    ATTR_SCAN_SENSITIVITY_MODE,
-    ATTR_SED_CLOCK_INTERVAL,
-    ATTR_SED_CLOCK_SYNC,
-    ATTR_SED_MAINTENANCE_INTERVAL,
-    ATTR_SED_SLEEP_FOR,
-    ATTR_SED_STAY_ACTIVE,
-    CB_NEW_NODE,
-    DOMAIN,
-    LOGGER,
-    SERVICE_USB_SCAN_CONFIG,
-    SERVICE_USB_SCAN_CONFIG_SCHEMA,
-    SERVICE_USB_SED_BATTERY_CONFIG,
-    SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-    STICK,
-    USB_MOTION_ID,
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+    BinarySensorEntityDescription,
 )
-from .models import PW_BINARY_SENSOR_TYPES, PlugwiseBinarySensorEntityDescription
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from plugwise_usb.api import NodeEvent, NodeFeature
 
-# mypy: disable-error-code="union-attr"
+from .const import NODES, STICK, UNSUB_NODE_LOADED
+from .coordinator import PlugwiseUSBConfigEntry
+from .entity import PlugwiseUSBEntity, PlugwiseUSBEntityDescription
+
+_LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 2
+SCAN_INTERVAL = timedelta(seconds=60)
 
 
-PARALLEL_UPDATES = 0
+@dataclass(kw_only=True)
+class PlugwiseBinarySensorEntityDescription(
+    PlugwiseUSBEntityDescription, BinarySensorEntityDescription
+):
+    """Describes Plugwise binary sensor entity."""
+
+    api_attribute: str = ""
+
+
+BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
+    PlugwiseBinarySensorEntityDescription(
+        key="motion",
+        name=None,
+        device_class=BinarySensorDeviceClass.MOTION,
+        node_feature=NodeFeature.MOTION,
+        api_attribute="state",
+    ),
+)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    _hass: HomeAssistant,
+    config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Plugwise USB binary sensor based on config_entry."""
-    api_stick = hass.data[DOMAIN][config_entry.entry_id][STICK]
-    platform = entity_platform.current_platform.get()
 
-    async def async_add_binary_sensors(mac: str):
-        """Add plugwise binary sensors for device."""
-        entities: list[USBBinarySensor] = []
-        entities.extend(
-            [
-                USBBinarySensor(api_stick.devices[mac], description)
-                for description in PW_BINARY_SENSOR_TYPES
-                if description.key in api_stick.devices[mac].features
-            ]
-        )
+    async def async_add_binary_sensor(node_event: NodeEvent, mac: str) -> None:
+        """Initialize DUC for binary sensor."""
+        if node_event != NodeEvent.LOADED:
+            return
+        entities: list[PlugwiseUSBEntity] = []
+        if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
+            _LOGGER.debug(
+                "Add binary_sensor entities for %s | duc=%s", mac, node_duc.name
+            )
+            entities.extend(
+                [
+                    PlugwiseUSBBinarySensor(node_duc, entity_description)
+                    for entity_description in BINARY_SENSOR_TYPES
+                    if entity_description.node_feature in node_duc.node.features
+                ]
+            )
         if entities:
-            async_add_entities(entities)
+            async_add_entities(entities, update_before_add=True)
 
-        if USB_MOTION_ID in api_stick.devices[mac].features:
-            LOGGER.debug("Add binary_sensors for %s", mac)
+    api_stick = config_entry.runtime_data[STICK]
 
-            # Register services
-            platform.async_register_entity_service(
-                SERVICE_USB_SCAN_CONFIG,
-                SERVICE_USB_SCAN_CONFIG_SCHEMA,
-                "_service_scan_config",
-            )
-            # mypy ignore because of error: Item "None" of "Optional[EntityPlatform]" has no attribute "async_register_entity_service" [union-attr]
-            platform.async_register_entity_service(
-                SERVICE_USB_SED_BATTERY_CONFIG,
-                SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA,
-                "_service_sed_battery_config",
-            )
-            # mypy ignore because of error: Item "None" of "Optional[EntityPlatform]" has no attribute "async_register_entity_service" [union-attr]
+    # Listen for loaded nodes
+    config_entry.runtime_data[Platform.BINARY_SENSOR] = {}
+    config_entry.runtime_data[Platform.BINARY_SENSOR][UNSUB_NODE_LOADED] = (
+        api_stick.subscribe_to_node_events(
+            async_add_binary_sensor,
+            (NodeEvent.LOADED,),
+        )
+    )
 
-    for mac in hass.data[DOMAIN][config_entry.entry_id][Platform.BINARY_SENSOR]:
-        hass.async_create_task(async_add_binary_sensors(mac))
-
-    def discoved_device(mac: str):
-        """Add binary sensors for newly discovered device."""
-        hass.async_create_task(async_add_binary_sensors(mac))
-
-    # Listen for discovered nodes
-    api_stick.subscribe_stick_callback(discoved_device, CB_NEW_NODE)
+    # load current nodes
+    for mac, node in api_stick.nodes.items():
+        if node.is_loaded:
+            await async_add_binary_sensor(NodeEvent.LOADED, mac)
 
 
-class USBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):  # type: ignore[misc]
+async def async_unload_entry(
+    _hass: HomeAssistant,
+    config_entry: PlugwiseUSBConfigEntry,
+) -> None:
+    """Unload a config entry."""
+    config_entry.runtime_data[Platform.BINARY_SENSOR][UNSUB_NODE_LOADED]()
+
+
+class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     """Representation of a Plugwise USB Binary Sensor."""
 
-    def __init__(
-        self, node: PlugwiseNode, description: PlugwiseBinarySensorEntityDescription
-    ) -> None:
-        """Initialize a binary sensor entity."""
-        super().__init__(node, description)
-
-    @property
-    def is_on(self) -> bool:
-        """Return true if the binary_sensor is on."""
-        return getattr(self._node, self.entity_description.state_request_method)
-
-    def _service_scan_config(self, **kwargs):
-        """Service call to configure motion sensor of Scan device."""
-        sensitivity_mode = kwargs.get(ATTR_SCAN_SENSITIVITY_MODE)
-        reset_timer = kwargs.get(ATTR_SCAN_RESET_TIMER)
-        daylight_mode = kwargs.get(ATTR_SCAN_DAYLIGHT_MODE)
-        LOGGER.debug(
-            "Configure Scan device '%s': sensitivity='%s', reset timer='%s', daylight mode='%s'",
-            self.name,
-            sensitivity_mode,
-            str(reset_timer),
-            str(daylight_mode),
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        data = self.coordinator.data.get(self.entity_description.node_feature, None)
+        if data is None:
+            _LOGGER.debug(
+                "No %s binary sensor data for %s",
+                self.entity_description.node_feature,
+                self._node_info.mac,
+            )
+            return
+        if self.coordinator.data[self.entity_description.node_feature] is None:
+            _LOGGER.info(
+                "No binary sensor data for %s",
+                str(self.entity_description.node_feature),
+            )
+            return
+        self._attr_is_on = getattr(
+            self.coordinator.data[self.entity_description.node_feature],
+            self.entity_description.api_attribute,
         )
-        self._node.Configure_scan(reset_timer, sensitivity_mode, daylight_mode)
-
-    def _service_sed_battery_config(self, **kwargs):
-        """Configure battery powered (sed) device service call."""
-        stay_active = kwargs.get(ATTR_SED_STAY_ACTIVE)
-        sleep_for = kwargs.get(ATTR_SED_SLEEP_FOR)
-        maintenance_interval = kwargs.get(ATTR_SED_MAINTENANCE_INTERVAL)
-        clock_sync = kwargs.get(ATTR_SED_CLOCK_SYNC)
-        clock_interval = kwargs.get(ATTR_SED_CLOCK_INTERVAL)
-        LOGGER.debug(
-            "Configure SED device '%s': stay active='%s', sleep for='%s', maintenance interval='%s', clock sync='%s', clock interval='%s'",
-            self.name,
-            str(stay_active),
-            str(sleep_for),
-            str(maintenance_interval),
-            str(clock_sync),
-            str(clock_interval),
-        )
-        self._node.Configure_SED(
-            stay_active,
-            maintenance_interval,
-            sleep_for,
-            clock_sync,
-            clock_interval,
-        )
+        self.async_write_ha_state()

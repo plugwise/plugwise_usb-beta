@@ -23,25 +23,9 @@
     }
   },
   "services": {
-    "device_add": {
-      "name": "Voeg handmatig een plugwise apparaat toe",
-      "description": "Voegt handmatig een nieuw plugwise apparaat toe.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
-        }
-      }
-    },
-    "device_remove": {
-      "name": "Verwijder handmatig een plugwise apparaat",
-      "description": "Verwijdert een plugwise apparaat.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
-        }
-      }
+    "enable_auto_joining": {
+      "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)",
+      "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat"
     },
     "configure_scan": {
       "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
@@ -91,8 +75,87 @@
         },
         "clock_interval": {
           "name": "Interval kloksyncronisatie",
-          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als clock_sync gezet is."
+          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als Clock-sync gezet is."
         }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "motion": {
+        "name": "Beweging"
+      }
+    },
+    "sensor": {
+      "power_last_second": {
+        "name": "Energie"
+      },
+      "power_last_8_seconds": {
+        "name": "Energie laatste 8 seconden"
+      },
+      "energy_hour_consumption": {
+        "name": "Energie consumptie dit uur"
+      },
+      "energy_day_consumption": {
+        "name": "Energie consumptie vandaag"
+      },
+      "energy_hour_production": {
+        "name": "Energie productie dit uur"
+      },
+      "energy_day_production": {
+        "name": "Energie productie vandaag"
+      },
+      "last_seen": {
+        "name": "Laatst gezien"
+      },
+      "ping_rrt": {
+        "name": "Netwerk retourtijd"
+      },
+      "ping_rssi_in": {
+        "name": "RSSI-niveau inkomend"
+      },
+      "ping_rssi_out": {
+        "name": "RSSI-niveau uitgaand"
+      },
+      "temperature": {
+        "name": "Temperatuur"
+      },
+      "humidity": {
+        "name": "Luchtvochtigheid"
+      },
+      "awake_timestamp": {
+        "name": "Laatst wakker"
+      },
+      "awake_reason": {
+        "name": "Wakker door"
+      }
+    },
+    "switch": {
+      "relay": {
+        "name": "Schakelaar"
+      },
+      "relay_init": {
+        "name": "Initialisatie schakelaar"
+      },
+      "motion_daylight_mode": {
+        "name": "Daglichtmodus"
+      }
+    },
+    "number": {
+      "motion_reset_timer": {
+        "name": "Bewegingsreset timer"
+      },
+      "sed_maintenance_interval": {
+        "name": "Onderhoudsinterval"
+      },
+      "sed_sleep_duration": {
+        "name": "Slaapduur"
+      },
+      "sed_awake_duration": {
+        "name": "Wakker duur"
+      },
+      "sed_clock_interval": {
+        "name": "Klokinterval"
       }
     }
   }

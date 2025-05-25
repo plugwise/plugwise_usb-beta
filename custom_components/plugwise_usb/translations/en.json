@@ -23,25 +23,9 @@
     }
   },
   "services": {
-    "device_add": {
-      "name": "Manually add a plugwise device",
-      "description": "Manually add a new plugwise device.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
-        }
-      }
-    },
-    "device_remove": {
-      "name": "Manually remove a plugwise device",
-      "description": "Remove and un-register specified device (MAC) from plugwise network.",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
-        }
-      }
+    "enable_auto_joining": {
+      "name": "Enable Plugwise device auto-joining (temporarily)",
+      "description": "First enable this service then reset the Plugwise device(s) to join"
     },
     "configure_scan": {
       "name": "Configure motion settings",
@@ -91,8 +75,87 @@
         },
         "clock_interval": {
           "name": "Clock-sync interval",
-          "description": "Interval the device will synchronize its internal clock. Only useful if clock_sync is set to True."
+          "description": "Interval the device will synchronize its internal clock. Only useful if Clock-sync is set to True."
         }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "motion": {
+        "name": "Motion"
+      }
+    },
+    "sensor": {
+      "power_last_second": {
+        "name": "Power"
+      },
+      "power_last_8_seconds": {
+        "name": "Power usage last 8 seconds"
+      },
+      "energy_hour_consumption": {
+        "name": "Energy consumption this hour"
+      },
+      "energy_day_consumption": {
+        "name": "Energy consumption today"
+      },
+      "energy_hour_production": {
+        "name": "Energy production this hour"
+      },
+      "energy_day_production": {
+        "name": "Energy production today"
+      },
+      "last_seen": {
+        "name": "Last seen"
+      },
+      "ping_rrt": {
+        "name": "Network roundtrip time"
+      },
+      "ping_rssi_in": {
+        "name": "RSSI level inbound"
+      },
+      "ping_rssi_out": {
+        "name": "RSSI level outbound"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "awake_timestamp": {
+        "name": "Last awake"
+      },
+      "awake_reason": {
+        "name": "Awake reason"
+      }
+    },
+    "switch": {
+      "relay": {
+        "name": "Relay"
+      },
+      "relay_init": {
+        "name": "Relay startup"
+      },
+      "motion_daylight_mode": {
+        "name": "Daylight mode"
+      }
+    },
+    "number": {
+      "motion_reset_timer": {
+        "name": "Motion reset timer"
+      },
+      "sed_maintenance_interval": {
+        "name": "Maintenance interval"
+      },
+      "sed_sleep_duration": {
+        "name": "Sleep duration"
+      },
+      "sed_awake_duration": {
+        "name": "Awake duration"
+      },
+      "sed_clock_interval": {
+        "name": "Clock interval"
       }
     }
   }

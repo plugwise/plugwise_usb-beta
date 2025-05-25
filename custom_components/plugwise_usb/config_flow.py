@@ -1,4 +1,5 @@
 """Config flow for Plugwise USB integration."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -7,31 +8,27 @@ import serial.tools.list_ports
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.config_entries import ConfigFlow
+from homeassistant.config_entries import SOURCE_USER, ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from plugwise_usb import Stick
-from plugwise_usb.exceptions import (
-    NetworkDown,
-    PortError,
-    StickInitError,
-    TimeoutException,
-)
+from plugwise_usb.exceptions import StickError
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
 
 @callback
 def plugwise_stick_entries(hass):
     """Return existing connections for Plugwise USB-stick domain."""
-    sticks = []
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        sticks.append(entry.data.get(CONF_USB_PATH))
-    return sticks
+
+    return [
+        entry.data.get(CONF_USB_PATH)
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    ]
 
 
-async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], Any]:
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], str]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -40,26 +37,29 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
         errors[CONF_BASE] = "already_configured"
         return errors, None
 
-    api_stick = await self.async_add_executor_job(Stick, device_path)
+    api_stick = Stick(device_path, cache_enabled=False)
+    mac = ""
     try:
-        await self.async_add_executor_job(api_stick.connect)
-        await self.async_add_executor_job(api_stick.initialize_stick)
-        await self.async_add_executor_job(api_stick.disconnect)
-    except PortError:
+        await api_stick.connect()
+    except StickError:
         errors[CONF_BASE] = "cannot_connect"
-    except StickInitError:
-        errors[CONF_BASE] = "stick_init"
-    except NetworkDown:
-        errors[CONF_BASE] = "network_down"
-    except TimeoutException:
-        errors[CONF_BASE] = "network_timeout"
-    return errors, api_stick
+    else:
+        try:
+            await api_stick.initialize()
+            mac = api_stick.mac_stick
+        except StickError:
+            errors[CONF_BASE] = "stick_init"
+    await api_stick.disconnect()
+    return errors, mac
 
 
 class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Plugwise USB."""
 
     VERSION = 1
+    MINOR_VERSION = 0
+
+    # no async_step_zeroconf this USB is physical
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -84,14 +84,17 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, port.device
             )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(api_stick.mac)
+                await self.async_set_unique_id(
+                    unique_id=mac_stick, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
-            step_id="user",
+            step_id=SOURCE_USER,
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
             ),
@@ -107,20 +110,16 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            errors, api_stick = await validate_usb_connection(self.hass, device_path)
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(api_stick.mac)
+                await self.async_set_unique_id(mac_stick)
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
         return self.async_show_form(
-            step_id="manual_path",
+            step_id=MANUAL_PATH,
             data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_USB_PATH, default="/dev/ttyUSB0" or vol.UNDEFINED
-                    ): str
-                }
+                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
             errors=errors,
         )
