@@ -12,7 +12,7 @@ from homeassistant.components.number import (
     NumberEntityDescription,
 )
 from homeassistant.const import EntityCategory, Platform, UnitOfTime
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
