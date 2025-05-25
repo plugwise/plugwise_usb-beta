@@ -1,4 +1,4 @@
-"""Plugwise USN Sensor component for Home Assistant."""
+"""Plugwise USB Sensor component for Home Assistant."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Plugwise USB Switch component for HomeAssistant."""
+"""Plugwise USB Number component for HomeAssistant."""
 
 from __future__ import annotations
 

@@ -93,7 +93,7 @@ async def async_unload_entry(
     config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
-    config_entry.runtime_data[Platform.SENSOR][UNSUB_NODE_LOADED]()
+    config_entry.runtime_data[Platform.BINARY_SENSOR][UNSUB_NODE_LOADED]()
 
 
 class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):

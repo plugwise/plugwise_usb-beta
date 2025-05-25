@@ -1,4 +1,4 @@
-"""Tests for the ezbeq integration setup."""
+"""Tests for the Plugwise USB beta integration setup."""
 
 import pytest
 

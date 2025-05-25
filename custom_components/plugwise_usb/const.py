@@ -32,7 +32,6 @@ CONF_USB_PATH: Final = "usb_path"
 ATTR_MAC_ADDRESS: Final = "mac"
 
 SERVICE_AUTO_JOIN: Final = "enable_auto_joining"
-SERVICE_USB_DEVICE_REMOVE: Final = "device_remove"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {vol.Required(ATTR_MAC_ADDRESS): cv.string}
 )

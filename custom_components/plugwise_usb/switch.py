@@ -136,7 +136,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
             )
             return
         self._attr_is_on = getattr(
-            self.coordinator.data[self.entity_description.node_feature],
+            data,
             self.entity_description.api_attribute,
         )
         self.async_write_ha_state()
