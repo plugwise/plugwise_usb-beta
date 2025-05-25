@@ -197,7 +197,7 @@ async def async_remove_config_entry_device(
             return False
 
         _LOGGER.debug(
-            f"Plugwise device {mac} succesfully removed"
+            f"Plugwise device {mac} successfully removed"
         )
         return True
 
