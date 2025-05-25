@@ -174,7 +174,6 @@ async def async_unload_entry(
 
 
 async def async_remove_config_entry_device(
-    hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
     device_entry: dr.DeviceEntry,
 ) -> bool:
