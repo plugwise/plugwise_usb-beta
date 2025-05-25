@@ -100,7 +100,6 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -141,7 +140,6 @@ async def async_setup_entry(
 
 
 async def async_unload_entry(
-    hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
