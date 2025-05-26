@@ -29,7 +29,7 @@
     },
     "enable_production":{
       "name": "Enable production measurements",
-      "description": "Enter the mac of the Node:"
+      "description": "Enter the mac of the Node:",
       "fields": {
         "mac": {
           "name": "MAC address",
@@ -39,7 +39,7 @@
     },
     "disable_production":{
       "name": "Disable production measurements, return to consumption measurements only",
-      "description": "Enter the mac of the Node:"
+      "description": "Enter the mac of the Node:",
       "fields": {
         "mac": {
           "name": "MAC address",
