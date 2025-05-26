@@ -4,8 +4,8 @@ import asyncio
 import logging
 from typing import Any, TypedDict
 
-from homeassistant.const import ATTR_MAC_ADDRESS
 from homeassistant.core import HomeAssistant, ServiceCall, callback
+from homeassistant.components.device_tracker import ATTR_MAC
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
@@ -130,7 +130,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def enable_production(call: ServiceCall) -> bool:
         """Enable production-measurement for a Node."""
-        mac = call.data[ATTR_MAC_ADDRESS]
+        mac = call.data[ATTR_MAC]
         try:
             result = await api_stick.set_measure_interval(mac, 60, 60)
         except (NodeError, StickError) as exc:
@@ -139,7 +139,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def disable_production(call: ServiceCall) -> bool:
         """Disable production-measurement for a Node."""
-        mac = call.data[ATTR_MAC_ADDRESS]
+        mac = call.data[ATTR_MAC]
         try:
             result = await api_stick.set_measure_interval(mac, 60, 0)
         except (NodeError, StickError) as exc:
