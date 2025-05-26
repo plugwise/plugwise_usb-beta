@@ -27,6 +27,26 @@
       "name": "Enable Plugwise device auto-joining (temporarily)",
       "description": "First enable this service then reset the Plugwise device(s) to join"
     },
+    "enable_production":{
+      "name": "Enable production measurements",
+      "description": "Enter the mac of the Node:"
+      "fields": {
+        "mac": {
+          "name": "MAC address",
+          "description": "The full 16 character MAC address of the plugwise device."
+        }
+      }
+    },
+    "disable_production":{
+      "name": "Disable production measurements, return to consumption measurements only",
+      "description": "Enter the mac of the Node:"
+      "fields": {
+        "mac": {
+          "name": "MAC address",
+          "description": "The full 16 character MAC address of the plugwise device."
+        }
+      }
+    },
     "configure_scan": {
       "name": "Configure motion settings",
       "description": "Configure the motion settings for a Plugwise Scan device. The new configuration will be send soon as the Scan devices is awake to receive configuration changes. For quick activation press the local button to awake the device.",

@@ -32,6 +32,8 @@ CONF_USB_PATH: Final = "usb_path"
 ATTR_MAC_ADDRESS: Final = "mac"
 
 SERVICE_AUTO_JOIN: Final = "enable_auto_joining"
+SERVICE_DISABLE_PRODUCTION: Final = "disable_production"
+SERVICE_ENABLE_PRODUCTION: Final = "enable_production"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {vol.Required(ATTR_MAC_ADDRESS): cv.string}
 )

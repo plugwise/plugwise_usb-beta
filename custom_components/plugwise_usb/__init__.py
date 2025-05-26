@@ -4,6 +4,7 @@ import asyncio
 import logging
 from typing import Any, TypedDict
 
+from homeassistant.const import ATTR_MAC_ADDRESS
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -18,6 +19,9 @@ from .const import (
     NODES,
     PLUGWISE_USB_PLATFORMS,
     SERVICE_AUTO_JOIN,
+    SERVICE_DISABLE_PRODUCTION,
+    SERVICE_ENABLE_PRODUCTION,
+    SERVICE_USB_DEVICE_SCHEMA,
     STICK,
 )
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -124,7 +128,31 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             raise HomeAssistantError(f"Failed to enable auto-joining: {exc}") from exc
         return result
 
+    async def enable_production(call: ServiceCall) -> bool:
+        """Enable production-measurement for a Node."""
+        mac = call.data[ATTR_MAC_ADDRESS]
+        try:
+            result = await api_stick.set_measure_interval(mac, 60, 60)
+        except (NodeError, StickError) as exc:
+            raise HomeAssistantError(f"Failed to enable production: {exc}") from exc
+        return result
+
+    async def disable_production(call: ServiceCall) -> bool:
+        """Disable production-measurement for a Node."""
+        mac = call.data[ATTR_MAC_ADDRESS]
+        try:
+            result = await api_stick.set_measure_interval(mac, 60, 0)
+        except (NodeError, StickError) as exc:
+            raise HomeAssistantError(f"Failed to disable production: {exc}") from exc
+        return result
+
     hass.services.async_register(DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining)
+    hass.services.async_register(
+        DOMAIN, SERVICE_ENABLE_PRODUCTION, enable_production, SERVICE_USB_DEVICE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_DISABLE_PRODUCTION, disable_production, SERVICE_USB_DEVICE_SCHEMA
+    )
 
     # Initiate background nodes discovery task
     config_entry.async_create_task(
