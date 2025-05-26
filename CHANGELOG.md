@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### v0.50.1
+
+- Fix error in Number platform
+
 ### v0.50.0
 
 - Link to plugwise_usb v0.40.0 - fully reworked [async version](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.40.0)
