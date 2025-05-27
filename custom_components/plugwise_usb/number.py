@@ -12,7 +12,7 @@ from homeassistant.components.number import (
     NumberEntityDescription,
 )
 from homeassistant.const import EntityCategory, Platform, UnitOfTime
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
 
@@ -100,6 +100,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
 
 
 async def async_setup_entry(
+    _hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
