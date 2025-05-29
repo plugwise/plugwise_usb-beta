@@ -4,8 +4,8 @@ import asyncio
 import logging
 from typing import Any, TypedDict
 
-from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.components.device_tracker import ATTR_MAC
+from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
