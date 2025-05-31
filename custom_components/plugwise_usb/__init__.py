@@ -129,7 +129,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         return result
 
     async def enable_production(call: ServiceCall) -> bool:
-        """Enable production-measurement for a Node."""
+        """Enable production-logging for a Node."""
         mac = call.data[ATTR_MAC]
         try:
             result = await api_stick.set_energy_intervals(mac, 60, 60)
@@ -138,7 +138,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         return result
 
     async def disable_production(call: ServiceCall) -> bool:
-        """Disable production-measurement for a Node."""
+        """Disable production-logging for a Node."""
         mac = call.data[ATTR_MAC]
         try:
             result = await api_stick.set_energy_intervals(mac, 60, 0)
