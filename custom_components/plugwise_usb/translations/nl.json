@@ -28,8 +28,8 @@
       "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat"
     },
     "enable_production":{
-      "name": "Zet productie-metingen aan",
-      "description": "Voer het mac-adres van de Node in:",
+      "name": "Zet productie-loggen aan",
+      "description": "Voer het mac-adres van de Node in: (bijv.: mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC adres",
@@ -38,8 +38,8 @@
       }
     },
     "disable_production":{
-      "name": "Zet productie-metingen uit",
-      "description": "Voer het mac-adres van de Node in:",
+      "name": "Zet productie-loggen uit",
+      "description": "Voer het mac-adres van de Node in: (bijv.: mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC adres",

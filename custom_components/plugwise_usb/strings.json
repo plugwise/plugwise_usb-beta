@@ -28,8 +28,8 @@
       "description": "First enable this service then reset the Plugwise device(s) to join"
     },
     "enable_production":{
-      "name": "Enable production measurements",
-      "description": "Enter the mac of the Node:",
+      "name": "Enable production logging",
+      "description": "Enter the mac of the Node: (example: mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC address",
@@ -38,8 +38,8 @@
       }
     },
     "disable_production":{
-      "name": "Disable production measurements, return to consumption measurements only",
-      "description": "Enter the mac of the Node:",
+      "name": "Disable production logging, return to consumption measurements only",
+      "description": "Enter the mac of the Node: (example: mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC address",

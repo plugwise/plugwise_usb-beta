@@ -35,7 +35,12 @@ SERVICE_AUTO_JOIN: Final = "enable_auto_joining"
 SERVICE_DISABLE_PRODUCTION: Final = "disable_production"
 SERVICE_ENABLE_PRODUCTION: Final = "enable_production"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
-    {vol.Required(ATTR_MAC_ADDRESS): cv.string}
+    {
+        vol.Required(ATTR_MAC_ADDRESS): vol.All(
+            cv.string,
+            vol.Match(r"^[0-9A-Fa-f]{16}$")
+        )
+    }
 )
 
 # USB SED (battery powered) device constants
