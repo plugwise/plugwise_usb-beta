@@ -5,8 +5,8 @@ from typing import Final
 
 import voluptuous as vol
 
-from homeassistant.const import Platform
 from homeassistant.components.device_tracker import ATTR_MAC
+from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
 
 DOMAIN: Final[str] = "plugwise_usb"
