@@ -29,7 +29,7 @@
     },
     "enable_production":{
       "name": "Zet productie-loggen aan",
-      "description": "Voer het mac-adres van de Node in: (bijv.: mac: 0123456789ABSDEF)",
+      "description": "Voer het mac-adres van de Node in: (data = mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC adres",
@@ -38,8 +38,8 @@
       }
     },
     "disable_production":{
-      "name": "Zet productie-loggen uit",
-      "description": "Voer het mac-adres van de Node in: (bijv.: mac: 0123456789ABSDEF)",
+      "name": "Zet productie-loggen uit, alleen consumptie-loggen actief",
+      "description": "Voer het mac-adres van de Node in: (data = mac: 0123456789ABSDEF)",
       "fields": {
         "mac": {
           "name": "MAC adres",

@@ -29,7 +29,7 @@
     },
     "enable_production":{
       "name": "Enable production logging",
-      "description": "Enter the mac of the Node: (example: mac: 0123456789ABSDEF)",
+      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
           "name": "MAC address",
@@ -38,8 +38,8 @@
       }
     },
     "disable_production":{
-      "name": "Disable production logging, return to consumption measurements only",
-      "description": "Enter the mac of the Node: (example: mac: 0123456789ABSDEF)",
+      "name": "Disable production logging, return to consumption logging only",
+      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
           "name": "MAC address",
