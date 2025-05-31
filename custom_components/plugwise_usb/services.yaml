@@ -1,5 +1,15 @@
 enable_auto_joining:
   description: First enable auto-joining, then reset the Plugwise devices
+enable_production:
+  description: "Enable production logging for a Plugwise USB node by MAC address"
+  fields:
+    mac:
+      example: "data: {mac: 0123456789ABCDEF}"
+disable_production:
+  description: "Disable production logging for a Plugwise USB node by MAC address"
+  fields:
+    mac:
+      example: "data: {mac: 0123456789ABCDEF}"
 configure_scan:
   fields:
     entity_id:

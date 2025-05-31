@@ -2,6 +2,11 @@
 
 ## Versions from 0.4x
 
+### v0.51.0
+
+- Bump plugwise to [v0.41.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.41.0)
+- Implement services for enabling/disabling of production logging ([#247](https://github.com/plugwise/plugwise_usb-beta/pull/247))
+
 ### v0.50.1
 
 - Fix error in Number platform
