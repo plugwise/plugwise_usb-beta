@@ -132,7 +132,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         """Enable production-measurement for a Node."""
         mac = call.data[ATTR_MAC]
         try:
-            result = await api_stick.set_measure_interval(mac, 60, 60)
+            result = await api_stick.set_energy_intervals(mac, 60, 60)
         except (NodeError, StickError) as exc:
             raise HomeAssistantError(f"Failed to enable production: {exc}") from exc
         return result
@@ -141,7 +141,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         """Disable production-measurement for a Node."""
         mac = call.data[ATTR_MAC]
         try:
-            result = await api_stick.set_measure_interval(mac, 60, 0)
+            result = await api_stick.set_energy_intervals(mac, 60, 0)
         except (NodeError, StickError) as exc:
             raise HomeAssistantError(f"Failed to disable production: {exc}") from exc
         return result
