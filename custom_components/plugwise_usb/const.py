@@ -6,6 +6,7 @@ from typing import Final
 import voluptuous as vol
 
 from homeassistant.const import Platform
+from homeassistant.components.device_tracker import ATTR_MAC
 from homeassistant.helpers import config_validation as cv
 
 DOMAIN: Final[str] = "plugwise_usb"
@@ -28,13 +29,12 @@ PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
     Platform.SWITCH,
 ]
 CONF_USB_PATH: Final[str] = "usb_path"
-ATTR_MAC_ADDRESS: Final[str] = "mac"
 SERVICE_AUTO_JOIN: Final[str] = "enable_auto_joining"
 SERVICE_DISABLE_PRODUCTION: Final[str] = "disable_production"
 SERVICE_ENABLE_PRODUCTION: Final[str] = "enable_production"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {
-        vol.Required(ATTR_MAC_ADDRESS): vol.All(
+        vol.Required(ATTR_MAC): vol.All(
             cv.string,
             vol.Match(r"^[0-9A-Fa-f]{16}$")
         )
