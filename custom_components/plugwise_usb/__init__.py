@@ -164,7 +164,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         DOMAIN, SERVICE_DISABLE_PRODUCTION, disable_production, SERVICE_USB_DEVICE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_DISABLE_PRODUCTION, reset_energy_logs, SERVICE_USB_DEVICE_SCHEMA
+        DOMAIN, SERVICE_ENERGY_RESET, reset_energy_logs, SERVICE_USB_DEVICE_SCHEMA
     )
 
     # Initiate background nodes discovery task

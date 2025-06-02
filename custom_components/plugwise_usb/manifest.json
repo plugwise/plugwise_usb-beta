@@ -11,4 +11,5 @@
   "requirements": [
     "https://test-files.pythonhosted.org/packages/d2/82/765c9fe19e214ef192740ac20de6dd7afecb9327e2c26307f4fbf76b4dea/plugwise_usb-0.42.0a0.tar.gz#plugwise-usb==0.42.0a0"
     ],
-  "version": "0.52.0a0
+  "version": "0.52.0a0"
+}
