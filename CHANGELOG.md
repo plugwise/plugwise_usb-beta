@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+## v0.52.0a0
+
+- Test reset_energy_logs service
+
 ### v0.51.0
 
 - Bump plugwise to [v0.41.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.41.0)
