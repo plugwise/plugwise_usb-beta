@@ -2,6 +2,11 @@
 
 ## Versions from 0.4x
 
+### v0.52.0
+
+- Bump plugwise to [v0.42.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.42.0)
+- Implement energy logs reset-service for energy-type Nodes ([#252](https://github.com/plugwise/plugwise_usb-beta/pull/252))
+
 ### v0.51.0
 
 - Bump plugwise to [v0.41.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.41.0)
