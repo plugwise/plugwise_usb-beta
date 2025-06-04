@@ -14,7 +14,7 @@ reset_energy_logs:
   description: "Reset energylogs for a Plugwise USB node by MAC address"
   fields:
     mac:
-      example: "data: {mac: 0123456789ABCDEF}" 
+      example: "data: {mac: 0123456789ABCDEF}"
 configure_scan:
   fields:
     entity_id:
