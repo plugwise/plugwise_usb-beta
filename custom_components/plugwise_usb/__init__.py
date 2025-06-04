@@ -52,7 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         hass, config_entry.entry_id, _async_migrate_entity_entry
     )
 
-    api_stick = Stick(config_entry.data[CONF_USB_PATH])
+    api_stick = Stick(config_entry.data[CONF_USB_PATH]) # type: ignore
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
     )
@@ -80,7 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         sw_version=str(api_stick.firmware),
     )
 
-    config_entry.runtime_data[NODES]: NodeConfigEntry = {}
+    config_entry.runtime_data[NODES] = {}
 
     async def async_node_discovered(node_event: NodeEvent, mac: str) -> None:
         """Node is detected."""
@@ -135,7 +135,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         try:
             result = await api_stick.energy_reset_request(mac)
         except (NodeError, StickError) as exc:
-            raise HomeAssistantError(f"Failed energy-logs reset for {mac}: {exc}") from exc
+            raise HomeAssistantError(
+                f"Energy logs reset failed for {mac}: {exc}"
+            ) from exc
         return result
 
     async def enable_production(call: ServiceCall) -> bool:
@@ -144,7 +146,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         try:
             result = await api_stick.set_energy_intervals(mac, 60, 60)
         except (NodeError, StickError) as exc:
-            raise HomeAssistantError(f"Failed to enable production: {exc}") from exc
+            raise HomeAssistantError(
+                f"Enable production logs failed for {mac}: {exc}"
+            ) from exc
         return result
 
     async def disable_production(call: ServiceCall) -> bool:
@@ -153,7 +157,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         try:
             result = await api_stick.set_energy_intervals(mac, 60, 0)
         except (NodeError, StickError) as exc:
-            raise HomeAssistantError(f"Failed to disable production: {exc}") from exc
+            raise HomeAssistantError(
+                f"Disable production logs failed for {mac}: {exc}"
+            ) from exc
         return result
 
     hass.services.async_register(DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining)
