@@ -2,9 +2,9 @@
 
 ## Versions from 0.4x
 
-## v0.52.0a0
+## v0.52.0
 
-- Test reset_energy_logs service
+- Implement energy logs reset-service for energy-type Nodes
 
 ### v0.51.0
 
