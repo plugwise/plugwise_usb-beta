@@ -44,6 +44,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         node_feature=NodeFeature.RELAY,
         api_attribute="state",
     ),
+    PlugwiseSwitchEntityDescription(
         key="relay_lock",
         translation_key="relay-lock",
         device_class=SwitchDeviceClass.SWITCH,
