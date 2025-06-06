@@ -13,8 +13,10 @@ from homeassistant.components.switch import (
 )
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
+from plugwise_usb.exceptions import NodeError
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -152,10 +154,16 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
-        self._attr_is_on = await self.async_switch_fn(True)
-        self.async_write_ha_state()
+        try:
+            self._attr_is_on = await self.async_switch_fn(True)
+        except NodeError as exc:
+            raise HomeAssistantError(f"{exc}") from exc
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
-        self._attr_is_on = await self.async_switch_fn(False)
-        self.async_write_ha_state()
+        try:
+            self._attr_is_on = await self.async_switch_fn(False)
+        except NodeError as exc:
+            raise HomeAssistantError(f"{exc}") from exc
+        await self.coordinator.async_request_refresh()
