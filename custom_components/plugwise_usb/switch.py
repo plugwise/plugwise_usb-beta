@@ -46,7 +46,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
     ),
     PlugwiseSwitchEntityDescription(
         key="relay_lock",
-        translation_key="relay-lock",
+        translation_key="relay_lock",
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
         async_switch_fn="set_relay_lock",
