@@ -51,7 +51,6 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         async_switch_fn="set_relay_lock",
         node_feature=NodeFeature.RELAY_LOCK,
-        api_attribute="relay_lock",
     ),
     PlugwiseSwitchEntityDescription(
         key="relay_init",
@@ -147,6 +146,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         self._attr_is_on = getattr(
             data,
             self.entity_description.api_attribute,
+            data,
         )
         self.async_write_ha_state()
 
