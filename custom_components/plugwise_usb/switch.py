@@ -150,20 +150,24 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
             data,
             self.entity_description.api_attribute,
         )
-        await self.coordinator.async_request_refresh()
+        self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
+        result = self._attr_is_on
         try:
-            self._attr_is_on = await self.async_switch_fn(True)
+            result = await self.async_switch_fn(True)
         except NodeError as exc:
             raise HomeAssistantError(f"{exc}") from exc
+        self._attr_is_on = result
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
+        result = self._attr_is_on
         try:
-            self._attr_is_on = await self.async_switch_fn(False)
+            result = await self.async_switch_fn(False)
         except NodeError as exc:
             raise HomeAssistantError(f"{exc}") from exc
+        self._attr_is_on = result
         await self.coordinator.async_request_refresh()
