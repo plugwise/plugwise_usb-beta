@@ -16,7 +16,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
-from plugwise_usb.exceptions import NodeError
+from plugwise_usb.exceptions import FeatureError, NodeError
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -157,17 +157,19 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         result = self._attr_is_on
         try:
             result = await self.async_switch_fn(True)
-        except NodeError as exc:
+        except (FeatureError, NodeError) as exc:
             raise HomeAssistantError(f"{exc}") from exc
-        self._attr_is_on = result
-        await self.coordinator.async_request_refresh()
+        else:
+            self._attr_is_on = result
+            self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
         result = self._attr_is_on
         try:
             result = await self.async_switch_fn(False)
-        except NodeError as exc:
+        except (FeatureError, NodeError) as exc:
             raise HomeAssistantError(f"{exc}") from exc
-        self._attr_is_on = result
-        await self.coordinator.async_request_refresh()
+        else:
+            self._attr_is_on = result
+            self.async_write_ha_state()
