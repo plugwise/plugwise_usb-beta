@@ -136,6 +136,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         self.async_switch_fn = getattr(
             node_duc.node, entity_description.async_switch_fn
         )
+        self._node_duc = node_duc
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -143,9 +144,12 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.debug(
-                "No switch data for %s", str(self.entity_description.node_feature)
+                "No %s switch data for %s",
+                str(self.entity_description.node_feature),
+                self._node_duc.node.node_info.mac,
             )
             return
+
         self._attr_is_on = getattr(
             data,
             self.entity_description.api_attribute,
@@ -154,22 +158,10 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
-        result = self._attr_is_on
-        try:
-            result = await self.async_switch_fn(True)
-        except (FeatureError, NodeError) as exc:
-            raise HomeAssistantError(f"{exc}") from exc
-        else:
-            self._attr_is_on = result
-            self.async_write_ha_state()
+        self._attr_is_on = await self.async_switch_fn(True)
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
-        result = self._attr_is_on
-        try:
-            result = await self.async_switch_fn(False)
-        except (FeatureError, NodeError) as exc:
-            raise HomeAssistantError(f"{exc}") from exc
-        else:
-            self._attr_is_on = result
-            self.async_write_ha_state()
+        self._attr_is_on = await self.async_switch_fn(False)
+        self.async_write_ha_state()
