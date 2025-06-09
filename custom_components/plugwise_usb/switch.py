@@ -144,7 +144,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
             _LOGGER.debug(
                 "No %s switch data for %s",
                 str(self.entity_description.node_feature),
-                self._node_duc.node.node_info.mac,
+                self._node_info.mac,
             )
             return
 
