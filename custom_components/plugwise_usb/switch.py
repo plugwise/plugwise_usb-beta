@@ -13,10 +13,8 @@ from homeassistant.components.switch import (
 )
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from plugwise_usb.api import NodeEvent, NodeFeature
-from plugwise_usb.exceptions import FeatureError, NodeError
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
