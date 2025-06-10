@@ -139,7 +139,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        node_feature=NodeFeature.TEMPERATURE,
+        node_feature=NodeFeature.SENSE,
         suggested_display_precision=2,
     ),
     PlugwiseSensorEntityDescription(
@@ -148,7 +148,7 @@ SENSOR_TYPES: tuple[PlugwiseSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.HUMIDITY,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=PERCENTAGE,
-        node_feature=NodeFeature.HUMIDITY,
+        node_feature=NodeFeature.SENSE,
         suggested_display_precision=2,
     ),
     PlugwiseSensorEntityDescription(
