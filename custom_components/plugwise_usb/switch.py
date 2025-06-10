@@ -45,6 +45,15 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         api_attribute="state",
     ),
     PlugwiseSwitchEntityDescription(
+        key="relay_lock",
+        translation_key="relay_lock",
+        device_class=SwitchDeviceClass.SWITCH,
+        entity_category=EntityCategory.CONFIG,
+        async_switch_fn="set_relay_lock",
+        node_feature=NodeFeature.RELAY_LOCK,
+        api_attribute="state",
+    ),
+    PlugwiseSwitchEntityDescription(
         key="relay_init",
         translation_key="relay_init",
         async_switch_fn="set_relay_init",
@@ -125,6 +134,7 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         self.async_switch_fn = getattr(
             node_duc.node, entity_description.async_switch_fn
         )
+        self._node_duc = node_duc
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -132,9 +142,12 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
             _LOGGER.debug(
-                "No switch data for %s", str(self.entity_description.node_feature)
+                "No %s switch data for %s",
+                str(self.entity_description.node_feature),
+                self._node_info.mac,
             )
             return
+
         self._attr_is_on = getattr(
             data,
             self.entity_description.api_attribute,

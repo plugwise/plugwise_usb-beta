@@ -167,6 +167,9 @@
       "relay_init": {
         "name": "Initialisatie schakelaar"
       },
+      "relay_lock": {
+        "name": "Blokkeer schakelaar"
+      },
       "motion_daylight_mode": {
         "name": "Daglichtmodus"
       }

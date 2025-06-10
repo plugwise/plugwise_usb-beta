@@ -167,6 +167,9 @@
       "relay_init": {
         "name": "Relay startup"
       },
+      "relay_lock": {
+        "name": "Lock relay"
+      },
       "motion_daylight_mode": {
         "name": "Daylight mode"
       }
