@@ -5,6 +5,7 @@
 ### v0.54.0
 
 - Bump plugwise to [v0.44.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.0)
+- Bump plugwise to [v0.44.1](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.1)
 - Implement Plugwise Sense Humidity and Temperature parameters.
 
 ### v0.53.0
