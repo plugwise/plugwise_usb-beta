@@ -9,5 +9,5 @@
   "iot_class": "local_polling",
   "loggers": ["plugwise_usb"],
   "requirements": ["plugwise-usb==0.43.0.2"],
-  "version": "0.53.0a7"
+  "version": "0.53.0"
 }
