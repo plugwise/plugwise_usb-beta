@@ -2,6 +2,11 @@
 
 ## Versions from 0.4x
 
+### v0.53.0
+
+- Bump plugwise to [v0.43.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.43.0)
+- Implement Feature Request #250 - add a relay lock for energy devices with a switch
+
 ### v0.52.0
 
 - Bump plugwise to [v0.42.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.42.0)
