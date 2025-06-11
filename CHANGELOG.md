@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### v0.54.1 - 2025-06-11
+
+- Implement solution for Issue #259 via plugwise to [v0.44.2](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.2) 
+
 ### v0.54.0
 
 - Bump plugwise to [v0.44.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.0)
