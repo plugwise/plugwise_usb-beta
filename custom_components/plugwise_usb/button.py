@@ -82,7 +82,7 @@ async def async_setup_entry(
     )
 
     # load any current nodes
-     for mac, node in api_stick.nodes.items():
+    for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_button(NodeEvent.LOADED, mac)
 
