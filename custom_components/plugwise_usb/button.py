@@ -32,7 +32,7 @@ class PlugwiseButtonEntityDescription(
 ):
     """Describes Plugwise button entity."""
 
-    async_press_fn: str = ""
+    async_button_fn: str = ""
 
 
 BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
@@ -40,7 +40,7 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         key="auto_join",
         translation_key="enable_auto_join",
         entity_category=EntityCategory.CONFIG,
-        async_press_fn="enable_auto_join",
+        async_button_fn="enable_auto_join",
         node_feature=NodeFeature.CIRCLEPLUS,
     ),
 )
@@ -82,7 +82,7 @@ async def async_setup_entry(
     )
 
     # load any current nodes
-    for mac, node in api_stick.nodes.items():
+     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_button(NodeEvent.LOADED, mac)
 
@@ -105,12 +105,12 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
     ) -> None:
         """Initialize a button entity."""
         super().__init__(node_duc, entity_description)
-        self.async_press_fn = getattr(
-            node_duc.node, entity_description.async_press_fn
+        self.async_button_fn = getattr(
+            node_duc.node, entity_description.async_button_fn
         )
         self._node_duc = node_duc
 
     async def async_press(self) -> None:
         """Button was pressed."""
         _LOGGER.warning("MDI async_press")
-        #await self.async_press_fn()
+        #await self.async_button_fn()
