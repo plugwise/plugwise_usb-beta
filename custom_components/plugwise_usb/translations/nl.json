@@ -190,6 +190,11 @@
       "sed_clock_interval": {
         "name": "Klokinterval"
       }
+    },
+    "button": {
+      "enable_auto_join": {
+        "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)"
+      }
     }
   }
 }

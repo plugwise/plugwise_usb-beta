@@ -190,6 +190,11 @@
       "sed_clock_interval": {
         "name": "Clock interval"
       }
+    },
+    "button": {
+      "enable_auto_join": {
+        "name": "Enable Auto Join"
+      }
     }
   }
 }
