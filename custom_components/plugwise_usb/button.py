@@ -121,8 +121,6 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
 
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
-        _LOGGER.warning("MDI: Button added to hass")
-#        await super().async_added_to_hass()
         push_features = tuple(
             push_feature
             for push_feature in PUSHING_FEATURES
