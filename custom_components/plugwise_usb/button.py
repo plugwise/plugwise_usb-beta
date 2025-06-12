@@ -121,8 +121,3 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
 
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
-        push_features = tuple(
-            push_feature
-            for push_feature in PUSHING_FEATURES
-            if push_feature in self._node_info.features
-        )
