@@ -15,7 +15,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.api import NodeEvent, NodeFeature
+from plugwise_usb.api import NodeEvent, NodeFeature, PUSHING_FEATURES
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -110,7 +110,21 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
         )
         self._node_duc = node_duc
 
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return True
+
     async def async_press(self) -> None:
         """Button was pressed."""
-        _LOGGER.warning("MDI async_press")
-        #await self.async_button_fn()
+        await self.async_button_fn()
+
+    async def async_added_to_hass(self):
+        """Subscribe for push updates."""
+        _LOGGER.warning("MDI: Button added to hass")
+#        await super().async_added_to_hass()
+        push_features = tuple(
+            push_feature
+            for push_feature in PUSHING_FEATURES
+            if push_feature in self._node_info.features
+        )
