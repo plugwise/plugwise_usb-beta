@@ -193,7 +193,7 @@
     },
     "button": {
       "enable_auto_join": {
-        "name": "Enable Auto Join"
+        "name": "Enable Auto-joining (temporarily)"
       }
     }
   }

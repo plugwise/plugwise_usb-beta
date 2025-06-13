@@ -106,12 +106,6 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
         self.async_button_fn = getattr(
             node_duc.node, entity_description.async_button_fn
         )
-        self._node_duc = node_duc
-
-    @property
-    def available(self) -> bool:
-        """Return if entity is available."""
-        return True
 
     async def async_press(self) -> None:
         """Button was pressed."""
