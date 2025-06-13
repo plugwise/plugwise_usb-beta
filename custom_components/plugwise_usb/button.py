@@ -35,7 +35,7 @@ class PlugwiseButtonEntityDescription(
 
 BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
     PlugwiseButtonEntityDescription(
-        key="auto_join",
+        key="enable_auto_join",
         translation_key="enable_auto_join",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="enable_auto_join",
