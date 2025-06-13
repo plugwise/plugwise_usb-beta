@@ -23,10 +23,6 @@
     }
   },
   "services": {
-    "enable_auto_joining": {
-      "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)",
-      "description": "Voer eerst deze service uit en reset dan het toe te voegen Plugwise apparaat"
-    },
     "enable_production":{
       "name": "Zet productie-loggen aan",
       "description": "Voer het mac-adres van de Node in: (data = mac: 0123456789ABSDEF)",
@@ -189,6 +185,11 @@
       },
       "sed_clock_interval": {
         "name": "Klokinterval"
+      }
+    },
+    "button": {
+      "enable_auto_join": {
+        "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)"
       }
     }
   }
