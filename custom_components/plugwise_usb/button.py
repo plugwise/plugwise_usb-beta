@@ -7,15 +7,13 @@ from datetime import timedelta
 import logging
 
 from homeassistant.components.button import (
-    ButtonDeviceClass,
     ButtonEntity,
     ButtonEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from plugwise_usb.api import NodeEvent, NodeFeature, PUSHING_FEATURES
+from plugwise_usb.api import NodeEvent, NodeFeature
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
