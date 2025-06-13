@@ -23,10 +23,6 @@
     }
   },
   "services": {
-    "enable_auto_joining": {
-      "name": "Enable Plugwise device auto-joining (temporarily)",
-      "description": "First enable this service then reset the Plugwise device(s) to join"
-    },
     "enable_production":{
       "name": "Enable production logging",
       "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
