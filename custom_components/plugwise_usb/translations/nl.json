@@ -43,16 +43,6 @@
         }
       }
     },
-    "reset_energy_logs":{
-      "name": "Voer een energielog reset uit voor een Node",
-      "description": "Voer het mac-adres van de Node in: (data = mac: 0123456789ABSDEF)",
-      "fields": {
-        "mac": {
-          "name": "MAC adres",
-          "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
-        }
-      }
-    },
     "configure_scan": {
       "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
       "description": "Configureert bewegingsinstellingen voor een Plugwise Scan apparaat.",
@@ -190,6 +180,9 @@
     "button": {
       "enable_auto_join": {
         "name": "Zet Plugwise auto-toevoegen aan (tijdelijk)"
+      },
+      "energy_reset":{
+        "name": "Energie reset"
       }
     }
   }
