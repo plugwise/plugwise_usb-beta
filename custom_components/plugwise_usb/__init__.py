@@ -18,7 +18,6 @@ from .const import (
     DOMAIN,
     NODES,
     PLUGWISE_USB_PLATFORMS,
-    SERVICE_AUTO_JOIN,
     SERVICE_DISABLE_PRODUCTION,
     SERVICE_ENABLE_PRODUCTION,
     SERVICE_ENERGY_RESET,
@@ -112,23 +111,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
-    # Listen for entry updates
-    config_entry.async_on_unload(config_entry.add_update_listener(update_listener))
-
-    async def enable_auto_joining(call: ServiceCall) -> bool:
-        """Enable auto-joining of devices to Plugwise zigbee network."""
-        if not api_stick.accept_join_request:
-            raise HomeAssistantError(
-                "Device joining is blocked, enable newly added entities"
-                + " under System options for the Integration"
-            )
-
-        try:
-            result = await api_stick.set_accept_join_request(True)
-        except (NodeError, StickError) as exc:
-            raise HomeAssistantError(f"Failed to enable auto-joining: {exc}") from exc
-        return result
-
     async def reset_energy_logs(call: ServiceCall) -> bool:
         """Reset energylog collection for a Node."""
         mac = call.data[ATTR_MAC]
@@ -162,7 +144,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             ) from exc
         return result
 
-    hass.services.async_register(DOMAIN, SERVICE_AUTO_JOIN, enable_auto_joining)
     hass.services.async_register(
         DOMAIN, SERVICE_ENABLE_PRODUCTION, enable_production, SERVICE_USB_DEVICE_SCHEMA
     )
@@ -184,28 +165,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         await asyncio.sleep(1)
         if api_stick.network_discovered:
             break
-    # Enable/disable automatic joining of available devices when the network is up
-    if config_entry.pref_disable_new_entities:
-        _LOGGER.debug("Configuring Circle + NOT to accept any new join requests")
-        try:
-            await api_stick.set_accept_join_request(False)
-        except StickError as exc:
-            raise HomeAssistantError(f"Disabling auto-joining failed: {exc}") from exc
-    else:
-        _LOGGER.debug("Configuring Circle + to automatically accept new join requests")
-        try:
-            await api_stick.set_accept_join_request(True)
-        except StickError as exc:
-            raise HomeAssistantError(f"Enabling auto-joining failed: {exc}") from exc
 
     return True
-
-
-async def update_listener(
-    hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
-) -> None:
-    """Handle options update."""
-    await hass.config_entries.async_reload(config_entry.entry_id)
 
 
 async def async_unload_entry(

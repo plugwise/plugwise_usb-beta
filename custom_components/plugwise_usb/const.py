@@ -27,9 +27,9 @@ PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
     Platform.NUMBER,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.BUTTON,
 ]
 CONF_USB_PATH: Final[str] = "usb_path"
-SERVICE_AUTO_JOIN: Final[str] = "enable_auto_joining"
 SERVICE_DISABLE_PRODUCTION: Final[str] = "disable_production"
 SERVICE_ENABLE_PRODUCTION: Final[str] = "enable_production"
 SERVICE_ENERGY_RESET: Final[str] = "reset_energy_logs"
