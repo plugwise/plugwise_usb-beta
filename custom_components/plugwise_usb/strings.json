@@ -43,16 +43,6 @@
         }
       }
     },
-    "reset_energy_logs":{
-      "name": "Reset energy logs for a Node",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
-        }
-      }
-    },
     "configure_scan": {
       "name": "Configure motion settings",
       "description": "Configure the motion settings for a Plugwise Scan device. The new configuration will be send soon as the Scan devices is awake to receive configuration changes. For quick activation press the local button to awake the device.",
@@ -190,6 +180,9 @@
     "button": {
       "enable_auto_join": {
         "name": "Enable Auto-joining (temporarily)"
+      },
+      "energy_reset":{
+        "name": "Energy reset"
       }
     }
   }

@@ -20,7 +20,6 @@ from .const import (
     PLUGWISE_USB_PLATFORMS,
     SERVICE_DISABLE_PRODUCTION,
     SERVICE_ENABLE_PRODUCTION,
-    SERVICE_ENERGY_RESET,
     SERVICE_USB_DEVICE_SCHEMA,
     STICK,
 )
@@ -111,17 +110,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
-    async def reset_energy_logs(call: ServiceCall) -> bool:
-        """Reset energylog collection for a Node."""
-        mac = call.data[ATTR_MAC]
-        try:
-            result = await api_stick.energy_reset_request(mac)
-        except (NodeError, StickError) as exc:
-            raise HomeAssistantError(
-                f"Energy logs reset failed for {mac}: {exc}"
-            ) from exc
-        return result
-
     async def enable_production(call: ServiceCall) -> bool:
         """Enable production-logging for a Node."""
         mac = call.data[ATTR_MAC]
@@ -149,9 +137,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
     hass.services.async_register(
         DOMAIN, SERVICE_DISABLE_PRODUCTION, disable_production, SERVICE_USB_DEVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_ENERGY_RESET, reset_energy_logs, SERVICE_USB_DEVICE_SCHEMA
     )
 
     # Initiate background nodes discovery task
