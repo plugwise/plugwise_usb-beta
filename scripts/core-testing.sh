@@ -262,7 +262,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo -e "${CINFO}... ruff-ing tests...${CNORM}"
 	ruff check --fix tests/components/${REPO_NAME}/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
 	set -e
-	#echo -e "${CFAIL}... SKIPPING pylint-ing component...${CNORM}"
+	echo -e "${CFAIL}... SKIPPING pylint-ing component...${CNORM}"
 	#echo -e "${CINFO}... pylint-ing component...${CNORM}"
 	#pylint -j 0 --ignore-missing-annotations=y homeassistant/components/${REPO_NAME}/*py tests/components/${REPO_NAME}/*py || (echo -e "${CFAIL}Linting issue, exiting cowardly${CNORM}"; exit 1)
 	echo -e "${CFAIL}... SKIPPING mypy ...${CNORM}"
