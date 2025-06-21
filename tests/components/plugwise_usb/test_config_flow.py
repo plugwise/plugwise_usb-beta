@@ -2,15 +2,16 @@
 
 from unittest.mock import MagicMock, patch
 
-from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
-from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-import serial.tools.list_ports
 
+from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
+from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
+import serial.tools.list_ports
+
+from tests.common import MockConfigEntry
 
 TEST_USBPORT = "/dev/ttyUSB1"
 TEST_USBPORT2 = "/dev/ttyUSB2"

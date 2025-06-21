@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### Ongoing
+
+- Maintenance chores (CI fixing)
+
 ### v0.54.2
 
 - Bump plugwise to [v0.44.3](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.3)
