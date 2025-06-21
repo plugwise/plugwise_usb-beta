@@ -4,8 +4,10 @@
 name: Test against HA-core using pytest-homeassistant-custom-component
 
 env:
-  CACHE_VERSION: 10
+  CACHE_VERSION: 11
   DEFAULT_PYTHON: "3.13"
+  PRE_COMMIT_HOME: ~/.cache/pre-commit
+  VENV: venv
 
 on:
   workflow_dispatch:
@@ -15,10 +17,54 @@ on:
 # pull_request:
 
 jobs:
-  # Prepare default python version environment
-  ha-core-prepare:
+  # Determine cache key once
+  cache:
     runs-on: ubuntu-latest
-    name: Setup for HA-core
+    name: Cache identify
+    outputs:
+      cache-key: ${{ steps.set-key.outputs.cache-key }}
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Compute cache key
+        id: set-key
+        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml') }}" >> "$GITHUB_OUTPUT"
+
+  # Prepare default python version environment
+  prepare:
+    runs-on: ubuntu-latest
+    needs: cache
+    name: Prepare
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Create or reuse cache
+        id: cache-reuse
+        uses: ./.github/actions/restore-venv
+        with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false # First time create cache (if not already exists)
+          python-version: ${{ steps.python.outputs.python-version }}
+          venv-dir: ${{ env.VENV }}
+          precommit-home: ${{ env.PRE_COMMIT_HOME }}
+
+  # Prepare default python version environment
+  ha-core-release:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core (release/master)
+    needs:
+      - cache
+      - prepare
     steps:
       - name: Check out committed code
         uses: actions/checkout@v4.2.2
@@ -27,15 +73,22 @@ jobs:
         uses: actions/setup-python@v5.6.0
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Prepare virtual env for testing
+      - name: Create or reuse cache
+        id: cache-reuse
+        uses: ./.github/actions/restore-venv
+        with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          python-version: ${{ steps.python.outputs.python-version }}
+          venv-dir: ${{ env.VENV }}
+          precommit-home: ${{ env.PRE_COMMIT_HOME }}
+      - name: Test through HA-core (master/release)
+        id: ha_core_release_tests
         run: |
-          scripts/setup_test.sh
-      - name: Test
-        run: |
-          scripts/tests_and_coverage.sh test_and_coverage
-      - name: Quality
-        run: |
-          scripts/tests_and_coverage.sh linting
+          set +e
+
+          GITHUB_ACTIONS="" scripts/core-testing.sh
+          EXIT_CODE=$?
+          exit $EXIT_CODE
 
   shellcheck:
     name: Shellcheck
