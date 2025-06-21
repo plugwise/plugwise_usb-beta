@@ -78,7 +78,7 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
-          run-commands: 
+          run-commands:
             - GITHUB_ACTIONS="" scripts/core-testing.sh core_prep
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
