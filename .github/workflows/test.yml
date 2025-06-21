@@ -73,14 +73,14 @@ jobs:
         uses: plugwise/gh-actions/restore-venv@v1
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
-          python-version: ${{ steps.python.outputs.python-version }}
+          python-version: ${{ env.DEFAULT_PYTHON }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
         run: |
           set +e
-
+          ls -l
           GITHUB_ACTIONS="" scripts/core-testing.sh
           EXIT_CODE=$?
           exit $EXIT_CODE
