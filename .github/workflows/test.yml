@@ -50,16 +50,9 @@ jobs:
     needs: cache
     name: Prepare
     steps:
-      - name: Check out committed code
-        uses: actions/checkout@v4
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        id: python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Create or reuse cache
+      - name: Prepare code checkout and python/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/restore-venv@v1
+        uses: plugwise/gh-actions/prepare-python-and-code@v1
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
@@ -75,14 +68,7 @@ jobs:
       - cache
       - prepare
     steps:
-      - name: Check out committed code
-        uses: actions/checkout@v4.2.2
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        id: python
-        uses: actions/setup-python@v5.6.0
-        with:
-          python-version: ${{ env.DEFAULT_PYTHON }}
-      - name: Create or reuse cache
+      - name: Restore cached environment
         id: cache-reuse
         uses: plugwise/gh-actions/restore-venv@v1
         with:
