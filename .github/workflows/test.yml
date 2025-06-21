@@ -40,9 +40,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Fetch HA pyproject
+        id: core-version
+        run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
       - name: Compute cache key
         id: set-key
-        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml') }}" >> "$GITHUB_OUTPUT"
+        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
 
   # Prepare default python version environment
   prepare:
