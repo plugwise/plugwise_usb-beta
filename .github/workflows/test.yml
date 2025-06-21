@@ -82,7 +82,6 @@ jobs:
         id: ha_core_release_tests
         run: |
           set +e
-          ls -l
           GITHUB_ACTIONS="" scripts/core-testing.sh
           EXIT_CODE=$?
           exit $EXIT_CODE
