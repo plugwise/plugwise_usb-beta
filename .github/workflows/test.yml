@@ -24,9 +24,6 @@ on:
       - synchronize
       - labeled
       - unlabeled
-  workflow_dispatch:
-  schedule:
-    - cron: "2 4 * * 0"
 
 jobs:
   # Determine cache key once
