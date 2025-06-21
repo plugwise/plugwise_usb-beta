@@ -59,7 +59,7 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Create or reuse cache
         id: cache-reuse
-        uses: ./.github/actions/restore-venv
+        uses: plugwise/gh-actions/restore-venv@v1
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
