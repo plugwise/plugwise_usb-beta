@@ -56,7 +56,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ steps.python.outputs.python-version }}
+          python-version: ${{ env.DEFAULT_PYTHON }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
 
