@@ -96,7 +96,7 @@ if [ -z "${GITHUB_ACTIONS}" ] ; then
 	if [ $# -eq 2 ]; then
 		subject=$2
 	fi
-	if [ $# -gt  ] && [ "$1" != "core_prep" ]; then
+	if [ $# -gt 0 ] && [ "$1" != "core_prep" ]; then
 		basedir=$1
 	fi
 fi
