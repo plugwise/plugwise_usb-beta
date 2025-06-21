@@ -9,12 +9,24 @@ env:
   PRE_COMMIT_HOME: ~/.cache/pre-commit
   VENV: venv
 
+# Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
+# Workaround could be something like
+#      - name: Get PR labels
+#        run: |
+#          PR_LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+#          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
+#          echo "PR Labels: $PR_LABELS"
+
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - labeled
+      - unlabeled
   workflow_dispatch:
-  push:
   schedule:
-    - cron: "0 0 * * 0"
-# pull_request:
+    - cron: "2 4 * * 0"
 
 jobs:
   # Determine cache key once
