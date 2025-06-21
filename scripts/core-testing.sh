@@ -14,7 +14,7 @@ REPO_NAME="plugwise_usb"
 # as requested by @bouwew for on-par development with the releases
 # version of HA
 #
-# Override by setting HABRANCH environment variable to run against
+# Override by setting BRANCH environment variable to run against
 # a different branch of core
 #
 # Github flows are run against both 'dev' and 'master'
