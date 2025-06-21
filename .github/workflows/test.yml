@@ -68,6 +68,8 @@ jobs:
       - cache
       - prepare
     steps:
+      - name: Check out committed code
+        uses: actions/checkout@v4
       - name: Restore cached environment
         id: cache-reuse
         uses: plugwise/gh-actions/restore-venv@v1
