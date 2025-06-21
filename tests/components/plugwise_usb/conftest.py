@@ -6,22 +6,23 @@ from collections.abc import Generator
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
-import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
-from homeassistant.core import HomeAssistant
 from plugwise_usb.exceptions import StickError
+import pytest
+
+from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from homeassistant.core import HomeAssistant
+
+from tests.common import MockConfigEntry
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
-STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
+STICK_IMPORT_MOCK: Final[str] = "homeassistant.components.plugwise_usb.config_flow.Stick"
 
 
 @pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock]:
     """Override async_setup_entry."""
     with patch(
-        "custom_components.plugwise_usb.async_setup_entry",
+        "homeassistant.components.plugwise_usb.async_setup_entry",
         return_value=True,
     ) as mock_setup:
         yield mock_setup
@@ -123,4 +124,4 @@ async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integrations."""
-    yield
+    return

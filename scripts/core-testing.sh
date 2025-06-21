@@ -254,7 +254,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo "Copy back modified files ..."
 	echo ""
-	cp -r ./homeassistant/components/plugwise_usb ../custom_components/
+	cp -r ./homeassistant/custom_components/plugwise_usb ../custom_components/
 	cp -r ./tests/components/plugwise_usb ../tests/components/
 	echo "Removing 'version' from manifest for hassfest-ing, version not allowed in core components"
 	echo ""
