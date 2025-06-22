@@ -41,6 +41,13 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         async_button_fn="enable_auto_join",
         node_feature=NodeFeature.CIRCLEPLUS,
     ),
+    PlugwiseButtonEntityDescription(
+        key="energy_reset",
+        translation_key="energy_reset",
+        entity_category=EntityCategory.CONFIG,
+        async_button_fn="energy_reset_request",
+        node_feature=NodeFeature.CIRCLE,
+    ),
 )
 
 

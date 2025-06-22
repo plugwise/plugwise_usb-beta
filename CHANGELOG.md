@@ -2,6 +2,11 @@
 
 ## Versions from 0.4x
 
+### v0.55.0 - 2025-06-22
+
+- Implement an energy-reset button for energy devices that resets/restarts the energy-collection on the device overwriting the existing data
+- Improve the energy collection reset process to reduce ZigBee traffic, network and server load via plugwise_usb [v0.44.4](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.4)
+
 ### v0.54.2
 
 - Bump plugwise to [v0.44.3](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.3)
