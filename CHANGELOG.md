@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### v0.55.1 - 2025-06-22
+
+- Show energy-reset button for Plus devices via plugwise_usb [v0.44.5](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.5)
+
 ### v0.55.0 - 2025-06-22
 
 - Implement an energy-reset button for energy devices that resets/restarts the energy-collection on the device overwriting the existing data
