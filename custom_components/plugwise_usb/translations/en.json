@@ -182,7 +182,7 @@
         "name": "Enable Auto-joining (temporarily)"
       },
       "energy_reset":{
-        "name": "Energy reset"
+        "name": "Reset energy collection"
       }
     }
   }
