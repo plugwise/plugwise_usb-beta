@@ -4,14 +4,15 @@ import asyncio
 import logging
 from typing import Any, TypedDict
 
+from plugwise_usb import Stick
+from plugwise_usb.api import NodeEvent
+from plugwise_usb.exceptions import NodeError, StickError
+
 from homeassistant.components.device_tracker import ATTR_MAC
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.storage import STORAGE_DIR
-from plugwise_usb import Stick
-from plugwise_usb.api import NodeEvent
-from plugwise_usb.exceptions import NodeError, StickError
 
 from .const import (
     CONF_USB_PATH,
@@ -50,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         hass, config_entry.entry_id, _async_migrate_entity_entry
     )
 
-    api_stick = Stick(config_entry.data[CONF_USB_PATH]) # type: ignore
+    api_stick = Stick(config_entry.data[CONF_USB_PATH])
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
     )
@@ -136,7 +137,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         DOMAIN, SERVICE_ENABLE_PRODUCTION, enable_production, SERVICE_USB_DEVICE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN, SERVICE_DISABLE_PRODUCTION, disable_production, SERVICE_USB_DEVICE_SCHEMA
+        DOMAIN,
+        SERVICE_DISABLE_PRODUCTION,
+        disable_production,
+        SERVICE_USB_DEVICE_SCHEMA,
     )
 
     # Initiate background nodes discovery task
@@ -184,14 +188,10 @@ async def async_remove_config_entry_device(
         try:
             await api_stick.unregister_node(mac)
         except NodeError:
-            _LOGGER.error(
-                "Plugwise device %s removal failed with NodeError", mac
-            )
+            _LOGGER.error("Plugwise device %s removal failed with NodeError", mac)
             return False
 
-        _LOGGER.debug(
-            "Plugwise device %s successfully removed", mac
-        )
+        _LOGGER.debug("Plugwise device %s successfully removed", mac)
         return True
 
     return False
