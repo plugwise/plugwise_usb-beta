@@ -289,7 +289,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
-	cp -r ./tests/components/${REPO_NAME} ../tests/components/
+	cp -r ./tests/components/${REPO_NAME} ../tests/
 	sed -i"" 's/tests.common/pytest_homeassistant_custom_component.common/g' ../tests/*py
 	sed -i"" 's/homeassistant.components/custom_components/g' ./tests/components/${REPO_NAME}/*py
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
