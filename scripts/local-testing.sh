@@ -11,6 +11,7 @@ CWARN="\x1B[93m"  # yellow
 # DEBUG=1 scripts/core-testing.sh
 
 REPO_NAME="plugwise_usb"
+VENV_DIR=".venv"
 
 # Ensure environment is set-up
 
@@ -19,12 +20,12 @@ set -e
 
 if [ -z "$VIRTUAL_ENV" ]; then
   if [ -x "$(command -v uv)" ]; then
-    uv venv --seed venv
+    uv venv --seed "${VENV_DIR}"
   else
-    python3 -m venv venv
+    python3 -m venv "${VENV_DIR}"
   fi
   # shellcheck disable=SC1091 # ingesting virtualenv
-  source venv/bin/activate
+  source "${VENV_DIR}/bin/activate"
 fi
 
 if ! [ -x "$(command -v uv)" ]; then
