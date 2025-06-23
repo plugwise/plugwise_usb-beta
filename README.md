@@ -113,9 +113,15 @@ Disclaimer: Not yet (fully)
 
 While we try to make sure that everything works as intended, we can't really test out changes happening to hardware devices. Our testing is done through testing against files from community members (see [python-plugwise-usb tests](https://github.com/plugwise/python-plugwise-usb/tree/main/tests)) and if you have a setup you are willing to share we highly welcome that. Just send us the files or submit a PR. Including your test code into the `tests/test_Smile.py` code is highly recommended.
 
-Local commits and tests can be performed using `pre-commit run` or `scripts/local-testing.sh`.
+To run local checks and tests, use `pre-commit run --all-files` or execute `scripts/local-testing.sh`.
 
-Ensuring our commits work `scripts/ci-core-testing.sh` will create a local clone of the Home Assistant Core dev-branch to test against. For full visibility of tests run this as `DEBUG=1 scripts/ci-core-testing.sh` (or export DEBUG to something other than none). `pytest` will show full log by default when tests are failing.
+To ensure your commits pass CI, run `scripts/ci-core-testing.sh`, which will clone the Home Assistant Core dev-branch for testing. For full visibility of test logs, prefix the command with DEBUG:
+
+```bash
+DEBUG=1 scripts/ci-core-testing.sh
+```
+
+Pytest shows full logs by default when tests fail.
 
 Results of our tests are checked by GitHub Actions against Home Assistant (dev-branch), click the button 'Test with HA-core' in this repository or the 'Latest release'/'Latest commit' buttons on our [python-plugwise-usb repository](https://github.com/plugwise/python-plugwise-usb/).
 

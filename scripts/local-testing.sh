@@ -8,7 +8,7 @@ CINFO="\x1B[96m"  # cyan
 CWARN="\x1B[93m"  # yellow
 
 # If you want full pytest output run as
-# DEBUG=1 scripts/core-testing.sh
+# DEBUG=1 scripts/local-testing.sh
 
 REPO_NAME="plugwise_usb"
 VENV_DIR=".venv"
@@ -62,7 +62,6 @@ ruff check --fix custom_components/${REPO_NAME}/*py || echo -e "${CWARN}Ruff app
 echo -e "${CINFO}... ruff-ing tests...${CNORM}"
 ruff check --fix tests/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
 
-set -e
 echo -e "${CFAIL}... SKIPPING pylint-ing component...${CNORM}"
 #echo -e "${CINFO}... pylint-ing component...${CNORM}"
 #pylint -j 0 --ignore-missing-annotations=y custom_components/${REPO_NAME}/*py tests/*.py || (echo -e "${CFAIL}Linting issue, exiting cowardly${CNORM}"; exit 1)

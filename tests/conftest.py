@@ -114,7 +114,7 @@ def mock_usb_stick_init_error() -> Generator[MagicMock]:
 
 
 async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:
-    """Set up the ezbeq integration."""
+    """Set up the usb integration."""
     config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
