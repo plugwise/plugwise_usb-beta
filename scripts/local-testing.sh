@@ -71,5 +71,5 @@ echo -e "${CFAIL}... SKIPPING mypy ...${CNORM}"
 #echo -e "${CINFO}... mypy ...${CNORM}"
 #mypy custom_components/${REPO_NAME}/*.py || exit
 
-echo -e "${CINFO}... markdownlint ...${CNORM}"
-pre-commit run --all-files --hook-stage manual markdownlint
+#echo -e "${CINFO}... markdownlint ...${CNORM}"
+#pre-commit run --all-files --hook-stage manual markdownlint

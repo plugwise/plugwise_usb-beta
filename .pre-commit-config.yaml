@@ -74,10 +74,8 @@ repos:
   - repo: local
     hooks:
       - id: test-custom-component
-        # yamllint disable-line rule:line-length
         name: "Home Assistant Custom Component Testing"
-        # yamllint disable-line rule:line-length
-        entry: /usr/bin/env bash -c 'exec env GITHUB_ACTIONS="1" scripts/ci-core-testing.sh'
+        entry: ./scripts/local-testing.sh
         language: script
         pass_filenames: false
   - repo: https://github.com/igorshubovych/markdownlint-cli

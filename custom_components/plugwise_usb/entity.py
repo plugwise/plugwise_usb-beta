@@ -7,10 +7,11 @@ from dataclasses import dataclass
 import logging
 from typing import Any
 
+from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
+
 from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE, DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, NodeInfo
 
 from .const import DOMAIN
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
