@@ -386,6 +386,7 @@ log_cli = true
 
 [tool.coverage.run]
 source = ["plugwise_usb-beta"]
+omit = [ "*/venv/*", "*/.venv/*", "*/site-packages/*" ]
 
 [tool.coverage.report]
 exclude_lines = [
