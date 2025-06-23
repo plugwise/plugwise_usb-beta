@@ -195,8 +195,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
         mkdir -p ./tests/components/${REPO_NAME}/
 	cp -r ../tests/*py ./tests/components/${REPO_NAME}/
 	# Rework pytest from custom_component to core
-	sed -i".sedbck" 's/pytest_homeassistant_custom_component.common/tests.common/g' ./tests/components/${REPO_NAME}/*py
-	sed -i".sedbck" 's/custom_components/homeassistant.components/g' ./tests/components/${REPO_NAME}/*py
+	sed -i"" 's/pytest_homeassistant_custom_component.common/tests.common/g' ./tests/components/${REPO_NAME}/*py
+	sed -i"" 's/custom_components/homeassistant.components/g' ./tests/components/${REPO_NAME}/*py
 	echo ""
 fi # core_prep
 
@@ -290,8 +290,8 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
 	cp -r ./tests/components/${REPO_NAME} ../tests/components/
-	sed -i".sedbck" 's/tests.common/pytest_homeassistant_custom_component.common/g' ../tests/*py
-	sed -i".sedbck" 's/homeassistant.components/custom_components/g' ./tests/components/${REPO_NAME}/*py
+	sed -i"" 's/tests.common/pytest_homeassistant_custom_component.common/g' ../tests/*py
+	sed -i"" 's/homeassistant.components/custom_components/g' ./tests/components/${REPO_NAME}/*py
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
 	echo ""
 	# shellcheck disable=SC2090
