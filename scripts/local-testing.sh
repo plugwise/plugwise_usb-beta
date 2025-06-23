@@ -12,8 +12,6 @@ CWARN="\x1B[93m"  # yellow
 
 REPO_NAME="plugwise_usb"
 
-my_path=$(git rev-parse --show-toplevel)
-
 # Ensure environment is set-up
 
 # 20250613 Copied from HA-core and shell-check adjusted and modified for local use
@@ -56,7 +54,7 @@ if [ ! "${DEBUG}" == "" ] ; then
 	debug_params="-rpP --log-cli-level=DEBUG"
 fi
 # shellcheck disable=SC2086
-PYTHONPATH=${pwd} pytest ${debug_params} tests/ --snapshot-update  --cov='.' --no-cov-on-fail --cov-report term-missing || exit
+pytest ${debug_params} tests/ --snapshot-update  --cov='.' --no-cov-on-fail --cov-report term-missing || exit
 
 echo -e "${CINFO}... ruff-ing component...${CNORM}"
 ruff check --fix custom_components/${REPO_NAME}/*py || echo -e "${CWARN}Ruff applied autofixes${CNORM}"
