@@ -51,7 +51,7 @@ echo -e "${CINFO}Checking manifest for current python-${REPO_NAME} to install: $
 echo ""
 uv pip install -q --upgrade "${module}"
 debug_params=""
-if [ ! "${DEBUG}" == "" ] ; then 
+if [ -n "${DEBUG}" ] ; then
 	debug_params="-rpP --log-cli-level=DEBUG"
 fi
 # shellcheck disable=SC2086
