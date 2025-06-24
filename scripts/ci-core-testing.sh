@@ -9,6 +9,7 @@ CWARN="\x1B[93m"  # yellow
 
 # Repository name (for reuse betweeh plugwise network and usb
 REPO_NAME="plugwise_usb"
+VENV_DIR=".venv"
 
 # By default assumes running against 'master' branch of Core-HA
 # as requested by @bouwew for on-par development with the releases
@@ -25,7 +26,7 @@ fi
 echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 
 # If you want full pytest output run as
-# DEBUG=1 scripts/core-testing.sh
+# DEBUG=1 scripts/ci-core-testing.sh
 
 # If you want to test a single file
 # run as "scripts/core_testing.sh test_config_flow.py" or
@@ -68,12 +69,12 @@ set -e
 
 if [ -z "$VIRTUAL_ENV" ]; then
   if [ -x "$(command -v uv)" ]; then
-    uv venv --seed venv
+    uv venv --seed "${VENV_DIR}"
   else
-    python3 -m venv venv
+    python3 -m venv "${VENV_DIR}"
   fi
   # shellcheck disable=SC1091 # ingesting virtualenv
-  source venv/bin/activate
+  source "${VENV_DIR}/bin/activate"
 fi
 
 if ! [ -x "$(command -v uv)" ]; then
@@ -168,12 +169,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
         if [ -x "$(command -v uv)" ]; then
-          uv venv --seed venv
+          uv venv --seed "${VENV_DIR}"
         else
-          python3 -m venv venv
+          python3 -m venv "${VENV_DIR}"
         fi
         # shellcheck disable=SC1091
-	source venv/bin/activate
+        source "${VENV_DIR}/bin/activate"
 
 	if ! [ -x "$(command -v uv)" ]; then
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
@@ -192,7 +193,11 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo -e "${CINFO}Overwriting with ${REPO_NAME}-beta${CNORM}"
 	echo ""
 	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
-	cp -r ../tests/components/${REPO_NAME} ./tests/components/
+        mkdir -p ./tests/components/${REPO_NAME}/
+	cp -r ../tests/*py ./tests/components/${REPO_NAME}/
+	# Rework pytest from custom_component to core
+	sed -i".sedbck" 's/pytest_homeassistant_custom_component.common/tests.common/g' ./tests/components/${REPO_NAME}/*py
+	sed -i".sedbck" 's/custom_components/homeassistant.components/g' ./tests/components/${REPO_NAME}/*py
 	echo ""
 fi # core_prep
 
@@ -202,7 +207,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source venv/bin/activate
+        source "${VENV_DIR}/bin/activate"
 	mkdir -p ./tmp
 	echo ""
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
@@ -237,7 +242,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source venv/bin/activate
+        source "${VENV_DIR}/bin/activate"
 	echo ""
 	echo -e "${CINFO}Test commencing ...${CNORM}"
 	echo ""
@@ -254,7 +259,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source venv/bin/activate
+        source "${VENV_DIR}/bin/activate"
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
@@ -280,12 +285,15 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo ""
 	echo "Ensure HA-core venv${CNORM}"
         # shellcheck disable=SC1091
-        source venv/bin/activate
+        source "${VENV_DIR}/bin/activate"
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
+	sed -i".sedbck" 's/tests.common/pytest_homeassistant_custom_component.common/g' ./tests/components/${REPO_NAME}/*py
+	sed -i".sedbck" 's/homeassistant.components/custom_components/g' ./tests/components/${REPO_NAME}/*py
+        rm ./tests/components/${REPO_NAME}/*sedbck
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
-	cp -r ./tests/components/${REPO_NAME} ../tests/components/
+	cp -r ./tests/components/${REPO_NAME}/*py ../tests/
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
 	echo ""
 	# shellcheck disable=SC2090

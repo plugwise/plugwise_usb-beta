@@ -5,6 +5,9 @@ from datetime import timedelta
 import logging
 from typing import Any
 
+from plugwise_usb.api import NodeFeature, PlugwiseNode
+from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
@@ -12,8 +15,6 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from plugwise_usb.api import NodeFeature, PlugwiseNode
-from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
 
 from .const import STICK
 

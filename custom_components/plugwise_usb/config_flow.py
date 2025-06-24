@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import serial.tools.list_ports
+from plugwise_usb import Stick
+from plugwise_usb.exceptions import StickError
 import voluptuous as vol
 
 from homeassistant.components import usb
@@ -12,8 +13,7 @@ from homeassistant.config_entries import SOURCE_USER, ConfigFlow
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-from plugwise_usb import Stick
-from plugwise_usb.exceptions import StickError
+import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 

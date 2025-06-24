@@ -9,13 +9,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise_usb.exceptions import StickError
 import pytest
 
-from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
-
-from tests.common import MockConfigEntry
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
-STICK_IMPORT_MOCK: Final[str] = "homeassistant.components.plugwise_usb.config_flow.Stick"
+STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
 
 
 @pytest.fixture
@@ -115,7 +114,7 @@ def mock_usb_stick_init_error() -> Generator[MagicMock]:
 
 
 async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:
-    """Set up the ezbeq integration."""
+    """Set up the usb integration."""
     config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
