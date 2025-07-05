@@ -69,7 +69,6 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         # Only unique features
         freq_features = Counter(self.async_contexts())
         features = tuple(freq_features.keys())
-
         try:
             states = await self.node.get_state(features)
         except StickError as err:
@@ -81,6 +80,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
 
         if (
             not self.node.node_info.is_battery_powered
+            and self.node.initialized
             and not states[NodeFeature.AVAILABLE].state
         ):
             raise UpdateFailed("Device is not responding")
