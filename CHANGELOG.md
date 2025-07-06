@@ -2,8 +2,10 @@
 
 ## Versions from 0.4x
 
-### Ongoing
+### v0.55.1 - 2025-07-06
 
+- Bump plugwise to [v0.44.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.6)
+- Implement check on initialized to allow entities to be generated for nodes which are temporary offline
 - Maintenance chores (CI fixing)
 
 ### v0.55.1 - 2025-06-22
