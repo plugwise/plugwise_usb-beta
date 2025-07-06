@@ -184,6 +184,28 @@
       "energy_reset":{
         "name": "Reset energy collection"
       }
+    },
+    "event": {
+      "button_press_group_1": {
+        "name": "Button Pressed Group 1",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed",
+            }
+          }
+        }
+      }
+      "button_press_group_2": {
+        "name": "Button Pressed Group 2",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed",
+            }
+          }
+        }
+      }
     }
   }
 }

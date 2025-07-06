@@ -184,6 +184,14 @@
       "energy_reset":{
         "name": "Energieverzameling resetten"
       }
+    },
+    "event": {
+      "button_press_group_1": {
+        "name": "Groep 1 Knop gedrukt"
+      },
+      "button_press_group_2": {
+        "name": "Groep 2 Knop gedrukt"
+      }
     }
   }
 }
