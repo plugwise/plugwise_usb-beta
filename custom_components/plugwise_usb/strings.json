@@ -186,8 +186,8 @@
       }
     },
     "event": {
-      "button_press_group_1": {
-        "name": "Button Pressed Group 1",
+      "button_press_I_group_1": {
+        "name": "Button I Pressed Group 1",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -196,8 +196,28 @@
           }
         }
       }
-      "button_press_group_2": {
-        "name": "Button Pressed Group 2",
+      "button_press_O_group_1": {
+        "name": "Button O Pressed Group 1",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed",
+            }
+          }
+        }
+      }
+      "button_press_I_group_2": {
+        "name": "Button I Pressed Group 2",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed",
+            }
+          }
+        }
+      }
+      "button_press_O_group_2": {
+        "name": "Button O Pressed Group 2",
         "state_attributes": {
           "event_type": {
             "state": {
