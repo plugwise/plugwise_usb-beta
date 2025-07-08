@@ -33,7 +33,7 @@ class PlugwiseEventEntityDescription(
     """Describes Plugwise Event entity."""
 
     api_attribute: str = ""
-    event_types: str = ""
+    event_types: list[str] = []
 
 
 EVENT_TYPES: tuple[PlugwiseEventEntityDescription, ...] = (
@@ -98,8 +98,8 @@ async def async_setup_entry(
     api_stick = config_entry.runtime_data[STICK]
 
     # Listen for loaded nodes
-    config_entry.runtime_data[Platform.NUMBER] = {}
-    config_entry.runtime_data[Platform.NUMBER][UNSUB_NODE_LOADED] = (
+    config_entry.runtime_data[Platform.EVENT] = {}
+    config_entry.runtime_data[Platform.EVENT][UNSUB_NODE_LOADED] = (
         api_stick.subscribe_to_node_events(
             async_add_event,
             (NodeEvent.LOADED,),
@@ -116,7 +116,7 @@ async def async_unload_entry(
     config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
-    config_entry.runtime_data[Platform.NUMBER][UNSUB_NODE_LOADED]()
+    config_entry.runtime_data[Platform.EVENT][UNSUB_NODE_LOADED]()
 
 
 class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
