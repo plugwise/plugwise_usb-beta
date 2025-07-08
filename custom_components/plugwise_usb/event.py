@@ -33,7 +33,6 @@ class PlugwiseEventEntityDescription(
     """Describes Plugwise Event entity."""
 
     api_attribute: str = ""
-    event_types: list[str] = []
 
 
 EVENT_TYPES: tuple[PlugwiseEventEntityDescription, ...] = (
@@ -129,7 +128,6 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
     ) -> None:
         """Initialize a event entity."""
         super().__init__(node_duc, entity_description)
-        self.event_types = entity_description.event_types
 
     @callback
     def _handle_coordinator_update(self) -> None:
