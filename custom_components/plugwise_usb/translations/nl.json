@@ -184,6 +184,20 @@
       "energy_reset":{
         "name": "Energieverzameling resetten"
       }
+    },
+    "event": {
+      "button_press_i_group_1": {
+        "name": "Knop I Groep 1 gedrukt"
+      },
+      "button_press_o_group_1": {
+        "name": "Knop O Groep 1 gedrukt"
+      },
+      "button_press_i_group_2": {
+        "name": "Knop I Groep 2 gedrukt"
+      },
+      "button_press_o_group_2": {
+        "name": "Knop O Groep 2 gedrukt"
+      }
     }
   }
 }

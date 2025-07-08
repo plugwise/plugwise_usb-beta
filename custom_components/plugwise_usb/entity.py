@@ -70,16 +70,13 @@ class PlugwiseUSBEntity(CoordinatorEntity):
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
         await super().async_added_to_hass()
-        push_features = tuple(
-            push_feature
-            for push_feature in PUSHING_FEATURES
-            if push_feature in self._node_info.features
-        )
-        # Subscribe to events
-        if push_features:
+        if ( 
+            self.entity_description.node_feature in PUSHING_FEATURES
+            and self.entity_description.node_feature in self._node_info.features
+        ):
             self.unsubscribe_push_events = self._subscribe_to_feature_fn(
                 self.async_push_event,
-                push_features,
+                self.entity_description.node_feature,
             )
 
     async def async_push_event(self, feature: NodeFeature, state: Any) -> None:

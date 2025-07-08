@@ -2,7 +2,12 @@
 
 ## Versions from 0.4x
 
-### v0.55.1 - 2025-07-06
+### v0.55.3 - 2025-07-08
+
+- Bump plugwise to [v0.44.7](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.7)
+- Implement switch events
+
+### v0.55.2 - 2025-07-06
 
 - Bump plugwise to [v0.44.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.6)
 - Implement check on initialized to allow entities to be generated for nodes which are temporary offline

@@ -28,6 +28,7 @@ PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
     Platform.SENSOR,
     Platform.SWITCH,
     Platform.BUTTON,
+    Platform.EVENT,
 ]
 CONF_USB_PATH: Final[str] = "usb_path"
 SERVICE_DISABLE_PRODUCTION: Final[str] = "disable_production"
