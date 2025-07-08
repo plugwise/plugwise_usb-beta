@@ -191,7 +191,7 @@
         "state_attributes": {
           "event_type": {
             "state": {
-              "single_press": "Pressed",
+              "single_press": "Pressed"
             }
           }
         }
@@ -201,7 +201,7 @@
         "state_attributes": {
           "event_type": {
             "state": {
-              "single_press": "Pressed",
+              "single_press": "Pressed"
             }
           }
         }
@@ -211,7 +211,7 @@
         "state_attributes": {
           "event_type": {
             "state": {
-              "single_press": "Pressed",
+              "single_press": "Pressed"
             }
           }
         }
@@ -221,7 +221,7 @@
         "state_attributes": {
           "event_type": {
             "state": {
-              "single_press": "Pressed",
+              "single_press": "Pressed"
             }
           }
         }
