@@ -140,9 +140,9 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
                 self._node_info.mac,
             )
             return
-        #SWITCH logic
-        state_value = getattr( data, "state" )
-        group_value = getattr( data, "group" )
+        # SWITCH logic
+        state_value = getattr(data, "state" )
+        group_value = getattr(data, "group" )
         match self.entity_description.key:
             case "button_press_i_group_1":
                 if state_value is True and group_value == 1:
