@@ -38,32 +38,32 @@ class PlugwiseEventEntityDescription(
 
 EVENT_TYPES: tuple[PlugwiseEventEntityDescription, ...] = (
     PlugwiseEventEntityDescription(
-        key="button_press_I_group_1",
-        translation_key="button_press_I_group_1",
+        key="button_press_i_group_1",
+        translation_key="button_press_i_group_1",
         node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
         event_types=["single_press"],
     ),
     PlugwiseEventEntityDescription(
-        key="button_press_O_group_1",
-        translation_key="button_press_O_group_1",
+        key="button_press_o_group_1",
+        translation_key="button_press_o_group_1",
         node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
         event_types=["single_press"],
     ),
     PlugwiseEventEntityDescription(
-        key="button_press_I_group_2",
-        translation_key="button_press_I_group_2",
+        key="button_press_i_group_2",
+        translation_key="button_press_i_group_2",
         node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
         event_types=["single_press"],
     ),
     PlugwiseEventEntityDescription(
-        key="button_press_O_group_2",
-        translation_key="button_press_O_group_2",
+        key="button_press_o_group_2",
+        translation_key="button_press_o_group_2",
         node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
@@ -146,22 +146,22 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
         state_value = getattr( data, "state" )
         group_value = getattr( data, "group" )
         match self.entity_description.key:
-            case "button_press_I_group_1":
+            case "button_press_i_group_1":
                 if state_value is True and group_value == 1:
                     self._trigger_event(self.entity_description.event_types[0])
                     self.async_write_ha_state()
                 return
-            case "button_press_O_group_1":
+            case "button_press_o_group_1":
                 if state_value is False and group_value == 1:
                     self._trigger_event(self.entity_description.event_types[0])
                     self.async_write_ha_state()
                 return
-            case "button_press_I_group_2":
+            case "button_press_i_group_2":
                 if state_value is True and group_value == 2:
                     self._trigger_event(self.entity_description.event_types[0])
                     self.async_write_ha_state()
                 return
-            case "button_press_O_group_2":
+            case "button_press_o_group_2":
                 if state_value is False and group_value == 2:
                     self._trigger_event(self.entity_description.event_types[0])
                     self.async_write_ha_state()

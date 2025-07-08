@@ -186,16 +186,16 @@
       }
     },
     "event": {
-      "button_press_I_group_1": {
+      "button_press_i_group_1": {
         "name": "Button I Group 1 Pressed"
       },
-      "button_press_O_group_1": {
+      "button_press_o_group_1": {
         "name": "Button O Group 1 Pressed"
       },
-      "button_press_I_group_2": {
+      "button_press_i_group_2": {
         "name": "Button I Group 2 Pressed"
       },
-      "button_press_O_group_2": {
+      "button_press_o_group_2": {
         "name": "Button O Group 2 Pressed"
       }
     }
