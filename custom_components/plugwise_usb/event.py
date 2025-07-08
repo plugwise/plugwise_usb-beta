@@ -38,17 +38,33 @@ class PlugwiseEventEntityDescription(
 
 EVENT_TYPES: tuple[PlugwiseEventEntityDescription, ...] = (
     PlugwiseEventEntityDescription(
-        key="button_press_group_1",
-        translation_key="button_press_group_1",
-        node_feature=NodeFeature.SWITCH_GROUP_1,
+        key="button_press_I_group_1",
+        translation_key="button_press_I_group_1",
+        node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
         event_types=["single_press"],
     ),
     PlugwiseEventEntityDescription(
-        key="button_press_group_2",
-        translation_key="button_press_group_2",
-        node_feature=NodeFeature.SWITCH_GROUP_2,
+        key="button_press_O_group_1",
+        translation_key="button_press_O_group_1",
+        node_feature=NodeFeature.SWITCH,
+        device_class=EventDeviceClass.BUTTON,
+        api_attribute="state",
+        event_types=["single_press"],
+    ),
+    PlugwiseEventEntityDescription(
+        key="button_press_I_group_2",
+        translation_key="button_press_I_group_2",
+        node_feature=NodeFeature.SWITCH,
+        device_class=EventDeviceClass.BUTTON,
+        api_attribute="state",
+        event_types=["single_press"],
+    ),
+    PlugwiseEventEntityDescription(
+        key="button_press_O_group_2",
+        translation_key="button_press_O_group_2",
+        node_feature=NodeFeature.SWITCH,
         device_class=EventDeviceClass.BUTTON,
         api_attribute="state",
         event_types=["single_press"],
@@ -117,7 +133,6 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        _LOGGER.warning("Event for %s", self._node_info.mac)
         """Handle updated data from the coordinator."""
         data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
@@ -127,11 +142,28 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
                 self._node_info.mac,
             )
             return
-        event_data: dict[str, Any] = {}
-        attribute_key = self.entity_description.api_attribute
-        event_data[attribute_key] = getattr( data, attribute_key )
-        if (group_value := getattr( data, "group" ) ) is not None:
-            event_data["group"] = group_value 
-        _LOGGER.warning("Event for %s value %s",self._node_info.mac,str(event_data))
-        self._trigger_event(self.entity_description.event_types[0], event_data)
-        self.async_write_ha_state()
+        #SWITCH logic
+        state_value = getattr( data, "state" )
+        group_value = getattr( data, "group" )
+        match self.entity_description.key:
+            case "button_press_I_group_1":
+                if state_value is True and group_value == 1:
+                    self._trigger_event(self.entity_description.event_types[0])
+                    self.async_write_ha_state()
+                return
+            case "button_press_O_group_1":
+                if state_value is False and group_value == 1:
+                    self._trigger_event(self.entity_description.event_types[0])
+                    self.async_write_ha_state()
+                return
+            case "button_press_I_group_2":
+                if state_value is True and group_value == 2:
+                    self._trigger_event(self.entity_description.event_types[0])
+                    self.async_write_ha_state()
+                return
+            case "button_press_O_group_2":
+                if state_value is False and group_value == 2:
+                    self._trigger_event(self.entity_description.event_types[0])
+                    self.async_write_ha_state()
+                return
+
