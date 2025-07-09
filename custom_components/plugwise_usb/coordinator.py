@@ -37,8 +37,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     ) -> None:
         """Initialize Plugwise USB data update coordinator."""
         self.node = node
-        self.subscribed_nodefeatures: list[NodeFeature,...] = []
+        self.subscribed_nodefeatures: list[NodeFeature] = []
         self._subscribe_to_feature_fn = self.node.subscribe_to_feature_update
+        self.unsubscribe_push_events: Callable[[], None] | None = None
         if node.node_info.is_battery_powered:
             _LOGGER.debug("Create battery powered DUC for %s", node.mac)
             super().__init__(
