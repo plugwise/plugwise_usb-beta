@@ -72,5 +72,4 @@ class PlugwiseUSBEntity(CoordinatorEntity):
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe to updates."""
-        await self.node_duc.unsubscribe_all_nodefeatures()
         await super().async_will_remove_from_hass()
