@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### v0.55.4 - 2025-07-08
+
+- PR [280](https://github.com/plugwise/plugwise_usb-beta/pull/280): Prevent multiple NodeFeature subscriptions 
+
 ### v0.55.3 - 2025-07-08
 
 - Bump plugwise to [v0.44.7](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.7)
