@@ -116,7 +116,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     async def unsubscribe_all_nodefeatures(self) -> None:
         """Unsubscribe to updates."""
         for unsubscribe_push_event in self.unsubscribe_push_events:
-            self.unsubscribe_push_events.pop(self.unsubscribe_push_event)
-            self.unsubscribe_push_event()
+            self.unsubscribe_push_events.pop(unsubscribe_push_event)
+            unsubscribe_push_event()
         self.subscribed_nodefeatures = []
 
