@@ -3,9 +3,9 @@
 from collections import Counter
 from datetime import timedelta
 import logging
-from typing import Any
+from typing import Any, Callable
 
-from plugwise_usb.api import NodeFeature, PlugwiseNode
+from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, PlugwiseNode
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
 
 from homeassistant.config_entries import ConfigEntry
@@ -37,6 +37,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
     ) -> None:
         """Initialize Plugwise USB data update coordinator."""
         self.node = node
+        self.subscribed_nodefeatures: list[NodeFeature] = []
+        self._subscribe_to_feature_fn = self.node.subscribe_to_feature_update
+        self.unsubscribe_push_events: list[Callable[[], None]] = []
         if node.node_info.is_battery_powered:
             _LOGGER.debug("Create battery powered DUC for %s", node.mac)
             super().__init__(
@@ -86,3 +89,35 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed("Device is not responding")
 
         return states
+
+    async def subscribe_nodefeature(self, node_feature: NodeFeature) -> None:
+        """Subscribe to a nodefeature."""
+        if (
+            node_feature in PUSHING_FEATURES
+            and node_feature in self.node.node_info.features
+            and node_feature not in self.subscribed_nodefeatures
+        ):
+            self.unsubscribe_push_events.append(
+                self._subscribe_to_feature_fn(
+                    self.async_push_event,
+                    node_feature,
+                )
+            )
+            self.subscribed_nodefeatures.append(node_feature)
+
+    async def async_push_event(self, feature: NodeFeature, state: Any) -> None:
+        """Update data pushed by node."""
+        self.async_set_updated_data(
+            {
+                feature: state,
+            }
+        )
+
+    async def unsubscribe_all_nodefeatures(self) -> None:
+        """Unsubscribe to updates."""
+        for unsubscribe_push_event in self.unsubscribe_push_events:
+            if unsubscribe_push_event is not None:
+                unsubscribe_push_event()
+        self.unsubscribe_push_events.clear()
+        self.subscribed_nodefeatures.clear()
+
