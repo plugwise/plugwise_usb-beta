@@ -1,5 +1,5 @@
 name: Bug or problem.
-description: Report an issue with Plugwise Beta.
+description: Report an issue with Plugwise USB Beta.
 title: "[BUG]: "
 labels: ["bug"]
 body:
@@ -10,7 +10,7 @@ body:
 
         If you have a feature or enhancement request, please use the appropriate [issue template][it].
 
-        [it]: https://github.com/plugwise/plugwise-beta/issues/new/choose
+        [it]: https://github.com/plugwise/plugwise_usb-beta/issues/new/choose
   - type: textarea
     validations:
       required: true
@@ -27,13 +27,13 @@ body:
     validations:
       required: true
     attributes:
-      label: What version of Plugwise Beta are you using?
+      label: What version of Plugwise USB Beta are you using?
       placeholder: vx.yy.z
       description: >
-        Can be found in: HACS panel -> Integrations -> Plugwise Beta (left top of the page)
+        Can be found in: HACS panel -> Integrations -> Plugwise USB Beta (left top of the page)
   - type: input
     attributes:
-      label: What was the last working version of Plugwise Beta (or Core if not using beta before)?
+      label: What was the last working version of Plugwise USB Beta (or Core if not using beta before)?
       placeholder: vxx.yy.z or core-
       description: >
         If known, otherwise leave blank.
@@ -74,10 +74,10 @@ body:
     validations:
       required: true
     attributes:
-      label: How did you install plugwise-beta?
+      label: How did you install plugwise_usb-beta?
       description: >
         You could be using the core-integration and just asked to leave feedback/improvements here, but more likely you installed either through HACS or manually as a `custom_component`.
-        Feel free to select Core even if you are actually **not** using plugwise-beta, no problem, we gladly look into it to see if we can upstream it to Core eventually!
+        Feel free to select Core even if you are actually **not** using plugwise_usb-beta, no problem, we gladly look into it to see if we can upstream it to Core eventually!
 
       options:
         - HACS
@@ -135,7 +135,7 @@ body:
 
         [![Open your Home Assistant instance and show the supervisor logs.](https://my.home-assistant.io/badges/supervisor_logs.svg)](https://my.home-assistant.io/redirect/supervisor_logs/)
 
-        There should be several lines related to `plugwise-beta`. Please show us the **complete** log-message that starts this:
+        There should be several lines related to `plugwise_usb-beta`. Please show us the **complete** log-message that starts this:
 
         ```[custom_components.plugwise] Data: PlugwiseData(gateway={'smile_name': ...```
 
