@@ -4,4 +4,4 @@ pytest-asyncio
 aiousbwatcher
 pytest-homeassistant-custom-component>=0.13.252
 # From our manifest.json for our custom component
-plugwise-usb @ https://files.pythonhosted.org/packages/b1/82/66c42393fa98e94951b106ca41b46b03e20f8c5d29df1ce043cfd586e5b5/plugwise_usb-0.44.5.tar.gz
+plugwise-usb @ https://files.pythonhosted.org/packages/f5/b6/6c6513db48aa22d6c12ac9f5c937f5def38421717fb585302310fc8642ab/plugwise_usb-0.44.8.tar.gz
