@@ -2,18 +2,22 @@
 
 ## Versions from 0.4x
 
+### v0.55.5 - 2025-07-21
+
+- Bugfixes via plugwise_usb [v0.44.8](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.8)
+
 ### v0.55.4 - 2025-07-08
 
 - PR [280](https://github.com/plugwise/plugwise_usb-beta/pull/280): Prevent multiple NodeFeature subscriptions
 
 ### v0.55.3 - 2025-07-08
 
-- Bump plugwise to [v0.44.7](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.7)
+- Bump plugwise_usb to [v0.44.7](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.7)
 - Implement switch events
 
 ### v0.55.2 - 2025-07-06
 
-- Bump plugwise to [v0.44.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.6)
+- Bump plugwise_usb to [v0.44.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.6)
 - Implement check on initialized to allow entities to be generated for nodes which are temporary offline
 - Maintenance chores (CI fixing)
 
@@ -28,7 +32,7 @@
 
 ### v0.54.2
 
-- Bump plugwise to [v0.44.3](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.3)
+- Bump plugwise_usb to [v0.44.3](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.3)
 - Implement button to enable auto joining through CirclePlus device page
 
 ### v0.54.1 - 2025-06-11
@@ -37,23 +41,23 @@
 
 ### v0.54.0
 
-- Bump plugwise to [v0.44.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.0)
-- Bump plugwise to [v0.44.1](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.1)
+- Bump plugwise_usb to [v0.44.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.0)
+- Bump plugwise_usb to [v0.44.1](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.1)
 - Implement Plugwise Sense Humidity and Temperature parameters.
 
 ### v0.53.0
 
-- Bump plugwise to [v0.43.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.43.0)
+- Bump plugwise_usb to [v0.43.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.43.0)
 - Implement Feature Request #250 - add a relay lock for energy devices with a switch
 
 ### v0.52.0
 
-- Bump plugwise to [v0.42.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.42.0)
+- Bump plugwise_usb to [v0.42.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.42.0)
 - Implement energy logs reset-service for energy-type Nodes ([#252](https://github.com/plugwise/plugwise_usb-beta/pull/252))
 
 ### v0.51.0
 
-- Bump plugwise to [v0.41.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.41.0)
+- Bump plugwise_usb to [v0.41.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.41.0)
 - Implement services for enabling/disabling of production logging ([#247](https://github.com/plugwise/plugwise_usb-beta/pull/247))
 
 ### v0.50.1
