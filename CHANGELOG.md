@@ -4,7 +4,7 @@
 
 ### v0.55.5 - 2025-07-21
 
-- Bugfixes via plugwise_usb [v0.44.8](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.8)
+- Bugfixes ([#288](https://github.com/plugwise/plugwise_usb-beta/issues/288), fix `Awaiting plugwise responses` value) via plugwise_usb [v0.44.8](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.8)
 
 ### v0.55.4 - 2025-07-08
 
