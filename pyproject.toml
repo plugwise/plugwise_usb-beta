@@ -1,6 +1,6 @@
 [project]
 name = "plugwise_usb-beta"
-version = "0.55.5"
+version = "0.55.6"
 description = "Plugwise USB custom_component (BETA)"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -24,7 +24,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Home Automation",]
 
-dependencies = ["homeassistant", "plugwise-usb"]
+dependencies = ["homeassistant", "plugwise-usb==0.44.9"]
 
 [project.urls]
 "Homepage"    = "https://github.com/plugwise/"
