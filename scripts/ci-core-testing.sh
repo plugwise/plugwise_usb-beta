@@ -20,7 +20,7 @@ VENV_DIR=".venv"
 #
 # Github flows are run against both 'dev' and 'master'
 core_branch="master"
-if [ "x${BRANCH}" != "x" ]; then
+if [ "${BRANCH}" != "" ]; then
 	core_branch="${BRANCH}"
 fi
 echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
