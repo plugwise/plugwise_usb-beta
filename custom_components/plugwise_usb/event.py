@@ -9,11 +9,11 @@ import logging
 from plugwise_usb.api import NodeEvent, NodeFeature
 
 from homeassistant.components.event import (
-    EventDeviceClass, 
-    EventEntity, 
+    EventDeviceClass,
+    EventEntity,
     EventEntityDescription,
 )
-from homeassistant.const import EntityCategory, Platform, UnitOfTime
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -141,8 +141,8 @@ class PlugwiseUSBEventEntity(PlugwiseUSBEntity, EventEntity):
             )
             return
         # SWITCH logic
-        state_value = getattr(data, "state" )
-        group_value = getattr(data, "group" )
+        state_value = data.state
+        group_value = data.group
         match self.entity_description.key:
             case "button_press_i_group_1":
                 if state_value is True and group_value == 1:
