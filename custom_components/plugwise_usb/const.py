@@ -50,24 +50,6 @@ ATTR_SED_MAINTENANCE_INTERVAL: Final[str] = "maintenance_interval"
 ATTR_SED_CLOCK_SYNC: Final[str] = "clock_sync"
 ATTR_SED_CLOCK_INTERVAL: Final[str] = "clock_interval"
 
-SERVICE_USB_SED_BATTERY_CONFIG: Final[str] = "configure_battery_savings"
-SERVICE_USB_SED_BATTERY_CONFIG_SCHEMA: Final = {
-    vol.Required(ATTR_SED_STAY_ACTIVE): vol.All(
-        vol.Coerce(int), vol.Range(min=1, max=120)
-    ),
-    vol.Required(ATTR_SED_SLEEP_FOR): vol.All(
-        vol.Coerce(int), vol.Range(min=10, max=60)
-    ),
-    vol.Required(ATTR_SED_MAINTENANCE_INTERVAL): vol.All(
-        vol.Coerce(int), vol.Range(min=5, max=1440)
-    ),
-    vol.Required(ATTR_SED_CLOCK_SYNC): cv.boolean,
-    vol.Required(ATTR_SED_CLOCK_INTERVAL): vol.All(
-        vol.Coerce(int), vol.Range(min=60, max=10080)
-    ),
-}
-
-
 # USB Scan device constants
 ATTR_SCAN_DAYLIGHT_MODE: Final[str] = "day_light"
 ATTR_SCAN_SENSITIVITY_MODE: Final[str] = "sensitivity_mode"
@@ -81,14 +63,3 @@ SCAN_SENSITIVITY_MODES = [
     SCAN_SENSITIVITY_MEDIUM,
     SCAN_SENSITIVITY_OFF,
 ]
-
-SERVICE_USB_SCAN_CONFIG: Final[str] = "configure_scan"
-SERVICE_USB_SCAN_CONFIG_SCHEMA = (
-    {
-        vol.Required(ATTR_SCAN_SENSITIVITY_MODE): vol.In(SCAN_SENSITIVITY_MODES),
-        vol.Required(ATTR_SCAN_RESET_TIMER): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=240)
-        ),
-        vol.Required(ATTR_SCAN_DAYLIGHT_MODE): cv.boolean,
-    },
-)
