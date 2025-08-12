@@ -1,9 +1,10 @@
 """DataUpdateCoordinator for Plugwise USB-Stick."""
 
 from collections import Counter
+from collections.abc import Callable
 from datetime import timedelta
 import logging
-from typing import Any, Callable
+from typing import Any
 
 from plugwise_usb.api import PUSHING_FEATURES, NodeFeature, PlugwiseNode
 from plugwise_usb.exceptions import NodeError, NodeTimeout, StickError, StickTimeout
