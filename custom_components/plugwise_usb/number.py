@@ -69,7 +69,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.MINUTES,
         entity_category=EntityCategory.CONFIG,
-        native_max_value=65535,
+        native_max_value=1440,
         native_min_value=60,
         api_attribute="sleep_duration",
     ),
@@ -81,7 +81,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.SECONDS,
         entity_category=EntityCategory.CONFIG,
-        native_max_value=255,
+        native_max_value=60,
         native_min_value=1,
         api_attribute="awake_duration",
     ),
@@ -182,5 +182,5 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
 
-        self._attr_native_value = await self.async_number_fn(int(value))
+        await self.async_number_fn(int(value))
         self.async_write_ha_state()
