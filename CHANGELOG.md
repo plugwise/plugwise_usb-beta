@@ -2,6 +2,10 @@
 
 ## Versions from 0.4x
 
+### v0.55.8 - 20250-8-15
+
+- Energy-cache-related improvements via plugwise_usb [v0.44.11](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.11)
+
 ### v0.55.7 - 2025-08-11
 
 - Bugfixes and improvements via plugwise_usb [v0.44.10](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.10)
