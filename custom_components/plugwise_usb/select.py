@@ -128,7 +128,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
             self.entity_description.api_attribute,
         )
         self._current_option = current_option.name
-        self._attr_current_option =  current_option.name 
+        self._attr_current_option = current_option.name 
         self.async_write_ha_state()
 
     @property
