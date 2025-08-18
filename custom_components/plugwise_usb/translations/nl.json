@@ -57,7 +57,7 @@
       }
     },
     "select": {
-      "motion_sensitivy_level": {
+      "motion_sensitivity_level": {
         "name": "Bewegingsdetectie Gevoeligheid",
         "state": {
           "high": "Hoog",
