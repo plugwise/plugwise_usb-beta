@@ -92,7 +92,7 @@ async def async_setup_entry(
                 ]
             )
         if entities:
-            async_add_entities(entities, update_before_add=True)
+            async_add_entities(entities)
 
     api_stick = config_entry.runtime_data[STICK]
 

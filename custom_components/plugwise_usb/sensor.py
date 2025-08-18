@@ -189,7 +189,7 @@ async def async_setup_entry(
             _LOGGER.debug("async_add_sensor | %s | GET MAC FAILED", mac)
 
         if entities:
-            async_add_entities(entities, update_before_add=True)
+            async_add_entities(entities)
 
     api_stick = config_entry.runtime_data[STICK]
 
