@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from datetime import timedelta
 import logging
 
@@ -141,8 +142,10 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         """Return the currently selected option."""
         return self._current_option
 
-    async def async_select_option(self, option: str) ->None:
+    async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         value = self.entity_description.options[option]
         await self.async_select_fn(value)
+        self._current_option = option
+        self._attr_current_option = option
         self.async_write_ha_state() 
