@@ -56,6 +56,16 @@
         "name": "Batterij instellingen aangepast"
       }
     },
+    "select": {
+      "motion_sensitivy_level": {
+        "name": "Bewegingsdetectie Gevoeligheid",
+        "state": {
+          "HIGH": "Hoog",
+          "MEDIUM": "Medium",
+          "OFF": "Uit"
+        }
+      }
+    },
     "sensor": {
       "power_last_second": {
         "name": "Energie"
