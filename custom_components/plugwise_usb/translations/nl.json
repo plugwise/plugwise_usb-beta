@@ -147,6 +147,12 @@
       },
       "energy_reset":{
         "name": "Energieverzameling resetten"
+      },
+      "ping":{
+        "name": "Ping Node"
+      },
+      "calibrate_light":{
+        "name": "Licht Sensor Calibratie Inplannen"
       }
     },
     "event": {

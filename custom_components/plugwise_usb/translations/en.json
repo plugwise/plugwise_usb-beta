@@ -147,6 +147,12 @@
       },
       "energy_reset":{
         "name": "Reset energy collection"
+      },
+      "ping":{
+        "name": "Ping Device"
+      },
+      "calibrate_light":{
+        "name": "Schedule Light Sensor Calibration"
       }
     },
     "event": {

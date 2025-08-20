@@ -46,6 +46,20 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         async_button_fn="energy_reset_request",
         node_feature=NodeFeature.CIRCLE,
     ),
+    PlugwiseButtonEntityDescription(
+        key="ping",
+        translation_key="ping",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        async_button_fn="ping_update",
+        node_feature=NodeFeature.CIRCLE,
+    ),
+    PlugwiseButtonEntityDescription(
+        key="calibrate_light",
+        translation_key="calibrate_light",
+        entity_category=EntityCategory.CONFIG,
+        async_button_fn="scan_calibrate_light",
+        node_feature=NodeFeature.MOTION,
+    ),
 )
 
 
