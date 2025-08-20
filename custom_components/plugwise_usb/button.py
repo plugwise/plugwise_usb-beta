@@ -47,9 +47,9 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         node_feature=NodeFeature.CIRCLE,
     ),
     PlugwiseButtonEntityDescription(
-        key="ping",
-        translation_key="ping",
-        entity_category=EntityCategory.DIAGNOSTIC,
+        key="ping_node",
+        translation_key="ping_node",
+        entity_category=EntityCategory.CONFIG,
         async_button_fn="ping_update",
         node_feature=NodeFeature.CIRCLE,
     ),

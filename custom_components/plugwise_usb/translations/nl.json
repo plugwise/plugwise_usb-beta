@@ -148,7 +148,7 @@
       "energy_reset":{
         "name": "Energieverzameling resetten"
       },
-      "ping":{
+      "ping_node":{
         "name": "Ping Node"
       },
       "calibrate_light":{
