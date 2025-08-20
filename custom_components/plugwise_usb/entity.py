@@ -45,9 +45,6 @@ class PlugwiseUSBEntity(CoordinatorEntity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        if not hasattr(self.entity_description,"api_attribute"):
-           return True
-        _LOGGER.warning("MDI: %s %s",self.entity_description.key,str(hasattr(self.entity_description,"api_attribute")))
         return self.node_duc.node.available and super().available
 
     @property
