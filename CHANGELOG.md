@@ -4,7 +4,7 @@
 
 ### Ongoing
 
-- Correct logger-messages with `node_duc.node.name`
+- Shorten/correct logger-messages to use `node_duc.node.name`
 
 ### v0.55.8 - 2025-08-15
 
