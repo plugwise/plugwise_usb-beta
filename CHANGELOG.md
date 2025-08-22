@@ -6,7 +6,7 @@
 
 - Correct logger-messages with `node_duc.node.name`
 
-### v0.55.8 - 20250-8-15
+### v0.55.8 - 2025-08-15
 
 - Energy-cache-related improvements via plugwise_usb [v0.44.11](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.11)
 
