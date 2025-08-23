@@ -10,7 +10,7 @@ from plugwise_usb.api import NodeEvent, NodeFeature
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.const import EntityCategory, Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
@@ -111,6 +111,10 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
         self.async_button_fn = getattr(
             node_duc.node, entity_description.async_button_fn
         )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
 
     async def async_press(self) -> None:
         """Button was pressed."""
