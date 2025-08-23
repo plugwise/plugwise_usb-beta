@@ -321,7 +321,7 @@
 ### MAY 2022 [0.23.2]
 
 - Smile bugfix: fixing [plugwise module 192](https://github.com/plugwise/python-plugwise/issues/192) and [Core Issue 72305](https://github.com/home-assistant/core/issues/72305)
-  via plugwise module [v0.18.5)[https://github.com/plugwise/python-plugwise/releases/tag/v0.18.5]
+  via plugwise module [v0.18.5](https://github.com/plugwise/python-plugwise/releases/tag/v0.18.5)
 
 ### MAY 2022 [0.23.1]
 
