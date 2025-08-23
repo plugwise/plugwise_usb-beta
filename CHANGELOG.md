@@ -4,7 +4,7 @@
 
 ### Ongoing
 
-- Enable energy-reset buttons for all non-plus devices
+- Fix disabled buttons for all non-plus devices
 
 - Shorten/correct logger-messages to use `node_duc.node.name`
 
