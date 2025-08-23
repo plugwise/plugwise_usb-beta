@@ -3,6 +3,7 @@
 ## Versions from 0.4x
 
 ### Ongoing
+
 - Enable energy-reset buttons for all non-plus devices
 
 - Shorten/correct logger-messages to use `node_duc.node.name`
