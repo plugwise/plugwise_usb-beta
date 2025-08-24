@@ -108,6 +108,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
             node_duc.node, entity_description.async_select_fn
         )
         self._attr_options: list[str] = [o.name.lower() for o in entity_description.options]
+        self.entity_description = entity_description
         self._node_duc = node_duc
 
     @callback
@@ -126,14 +127,8 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
             data,
             self.entity_description.api_attribute,
         )
-        self._current_option = current_option.name.lower()
         self._attr_current_option = current_option.name.lower()
         self.async_write_ha_state()
-
-    @property
-    def current_option(self) -> str:
-        """Return the currently selected option."""
-        return self._current_option
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
