@@ -60,9 +60,9 @@
       "motion_sensitivity_level": {
         "name": "Motion Sensitivity Level",
         "state": {
-          "HIGH": "High",
-          "MEDIUM": "Medium",
-          "OFF": "Off"
+          "high": "High",
+          "medium": "Medium",
+          "off": "Off"
         }
       }
     },

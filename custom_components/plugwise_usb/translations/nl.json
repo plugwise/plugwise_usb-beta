@@ -60,9 +60,9 @@
       "motion_sensitivity_level": {
         "name": "Bewegingsdetectie Gevoeligheid",
         "state": {
-          "HIGH": "Hoog",
-          "MEDIUM": "Medium",
-          "OFF": "Uit"
+          "high": "Hoog",
+          "medium": "Medium",
+          "off": "Uit"
         }
       }
     },
