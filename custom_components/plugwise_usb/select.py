@@ -104,11 +104,11 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
     ) -> None:
         """Initialize a select entity."""
         super().__init__(node_duc, entity_description)
-        self._options: list[str] = [o.name.lower() for o in entity_description.options]
-        self._current_option = "medium"
         self.async_select_fn = getattr(
             node_duc.node, entity_description.async_select_fn
         )
+        self._current_option = "medium"
+        self._options: list[str] = [o.name.lower() for o in entity_description.options]
         self._node_duc = node_duc
 
     @callback
@@ -130,11 +130,6 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         self._current_option = current_option.name.lower()
         self._attr_current_option = current_option.name.lower()
         self.async_write_ha_state()
-
-    @property
-    def options(self) -> list[str]:
-        """Return the available select-options."""
-        return self._options
 
     @property
     def current_option(self) -> str:
