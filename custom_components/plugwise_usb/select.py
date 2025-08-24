@@ -107,8 +107,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         self.async_select_fn = getattr(
             node_duc.node, entity_description.async_select_fn
         )
-        self._current_option = "medium"
-        self._options: list[str] = [o.name.lower() for o in entity_description.options]
+        self._attr_options: list[str] = [o.name.lower() for o in entity_description.options]
         self._node_duc = node_duc
 
     @callback
