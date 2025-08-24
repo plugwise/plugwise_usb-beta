@@ -28,7 +28,6 @@ class PlugwiseSelectEntityDescription(
 ):
     """Describes Plugwise select entity."""
 
-    api_attribute: str = ""
     async_select_fn: str = ""
 
 
@@ -39,7 +38,6 @@ SELECT_TYPES: tuple[PlugwiseSelectEntityDescription, ...] = (
         async_select_fn="set_motion_sensitivity_level",
         entity_category=EntityCategory.CONFIG,
         node_feature=NodeFeature.MOTION_CONFIG,
-        api_attribute="sensitivity_level",
         options = MotionSensitivity,
     ),
 )
@@ -125,7 +123,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
 
         current_option = getattr(
             data,
-            self.entity_description.api_attribute,
+            self.entity_description.key,
         )
         self._attr_current_option = current_option.name.lower()
         self.async_write_ha_state()
