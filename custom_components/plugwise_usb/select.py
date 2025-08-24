@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
 from datetime import timedelta
 import logging
 
-from plugwise_usb.api import NodeEvent, NodeFeature, MotionSensitivity
+from plugwise_usb.api import MotionSensitivity, NodeEvent, NodeFeature
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.const import EntityCategory, Platform
@@ -129,7 +128,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
             self.entity_description.api_attribute,
         )
         self._current_option = current_option.name.lower()
-        self._attr_current_option = current_option.name.lower() 
+        self._attr_current_option = current_option.name.lower()
         self.async_write_ha_state()
 
     @property
@@ -148,4 +147,4 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         await self.async_select_fn(value)
         self._current_option = option
         self._attr_current_option = option
-        self.async_write_ha_state() 
+        self.async_write_ha_state()
