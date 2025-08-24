@@ -5,7 +5,6 @@
 ### Ongoing
 
 - Fix disabled buttons for all non-plus devices
-
 - Shorten/correct logger-messages to use `node_duc.node.name`
 
 ### v0.55.8 - 2025-08-15
