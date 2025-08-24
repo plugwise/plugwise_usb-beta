@@ -88,7 +88,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             and not states[NodeFeature.AVAILABLE].state
         ):
             raise UpdateFailed(
-                f"Device '{self.node.node_info.mac}'is (temporarily) not available"
+                f"Device '{self.node.node_info.mac}' is (temporarily) not available"
             )
 
         return states
