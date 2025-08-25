@@ -50,15 +50,15 @@
         "name": "Motion"
       },
       "motion_config_dirty": {
-        "name": "Motion Config Changed"
+        "name": "Motion config changed"
       },
       "battery_config_dirty": {
-        "name": "Battery Config Changed"
+        "name": "Battery config changed"
       }
     },
     "select": {
       "motion_sensitivity_level": {
-        "name": "Motion Sensitivity Level",
+        "name": "Motion sensitivity level",
         "state": {
           "high": "High",
           "medium": "Medium",
@@ -152,21 +152,21 @@
         "name": "Ping Device"
       },
       "calibrate_light":{
-        "name": "Schedule Light Sensor Calibration"
+        "name": "Schedule light sensor calibration"
       }
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Button I Group 1 Pressed"
+        "name": "Button I group 1 pressed"
       },
       "button_press_o_group_1": {
-        "name": "Button O Group 1 Pressed"
+        "name": "Button O group 1 pressed"
       },
       "button_press_i_group_2": {
-        "name": "Button I Group 2 Pressed"
+        "name": "Button I group 2 pressed"
       },
       "button_press_o_group_2": {
-        "name": "Button O Group 2 Pressed"
+        "name": "Button O group 2 pressed"
       }
     }
   }

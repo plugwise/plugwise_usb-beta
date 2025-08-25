@@ -50,15 +50,15 @@
         "name": "Motion"
       },
       "motion_config_dirty": {
-        "name": "Motion Config Changed"
+        "name": "Motion config changed"
       },
       "battery_config_dirty": {
-        "name": "Battery Config Changed"
+        "name": "Battery config changed"
       }
     },
     "select": {
       "motion_sensitivity_level": {
-        "name": "Motion Sensitivity Level",
+        "name": "Motion sensitivity level",
         "state": {
           "high": "High",
           "medium": "Medium",
@@ -157,7 +157,7 @@
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Button I Pressed Group 1",
+        "name": "Button I pressed group 1",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -167,7 +167,7 @@
         }
       },
       "button_press_o_group_1": {
-        "name": "Button O Pressed Group 1",
+        "name": "Button O pressed group 1",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -177,7 +177,7 @@
         }
       },
       "button_press_i_group_2": {
-        "name": "Button I Pressed Group 2",
+        "name": "Button I pressed group 2",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -187,7 +187,7 @@
         }
       },
       "button_press_o_group_2": {
-        "name": "Button O Pressed Group 2",
+        "name": "Button O pressed group 2",
         "state_attributes": {
           "event_type": {
             "state": {

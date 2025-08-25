@@ -50,15 +50,15 @@
         "name": "Beweging"
       },
       "motion_config_dirty": {
-        "name": "Instellingen bewegingsdetectie aangepast"
+        "name": "Bewegingsdetectieinstellingen aangepast"
       },
       "battery_config_dirty": {
-        "name": "Batterij instellingen aangepast"
+        "name": "Batterijinstellingen aangepast"
       }
     },
     "select": {
       "motion_sensitivity_level": {
-        "name": "Bewegingsdetectie Gevoeligheid",
+        "name": "Bewegingsdetectie gevoeligheid",
         "state": {
           "high": "Hoog",
           "medium": "Medium",
@@ -152,21 +152,21 @@
         "name": "Ping Node"
       },
       "calibrate_light":{
-        "name": "Licht Sensor Calibratie Inplannen"
+        "name": "Licht sensor calibratie inplannen"
       }
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Knop I Groep 1 gedrukt"
+        "name": "Knop I groep 1 gedrukt"
       },
       "button_press_o_group_1": {
-        "name": "Knop O Groep 1 gedrukt"
+        "name": "Knop O groep 1 gedrukt"
       },
       "button_press_i_group_2": {
-        "name": "Knop I Groep 2 gedrukt"
+        "name": "Knop I groep 2 gedrukt"
       },
       "button_press_o_group_2": {
-        "name": "Knop O Groep 2 gedrukt"
+        "name": "Knop O groep 2 gedrukt"
       }
     }
   }
