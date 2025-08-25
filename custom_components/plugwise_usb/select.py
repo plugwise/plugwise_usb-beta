@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import timedelta
+from enum import Enum
 import logging
 
 from plugwise_usb.api import MotionSensitivity, NodeEvent, NodeFeature
@@ -29,7 +30,7 @@ class PlugwiseSelectEntityDescription(
     """Describes Plugwise select entity."""
 
     async_select_fn: str = ""
-
+    options_enum: type[Enum]
 
 SELECT_TYPES: tuple[PlugwiseSelectEntityDescription, ...] = (
     PlugwiseSelectEntityDescription(
@@ -38,7 +39,7 @@ SELECT_TYPES: tuple[PlugwiseSelectEntityDescription, ...] = (
         async_select_fn="set_motion_sensitivity_level",
         entity_category=EntityCategory.CONFIG,
         node_feature=NodeFeature.MOTION_CONFIG,
-        options = MotionSensitivity,
+        options_enum = MotionSensitivity,
     ),
 )
 
@@ -107,9 +108,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         self.async_select_fn = getattr(
             node_duc.node, entity_description.async_select_fn
         )
-        self._attr_options: list[str] = [o.name.lower() for o in entity_description.options]
-        self.entity_description = entity_description
-        self._node_duc = node_duc
+        self._attr_options = [o.name.lower() for o in entity_description.options_enum]
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -132,8 +131,11 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
-        value = self.entity_description.options[option.upper()]
+        normalized = option.strip().lower()
+        if normalized not in self._attr_options:
+            raise ValueError(f"Unspported option: {option}")
+        value = self.entity_description.options_enum[normalized.upper()]
         await self.async_select_fn(value)
-        self._current_option = option
-        self._attr_current_option = option
+        self._current_option = normalized
+        self._attr_current_option = normalized
         self.async_write_ha_state()
