@@ -80,7 +80,7 @@ async def async_setup_entry(
                 if entity_description.node_feature not in node_duc.node.features:
                     continue
                 entities.append(PlugwiseUSBButtonEntity(node_duc, entity_description))
-                LOGGER.debug(
+                _LOGGER.debug(
                     "Add %s button for node %s",
                     entity_description.translation_key,
                     node_duc.node.name,
