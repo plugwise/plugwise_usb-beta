@@ -133,7 +133,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         """Change to the selected entity option."""
         normalized = option.strip().lower()
         if normalized not in self._attr_options:
-            raise ValueError(f"Unspported option: {option}")
+            raise ValueError(f"Unsupported option: {option}")
         value = self.entity_description.options_enum[normalized.upper()]
         await self.async_select_fn(value)
         self._current_option = normalized
