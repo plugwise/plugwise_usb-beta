@@ -42,64 +42,28 @@
           "description": "The full 16 character MAC address of the plugwise device."
         }
       }
-    },
-    "configure_scan": {
-      "name": "Configure motion settings",
-      "description": "Configure the motion settings for a Plugwise Scan device. The new configuration will be send soon as the Scan devices is awake to receive configuration changes. For quick activation press the local button to awake the device.",
-      "fields": {
-        "entity_id": {
-          "name": "Entity ID",
-          "description": "Entity id of the Plugwise Scan motion sensor."
-        },
-        "sensitivity_mode": {
-          "name": "Sensitivity mode",
-          "description": "Scan motion sensitivity mode (high/medium/off)."
-        },
-        "reset_timer": {
-          "name": "Timer reset",
-          "description": "Number of minutes the Scan waits after no motion detected to set state back to off. Valid range is 1 minute up to 240 minutes (4 hours)."
-        },
-        "day_light": {
-          "name": "Daylight override",
-          "description": "Daylight override to only report motion when light-level is below calibrated level."
-        }
-      }
-    },
-    "configure_battery_savings": {
-      "name": "Configure battery savings",
-      "description": "Configure the battery saving settings for battery powered Plugwise devices. The new configuration will be sent soon as the Plugwise device notifies Home Assistant it is awake to receive configuration changes. For quick reception of the configuration press the local button to wake up the device manually.",
-      "fields": {
-        "entity_id": {
-          "name": "Entity ID",
-          "description": "Entity id of the battery powered Plugwise device."
-        },
-        "stay_active": {
-          "name": "Stay active",
-          "description": "Duration in seconds the device will be awake. A high value will drain the battery."
-        },
-        "sleep_for": {
-          "name": "Sleep for",
-          "description": "Duration in minutes the device will be in sleeping mode and not able to respond any command."
-        },
-        "maintenance_interval": {
-          "name": "Maintenance interval",
-          "description": "Interval in minutes the node will wake up and notify it is able to receive (maintenance) commands."
-        },
-        "clock_sync": {
-          "name": "Clock-sync",
-          "description": "Enable or disable the synchronization of the internal clock."
-        },
-        "clock_interval": {
-          "name": "Clock-sync interval",
-          "description": "Interval the device will synchronize its internal clock. Only useful if Clock-sync is set to True."
-        }
-      }
     }
   },
   "entity": {
     "binary_sensor": {
       "motion": {
         "name": "Motion"
+      },
+      "motion_config_dirty": {
+        "name": "Motion config changed"
+      },
+      "battery_config_dirty": {
+        "name": "Battery config changed"
+      }
+    },
+    "select": {
+      "motion_sensitivity_level": {
+        "name": "Motion sensitivity level",
+        "state": {
+          "high": "High",
+          "medium": "Medium",
+          "off": "Off"
+        }
       }
     },
     "sensor": {
@@ -183,11 +147,17 @@
       },
       "energy_reset":{
         "name": "Reset energy collection"
+      },
+      "ping_node":{
+        "name": "Ping Device"
+      },
+      "calibrate_light":{
+        "name": "Schedule Light Sensor Calibration"
       }
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Button I Pressed Group 1",
+        "name": "Button I pressed group 1",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -197,7 +167,7 @@
         }
       },
       "button_press_o_group_1": {
-        "name": "Button O Pressed Group 1",
+        "name": "Button O pressed group 1",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -207,7 +177,7 @@
         }
       },
       "button_press_i_group_2": {
-        "name": "Button I Pressed Group 2",
+        "name": "Button I pressed group 2",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -217,7 +187,7 @@
         }
       },
       "button_press_o_group_2": {
-        "name": "Button O Pressed Group 2",
+        "name": "Button O pressed group 2",
         "state_attributes": {
           "event_type": {
             "state": {

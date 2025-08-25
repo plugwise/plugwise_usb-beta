@@ -2,8 +2,10 @@
 
 ## Versions from 0.4x
 
-### Ongoing
+### v0.55.9 - 2025-08-25
 
+- Add select for Scan sensitivity
+- Add button for Scan light calibration
 - Fix disabled buttons for all non-plus devices
 - Shorten/correct logger-messages to use `node_duc.node.name`
 

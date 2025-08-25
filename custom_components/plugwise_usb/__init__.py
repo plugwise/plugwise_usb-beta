@@ -164,7 +164,7 @@ async def async_unload_entry(
     """Unload the Plugwise USB stick connection."""
     config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
     for coordinator in config_entry.runtime_data[NODES].values():
-        coordinator.unsubscribe_all_nodefeatures()
+        await coordinator.unsubscribe_all_nodefeatures()
     unload = await hass.config_entries.async_unload_platforms(
         config_entry, PLUGWISE_USB_PLATFORMS
     )

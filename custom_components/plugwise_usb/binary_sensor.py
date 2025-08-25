@@ -13,7 +13,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.const import Platform
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -43,6 +43,24 @@ BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         node_feature=NodeFeature.MOTION,
         api_attribute="state",
     ),
+    PlugwiseBinarySensorEntityDescription(
+        key="motion_config_dirty",
+        translation_key="motion_config_dirty",
+        node_feature=NodeFeature.MOTION_CONFIG,
+        device_class=BinarySensorDeviceClass.SAFETY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        api_attribute="dirty",
+    ),
+    PlugwiseBinarySensorEntityDescription(
+        key="battery_config_dirty",
+        translation_key="battery_config_dirty",
+        node_feature=NodeFeature.BATTERY,
+        device_class=BinarySensorDeviceClass.SAFETY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        api_attribute="dirty",
+    ),
 )
 
 
@@ -70,7 +88,7 @@ async def async_setup_entry(
                 ]
             )
         if entities:
-            async_add_entities(entities, update_before_add=True)
+            async_add_entities(entities)
 
     api_stick = config_entry.runtime_data[STICK]
 

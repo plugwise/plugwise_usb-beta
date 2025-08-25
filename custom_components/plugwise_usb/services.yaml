@@ -8,27 +8,3 @@ disable_production:
   fields:
     mac:
       example: "data: {mac: 0123456789ABCDEF}"
-configure_scan:
-  fields:
-    entity_id:
-      example: binary_sensor.motion_AB123
-    sensitivity_mode:
-      example: medium
-    reset_timer:
-      example: 5
-    day_light:
-      example: False
-configure_battery_savings:
-  fields:
-    entity_id:
-      example: binary_sensor.motion_AB123
-    stay_active:
-      example: 10
-    sleep_for:
-      example: 60
-    maintenance_interval:
-      example: 1440
-    clock_sync:
-      example: False
-    clock_interval:
-      example: 10080

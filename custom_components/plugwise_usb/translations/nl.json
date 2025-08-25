@@ -42,64 +42,28 @@
           "description": "Het volledige MAC address (16 karakters) van het plugwise apparaat."
         }
       }
-    },
-    "configure_scan": {
-      "name": "Configureer bewegingsinstellingen voor een Plugwise Scan apparaat",
-      "description": "Configureert bewegingsinstellingen voor een Plugwise Scan apparaat.",
-      "fields": {
-        "entity_id": {
-          "name": "Entiteit ID",
-          "description": "Entiteits id van de Plugwise Scan bewegingssensor."
-        },
-        "sensitivity_mode": {
-          "name": "Gevoeligheid",
-          "description": "Gevoeligheidsmode voor scannen (hoog/gemiddeld/uit)."
-        },
-        "reset_timer": {
-          "name": "Timer herstel",
-          "description": "Aantal minuten om te wachten, nadat er geen beweging meer gedecteteerd is, voordat de status naar uit gaat. Invoer van 1 minuut minimum tot 240 minuten maximum (4 uur)."
-        },
-        "day_light": {
-          "name": "Daglicht mode",
-          "description": "Enkel beweging detecteren wanneer licht niveau onder een gekalibreerde waarde valt."
-        }
-      }
-    },
-    "configure_battery_savings": {
-      "name": "Configureer batterij besparing",
-      "description": "Configureert batterij besparingsinstellingen voor batterij gevoedde Pluwise apparaten.",
-      "fields": {
-        "entity_id": {
-          "name": "Entiteit ID",
-          "description": "Entiteits id van het battery gevoedde Plugwise apparaat."
-        },
-        "stay_active": {
-          "name": "Actief blijven",
-          "description": "Aantal seconden dat het apparaat wakker blijft. Hogere waarden leiden tot kortere batterijduur."
-        },
-        "sleep_for": {
-          "name": "Slapen tot",
-          "description": "Aantal minuten dat het apparaat blijft slapen en niet zal reageren op commando's."
-        },
-        "maintenance_interval": {
-          "name": "Onderhoudsinterval",
-          "description": "Tijdsinterval in minuten dat het apparaat wakker wordt en (onderhouds-)commando's kan ontvangen."
-        },
-        "clock_sync": {
-          "name": "Kloksyncronisatie",
-          "description": "Aan- of uitzetten van interne klok synchronisatie."
-        },
-        "clock_interval": {
-          "name": "Interval kloksyncronisatie",
-          "description": "Tijdsinterval dat het apparaat de interne klok synchroniseert. Enkel van toepassing als Clock-sync gezet is."
-        }
-      }
     }
   },
   "entity": {
     "binary_sensor": {
       "motion": {
         "name": "Beweging"
+      },
+      "motion_config_dirty": {
+        "name": "Bewegingsdetectieinstellingen aangepast"
+      },
+      "battery_config_dirty": {
+        "name": "Batterijinstellingen aangepast"
+      }
+    },
+    "select": {
+      "motion_sensitivity_level": {
+        "name": "Bewegingsdetectie gevoeligheid",
+        "state": {
+          "high": "Hoog",
+          "medium": "Medium",
+          "off": "Uit"
+        }
       }
     },
     "sensor": {
@@ -183,20 +147,26 @@
       },
       "energy_reset":{
         "name": "Energieverzameling resetten"
+      },
+      "ping_node":{
+        "name": "Ping Node"
+      },
+      "calibrate_light":{
+        "name": "Licht sensor calibratie inplannen"
       }
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Knop I Groep 1 gedrukt"
+        "name": "Knop I groep 1 gedrukt"
       },
       "button_press_o_group_1": {
-        "name": "Knop O Groep 1 gedrukt"
+        "name": "Knop O groep 1 gedrukt"
       },
       "button_press_i_group_2": {
-        "name": "Knop I Groep 2 gedrukt"
+        "name": "Knop I groep 2 gedrukt"
       },
       "button_press_o_group_2": {
-        "name": "Knop O Groep 2 gedrukt"
+        "name": "Knop O groep 2 gedrukt"
       }
     }
   }
