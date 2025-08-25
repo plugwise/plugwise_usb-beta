@@ -45,7 +45,9 @@ class PlugwiseUSBEntity(CoordinatorEntity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        return self.node_duc.node.available and super().available
+        available = self.node_duc.node.available and super().available
+        _LOGGER.debug("Entity %s | available = %s", entity_description.key, available)
+        return available
 
     @property
     def device_info(self) -> DeviceInfo:
