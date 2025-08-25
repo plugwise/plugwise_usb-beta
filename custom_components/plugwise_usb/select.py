@@ -56,7 +56,9 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add select entities for %s | duc=%s", mac, node_duc.name)
+            _LOGGER.debug(
+                "Add select entities for %s | duc=%s", mac, node_duc.node.name
+            )
             entities.extend(
                 [
                     PlugwiseUSBSelectEntity(node_duc, entity_description)
