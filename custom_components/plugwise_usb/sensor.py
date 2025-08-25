@@ -177,17 +177,15 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add sensor entities for node %s", node_duc.node.name)
-            entities.extend(
-                [
-                    PlugwiseUSBSensorEntity(node_duc, entity_description)
-                    for entity_description in SENSOR_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
-        else:
-            _LOGGER.debug("async_add_sensor | %s | GET MAC FAILED", mac)
-
+            for entity_description in SENSOR_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBSensorEntity(node_duc, entity_description))
+                LOGGER.debug(
+                    "Add %s sensor for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
         if entities:
             async_add_entities(entities)
 
