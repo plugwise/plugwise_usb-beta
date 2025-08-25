@@ -172,7 +172,6 @@ async def async_setup_entry(
 
     async def async_add_sensor(node_event: NodeEvent, mac: str) -> None:
         """Initialize DUC for sensor."""
-        _LOGGER.debug("async_add_sensor | %s | node_event=%s", mac, node_event)
         if node_event != NodeEvent.LOADED:
             return
         entities: list[PlugwiseUSBEntity] = []
