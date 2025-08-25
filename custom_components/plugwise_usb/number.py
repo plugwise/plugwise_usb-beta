@@ -117,7 +117,7 @@ async def async_setup_entry(
                 if entity_description.node_feature not in node_duc.node.features:
                     continue
                 entities.append(PlugwiseUSBNumberEntity(node_duc, entity_description))
-                LOGGER.debug(
+                _LOGGER.debug(
                     "Add %s number for node %s",
                     entity_description.translation_key,
                     node_duc.node.name,
