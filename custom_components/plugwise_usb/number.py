@@ -140,7 +140,8 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_number(NodeEvent.LOADED, mac)
-
+        else:
+            _LOGGER.debug("Adding number(s) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
     config_entry: PlugwiseUSBConfigEntry,
