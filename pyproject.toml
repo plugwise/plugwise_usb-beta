@@ -24,7 +24,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Home Automation",]
 
-dependencies = ["homeassistant", "plugwise-usb==0.44.11"]
+dependencies = ["homeassistant", "plugwise-usb==0.44.12"]
 
 [project.urls]
 "Homepage"    = "https://github.com/plugwise/"
