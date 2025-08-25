@@ -48,7 +48,7 @@ async def async_setup_entry(
     config_entry: PlugwiseUSBConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the USB selectes from a config entry."""
+    """Set up the USB selects from a config entry."""
 
     async def async_add_select(node_event: NodeEvent, mac: str) -> None:
         """Initialize DUC for select."""
