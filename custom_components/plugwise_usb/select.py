@@ -57,9 +57,7 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug(
-                "Add select entities for %s | duc=%s", mac, node_duc.node.name
-            )
+            _LOGGER.debug("Add select entities for node %s", node_duc.node.name)
             entities.extend(
                 [
                     PlugwiseUSBSelectEntity(node_duc, entity_description)
@@ -136,6 +134,5 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
             raise ValueError(f"Unsupported option: {option}")
         value = self.entity_description.options_enum[normalized.upper()]
         await self.async_select_fn(value)
-        self._current_option = normalized
         self._attr_current_option = normalized
         self.async_write_ha_state()
