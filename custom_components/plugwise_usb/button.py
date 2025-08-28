@@ -44,21 +44,21 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         translation_key="energy_reset",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="energy_reset_request",
-        node_feature=NodeFeature.POWER,
+        node_feature=NodeFeature.CIRCLE,
     ),
     PlugwiseButtonEntityDescription(
         key="ping_node",
         translation_key="ping_node",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="ping_update",
-        node_feature=NodeFeature.INFO,
+        node_feature=NodeFeature.CIRCLE,
     ),
     PlugwiseButtonEntityDescription(
         key="calibrate_light",
         translation_key="calibrate_light",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="scan_calibrate_light",
-        node_feature=NodeFeature.MOTION,
+        node_feature=NodeFeature.MOTION_CONFIG,
     ),
 )
 
