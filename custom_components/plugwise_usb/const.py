@@ -22,7 +22,7 @@ USB: Final[str] = "usb"
 
 UNDO_UPDATE_LISTENER: Final[str] = "undo_update_listener"
 
-PLUGWISE_USB_PLATFORMS: Final[list[str]] = [
+PLUGWISE_USB_PLATFORMS: Final[list[Platform]] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
     Platform.EVENT,
