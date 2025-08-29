@@ -10,5 +10,5 @@
   "issue_tracker": "https://github.com/plugwise/python-plugwise-usb/issues",
   "loggers": ["plugwise_usb"],
   "requirements": ["plugwise-usb==0.44.13"],
-  "version": "0.55.10"
+  "version": "0.55.11"
 }
