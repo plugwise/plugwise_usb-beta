@@ -144,6 +144,7 @@ async def async_setup_entry(
             _LOGGER.debug("Adding number(s) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
+    _hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""
