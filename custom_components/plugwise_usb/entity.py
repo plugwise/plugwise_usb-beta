@@ -45,7 +45,9 @@ class PlugwiseUSBEntity(CoordinatorEntity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        return self.node_duc.node.available and super().available
+        available = self.node_duc.node.available and super().available
+        _LOGGER.debug("Entity %s | available = %s", self.entity_description.key, available)
+        return available
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -69,6 +71,11 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         await self.node_duc.subscribe_nodefeature(
                  self.entity_description.node_feature
               )
+        _LOGGER.debug(
+          "Add %s entity for node %s",
+          self.entity_description.translation_key,
+          self.node_duc.node.name,
+        )
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe to updates."""
