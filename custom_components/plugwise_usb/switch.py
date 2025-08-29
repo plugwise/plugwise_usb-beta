@@ -86,14 +86,15 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add switch entities for node %s", node_duc.node.name)
-            entities.extend(
-                [
-                    PlugwiseUSBSwitchEntity(node_duc, entity_description)
-                    for entity_description in SWITCH_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
+            for entity_description in SWITCH_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBSwitchEntity(node_duc, entity_description))
+                _LOGGER.debug(
+                    "Add %s switch for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
         if entities:
             async_add_entities(entities)
 
@@ -112,7 +113,8 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_switch(NodeEvent.LOADED, mac)
-
+        else:
+            _LOGGER.debug("Adding switch(es) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
     _hass: HomeAssistant,

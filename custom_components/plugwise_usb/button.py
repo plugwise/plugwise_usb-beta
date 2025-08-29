@@ -10,7 +10,7 @@ from plugwise_usb.api import NodeEvent, NodeFeature
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.const import EntityCategory, Platform
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
@@ -58,7 +58,7 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         translation_key="calibrate_light",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="scan_calibrate_light",
-        node_feature=NodeFeature.MOTION,
+        node_feature=NodeFeature.MOTION_CONFIG,
     ),
 )
 
@@ -76,14 +76,15 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add button entities for node %s", node_duc.node.name)
-            entities.extend(
-                [
-                    PlugwiseUSBButtonEntity(node_duc, entity_description)
-                    for entity_description in BUTTON_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
+            for entity_description in BUTTON_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBButtonEntity(node_duc, entity_description))
+                _LOGGER.debug(
+                    "Add %s button for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
         if entities:
             async_add_entities(entities)
 
@@ -102,6 +103,8 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_button(NodeEvent.LOADED, mac)
+        else:
+            _LOGGER.debug("Adding button(s) for node %s failed, not loaded", mac)
 
 
 async def async_unload_entry(
@@ -126,13 +129,6 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
             node_duc.node, entity_description.async_button_fn
         )
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-
     async def async_press(self) -> None:
         """Button was pressed."""
         await self.async_button_fn()
-
-    async def async_added_to_hass(self):
-        """Subscribe for push updates."""

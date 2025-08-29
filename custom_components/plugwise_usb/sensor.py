@@ -172,22 +172,19 @@ async def async_setup_entry(
 
     async def async_add_sensor(node_event: NodeEvent, mac: str) -> None:
         """Initialize DUC for sensor."""
-        _LOGGER.debug("async_add_sensor | %s | node_event=%s", mac, node_event)
         if node_event != NodeEvent.LOADED:
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add sensor entities for node %s", node_duc.node.name)
-            entities.extend(
-                [
-                    PlugwiseUSBSensorEntity(node_duc, entity_description)
-                    for entity_description in SENSOR_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
-        else:
-            _LOGGER.debug("async_add_sensor | %s | GET MAC FAILED", mac)
-
+            for entity_description in SENSOR_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBSensorEntity(node_duc, entity_description))
+                _LOGGER.debug(
+                    "Add %s sensor for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
         if entities:
             async_add_entities(entities)
 
@@ -206,7 +203,8 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_sensor(NodeEvent.LOADED, mac)
-
+        else:
+            _LOGGER.debug("Adding sensor(s) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
     _hass: HomeAssistant,

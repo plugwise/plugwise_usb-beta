@@ -83,14 +83,15 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug("Add event entities for node %s", node_duc.node.name)
-            entities.extend(
-                [
-                    PlugwiseUSBEventEntity(node_duc, entity_description)
-                    for entity_description in EVENT_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
+            for entity_description in EVENT_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBEventEntity(node_duc, entity_description))
+                _LOGGER.debug(
+                    "Add %s event for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
         if entities:
             async_add_entities(entities)
 
@@ -109,9 +110,11 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_event(NodeEvent.LOADED, mac)
-
+        else:
+            _LOGGER.debug("Adding event(s) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
+    _hass: HomeAssistant,
     config_entry: PlugwiseUSBConfigEntry,
 ) -> None:
     """Unload a config entry."""

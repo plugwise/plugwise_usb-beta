@@ -77,16 +77,16 @@ async def async_setup_entry(
             return
         entities: list[PlugwiseUSBEntity] = []
         if (node_duc := config_entry.runtime_data[NODES].get(mac)) is not None:
-            _LOGGER.debug(
-                "Add binary_sensor entities for node %s", node_duc.node.name
-            )
-            entities.extend(
-                [
-                    PlugwiseUSBBinarySensor(node_duc, entity_description)
-                    for entity_description in BINARY_SENSOR_TYPES
-                    if entity_description.node_feature in node_duc.node.features
-                ]
-            )
+            for entity_description in BINARY_SENSOR_TYPES:
+                if entity_description.node_feature not in node_duc.node.features:
+                    continue
+                entities.append(PlugwiseUSBBinarySensor(node_duc, entity_description))
+                _LOGGER.debug(
+                    "Add %s binary sensor for node %s",
+                    entity_description.translation_key,
+                    node_duc.node.name,
+                )
+
         if entities:
             async_add_entities(entities)
 
@@ -105,7 +105,8 @@ async def async_setup_entry(
     for mac, node in api_stick.nodes.items():
         if node.is_loaded:
             await async_add_binary_sensor(NodeEvent.LOADED, mac)
-
+        else:
+            _LOGGER.debug("Adding binary_sensor(s) for node %s failed, not loaded", mac)
 
 async def async_unload_entry(
     _hass: HomeAssistant,
