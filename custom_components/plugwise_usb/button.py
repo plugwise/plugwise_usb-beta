@@ -58,7 +58,7 @@ BUTTON_TYPES: tuple[PlugwiseButtonEntityDescription, ...] = (
         translation_key="calibrate_light",
         entity_category=EntityCategory.CONFIG,
         async_button_fn="scan_calibrate_light",
-        node_feature=NodeFeature.MOTION,
+        node_feature=NodeFeature.MOTION_CONFIG,
     ),
 )
 
@@ -126,13 +126,6 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
             node_duc.node, entity_description.async_button_fn
         )
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-
     async def async_press(self) -> None:
         """Button was pressed."""
         await self.async_button_fn()
-
-    async def async_added_to_hass(self):
-        """Subscribe for push updates."""
