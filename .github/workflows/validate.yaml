@@ -14,6 +14,6 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: HACS validation
-        uses: "hacs/action@main"
+        uses: "hacs/action@d556e736723344f83838d08488c983a15381059a"
         with:
           category: "integration"
