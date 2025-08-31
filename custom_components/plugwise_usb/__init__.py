@@ -186,7 +186,7 @@ async def async_remove_config_entry_device(
         and identifier[1] in (str(api_stick.mac_stick), str(api_stick.mac_coordinator))
     )
     if removable:
-        mac = device_entry.serial_number
+        mac = identifier[1]
         try:
             await api_stick.unregister_node(mac)
         except NodeError:
