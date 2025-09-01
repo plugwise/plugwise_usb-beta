@@ -183,8 +183,9 @@ async def async_remove_config_entry_device(
     for identifier in device_entry.identifiers:
         if (
             identifier[0] == DOMAIN
-            and (mac := identifier[1] in (str(api_stick.mac_stick), str(api_stick.mac_coordinator)))
+            and identifier[1] not in (str(api_stick.mac_stick), str(api_stick.mac_coordinator))
         ):
+            mac = identifier[1]
             removable = True
             break
 
