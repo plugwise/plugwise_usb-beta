@@ -179,14 +179,16 @@ async def async_remove_config_entry_device(
 ) -> bool:
     """Remove a config entry from a device."""
     api_stick = config_entry.runtime_data[STICK]
-    removable = not any(
-        identifier
-        for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN
-        and identifier[1] in (str(api_stick.mac_stick), str(api_stick.mac_coordinator))
-    )
+    removable = False
+    for identifier in device_entry.identifiers:
+        if (
+            identifier[0] == DOMAIN
+            and (mac := identifier[1] in (str(api_stick.mac_stick), str(api_stick.mac_coordinator)))
+        ):
+            removable = True
+            break
+
     if removable:
-        mac = identifier[1]
         try:
             await api_stick.unregister_node(mac)
         except NodeError as exc:
