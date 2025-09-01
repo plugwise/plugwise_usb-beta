@@ -122,6 +122,18 @@
       },
       "motion_daylight_mode": {
         "name": "Daglichtmodus"
+      },
+      "sense_humidity_enabled": {
+        "name": "Zet schakelen op luchtvochtigheid hysterese aan"
+      },
+      "sense_humidity_direction": {
+        "name": "Schakel aan of uit bij stijgende luchtvochtigheid"
+      },
+      "sense_temperature_enabled": {
+        "name": "Zet schakelen op temperatuur hysterese aan"
+      },
+      "sense_temperature_direction": {
+        "name": "Schakel aan of uit bij stijgende temperatuur"
       }
     },
     "number": {
@@ -139,6 +151,18 @@
       },
       "sed_clock_interval": {
         "name": "Klokinterval"
+      },
+      "sense_humidity_upper_bound": {
+        "name": "Hoge schakelpunt luchtvochtigheid"
+      },
+      "sense_humidity_lower_bound": {
+        "name": "Lage schakelpunt luchtvochtigheid"
+      },
+      "sense_temperature_upper_bound": {
+        "name": "Hoge schakelpunt temperatuur"
+      },
+      "sense_temperature_lower_bound": {
+        "name": "Lage schakelpunt temperatuur"
       }
     },
     "button": {
