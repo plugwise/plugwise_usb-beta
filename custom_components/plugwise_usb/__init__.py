@@ -179,6 +179,7 @@ async def async_remove_config_entry_device(
 ) -> bool:
     """Remove a config entry from a device."""
     api_stick = config_entry.runtime_data[STICK]
+    mac = None
     removable = False
     for identifier in device_entry.identifiers:
         if (
