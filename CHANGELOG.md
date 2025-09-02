@@ -2,6 +2,11 @@
 
 ## Versions from 0.4x
 
+### Ongoing
+
+- Fix #312 via PR [324](https://github.com/plugwise/plugwise_usb-beta/pull/324)
+- Link to plugwise_usb [v0.44.14](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.14)
+
 ### v0.55.10 - 2025-08-29
 
 - Final fix for unavailable buttons via plugwise_usb [v0.44.13](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.44.13)

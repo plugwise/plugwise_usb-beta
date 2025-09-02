@@ -1,6 +1,6 @@
 [project]
 name = "plugwise_usb-beta"
-version = "0.55.11"
+version = "0.55.12"
 description = "Plugwise USB custom_component (BETA)"
 readme = "README.md"
 requires-python = ">=3.13"

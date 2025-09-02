@@ -179,19 +179,23 @@ async def async_remove_config_entry_device(
 ) -> bool:
     """Remove a config entry from a device."""
     api_stick = config_entry.runtime_data[STICK]
-    removable = not any(
-        identifier
-        for identifier in device_entry.identifiers
-        if identifier[0] == DOMAIN
-        and identifier[1] in (str(api_stick.mac_stick), str(api_stick.mac_coordinator))
-    )
+    mac = None
+    removable = False
+    for identifier in device_entry.identifiers:
+        if (
+            identifier[0] == DOMAIN
+            and identifier[1] not in (str(api_stick.mac_stick), str(api_stick.mac_coordinator))
+        ):
+            mac = identifier[1]
+            removable = True
+            break
+
     if removable:
-        mac = device_entry.serial_number
         try:
             await api_stick.unregister_node(mac)
-        except NodeError:
-            _LOGGER.error("Plugwise device %s removal failed with NodeError", mac)
-            return False
+        except NodeError as exc:
+            _LOGGER.warning("Plugwise node %s unregistering failed: %s", mac, exc)
+            return True # Must return True for device_registry removal to happen!
 
         _LOGGER.debug("Plugwise device %s successfully removed", mac)
         return True
