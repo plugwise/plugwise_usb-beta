@@ -61,6 +61,15 @@ BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
         api_attribute="dirty",
     ),
+    PlugwiseBinarySensorEntityDescription(
+        key="sense_config_dirty",
+        translation_key="sense_config_dirty",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        device_class=BinarySensorDeviceClass.SAFETY,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        api_attribute="dirty",
+    ),
 )
 
 

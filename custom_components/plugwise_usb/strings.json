@@ -54,6 +54,9 @@
       },
       "battery_config_dirty": {
         "name": "Battery config changed"
+      },
+      "sense_config_dirty": {
+        "name": "Sense hysteresis config changed"
       }
     },
     "select": {
