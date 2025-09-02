@@ -33,6 +33,7 @@ class PlugwiseNumberEntityDescription(
     """Describes Plugwise Number entity."""
 
     async_number_fn: str = ""
+    async_number_type: str = "int"
 
 
 NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
@@ -103,6 +104,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_max_value=99,
         native_min_value=1,
 	native_step=0.1,
+        async_number_type="float",
 	mode="box",
     ),
     PlugwiseNumberEntityDescription(
@@ -115,6 +117,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_max_value=99,
         native_min_value=1,
 	native_step=0.1,
+        async_number_type="float",
 	mode="box",
     ),
     PlugwiseNumberEntityDescription(
@@ -127,6 +130,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_max_value=60,
         native_min_value=1,
 	native_step=0.1,
+        async_number_type="float",
 	mode="box",
     ),
     PlugwiseNumberEntityDescription(
@@ -139,6 +143,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_max_value=60,
         native_min_value=1,
 	native_step=0.1,
+        async_number_type="float",
 	mode="box",
     ),
 )
@@ -228,6 +233,8 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
-
-        await self.async_number_fn(int(value))
+        if self.entity_description.async_number_type == "float":
+            await self.async_number_fn(float(value))
+        else:
+            await self.async_number_fn(int(value))
         self.async_write_ha_state()
