@@ -46,6 +46,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
         native_max_value=255,
         native_min_value=1,
+	mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="maintenance_interval",
@@ -79,6 +80,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         native_max_value=60,
         native_min_value=1,
+	mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="clock_interval",
@@ -100,6 +102,8 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.HUMIDITY,
         native_max_value=99,
         native_min_value=1,
+	native_step=0.1,
+	mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="humidity_lower_bound",
@@ -110,6 +114,8 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.HUMIDITY,
         native_max_value=99,
         native_min_value=1,
+	native_step=0.1,
+	mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="temperature_upper_bound",
@@ -120,6 +126,8 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.TEMPERATURE,
         native_max_value=60,
         native_min_value=1,
+	native_step=0.1,
+	mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="temperature_lower_bound",
@@ -130,6 +138,8 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         device_class=NumberDeviceClass.TEMPERATURE,
         native_max_value=60,
         native_min_value=1,
+	native_step=0.1,
+	mode="box",
     ),
 )
 
@@ -204,7 +214,7 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
         """Handle updated data from the coordinator."""
         data = self.coordinator.data.get(self.entity_description.node_feature, None)
         if data is None:
-            _LOGGER.debug(
+            _LOGGER.warning(
                 "No %s number data for %s",
                 self.entity_description.node_feature,
                 self._node_info.mac,
