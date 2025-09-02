@@ -57,6 +57,12 @@
       },
       "sense_config_dirty": {
         "name": "Sense hysteresis config changed"
+      },
+      "humidity_state": {
+        "name": "Humidity Status"
+      },
+      "temperature_state": {
+        "name": "Temperature Status"
       }
     },
     "select": {

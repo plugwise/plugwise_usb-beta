@@ -57,6 +57,12 @@
       },
       "sense_config_dirty": {
         "name": "Sense hystereseinstellingen aangepast"
+      },
+      "humidity_state": {
+        "name": "Status Luchtvochtigheid"
+      },
+      "temperature_state": {
+        "name": "Status Temperatuur"
       }
     },
     "select": {
