@@ -13,7 +13,13 @@ from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
 )
-from homeassistant.const import EntityCategory, Platform, UnitOfTime
+from homeassistant.const import (
+    PERCENTAGE,
+    EntityCategory,
+    Platform,
+    UnitOfTemperature,
+    UnitOfTime,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -101,6 +107,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         node_feature=NodeFeature.SENSE_HYSTERESIS,
         entity_category=EntityCategory.CONFIG,
         device_class=NumberDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
         native_max_value=99,
         native_min_value=1,
         native_step=0.1,
@@ -114,6 +121,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         node_feature=NodeFeature.SENSE_HYSTERESIS,
         entity_category=EntityCategory.CONFIG,
         device_class=NumberDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
         native_max_value=99,
         native_min_value=1,
         native_step=0.1,
@@ -127,6 +135,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         node_feature=NodeFeature.SENSE_HYSTERESIS,
         entity_category=EntityCategory.CONFIG,
         device_class=NumberDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value=60,
         native_min_value=1,
         native_step=0.1,
@@ -140,6 +149,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         node_feature=NodeFeature.SENSE_HYSTERESIS,
         entity_category=EntityCategory.CONFIG,
         device_class=NumberDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         native_max_value=60,
         native_min_value=1,
         native_step=0.1,
