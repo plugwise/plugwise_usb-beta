@@ -47,7 +47,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
         native_max_value=255,
         native_min_value=1,
-	mode="box",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="maintenance_interval",
@@ -81,7 +81,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         native_max_value=60,
         native_min_value=1,
-	mode="box",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="clock_interval",
@@ -105,7 +105,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_min_value=1,
         native_step=0.1,
         async_number_type="float",
-	mode="box",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="humidity_lower_bound",
@@ -118,7 +118,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_min_value=1,
         native_step=0.1,
         async_number_type="float",
-	mode="box",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="temperature_upper_bound",
@@ -131,7 +131,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_min_value=1,
         native_step=0.1,
         async_number_type="float",
-	mode="box",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="temperature_lower_bound",
@@ -144,7 +144,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_min_value=1,
         native_step=0.1,
         async_number_type="float",
-	mode="box",
+        mode="box",
     ),
 )
 
