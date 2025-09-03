@@ -71,16 +71,16 @@ BINARY_SENSOR_TYPES: tuple[PlugwiseBinarySensorEntityDescription, ...] = (
         api_attribute="dirty",
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="humidity_state",
-        translation_key="humidity_state",
+        key="humidity_hysteresis_state",
+        translation_key="humidity_hysteresis_state",
         node_feature=NodeFeature.SENSE,
-        api_attribute="humidity_state",
+        api_attribute="humidity_hysteresis_state",
     ),
     PlugwiseBinarySensorEntityDescription(
-        key="temperature_state",
-        translation_key="temperature_state",
+        key="temperature_hysteresis_state",
+        translation_key="temperature_hysteresis_state",
         node_feature=NodeFeature.SENSE,
-        api_attribute="temperature_state",
+        api_attribute="temperature_hysteresis_state",
     ),
 )
 
