@@ -136,13 +136,13 @@
         "name": "Enable humidity switching on hysteresis"
       },
       "sense_humidity_direction": {
-        "name": "Switch on or off on increasing or decreasing humidity"
+        "name": "Switch on increasing or decreasing humidity"
       },
       "sense_temperature_enabled": {
         "name": "Enable temperature switching on hysteresis"
       },
       "sense_temperature_direction": {
-        "name": "Switch on or off on increasing or decreasing temperature"
+        "name": "Switch on increasing or decreasing temperature"
       }
     },
     "number": {

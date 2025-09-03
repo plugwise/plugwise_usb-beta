@@ -136,13 +136,13 @@
         "name": "Zet schakelen op luchtvochtigheid hysterese aan"
       },
       "sense_humidity_direction": {
-        "name": "Schakel aan of uit bij stijgende luchtvochtigheid"
+        "name": "Schakel bij stijgende of dalende luchtvochtigheid"
       },
       "sense_temperature_enabled": {
         "name": "Zet schakelen op temperatuur hysterese aan"
       },
       "sense_temperature_direction": {
-        "name": "Schakel aan of uit bij stijgende temperatuur"
+        "name": "Schakel bij stijgende of dalende temperatuur"
       }
     },
     "number": {

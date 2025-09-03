@@ -1,8 +1,9 @@
 # Changelog
 
-## v0.55.13 - 2025-09-03
+## v0.56.0 - 2025-09-03
 
 - Activate new Sense hysteresis based switch action via PR [326](https://github.com/plugwise/plugwise_usb-beta/pull/326)
+- Link to plugwise_usb [v0.45.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.45.0)
 
 ### v0.55.12 - 2025-09-01
 
