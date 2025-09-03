@@ -54,6 +54,15 @@
       },
       "battery_config_dirty": {
         "name": "Battery config changed"
+      },
+      "sense_config_dirty": {
+        "name": "Sense hysteresis config changed"
+      },
+      "humidity_hysteresis_state": {
+        "name": "Humidity Status"
+      },
+      "temperature_hysteresis_state": {
+        "name": "Temperature Status"
       }
     },
     "select": {
@@ -122,6 +131,18 @@
       },
       "motion_daylight_mode": {
         "name": "Daylight mode"
+      },
+      "sense_humidity_enabled": {
+        "name": "Enable humidity switching on hysteresis"
+      },
+      "sense_humidity_direction": {
+        "name": "Switch on increasing or decreasing humidity"
+      },
+      "sense_temperature_enabled": {
+        "name": "Enable temperature switching on hysteresis"
+      },
+      "sense_temperature_direction": {
+        "name": "Switch on increasing or decreasing temperature"
       }
     },
     "number": {
@@ -139,6 +160,18 @@
       },
       "sed_clock_interval": {
         "name": "Clock interval"
+      },
+      "sense_humidity_upper_bound": {
+        "name": "Humidity upper boundary value"
+      },
+      "sense_humidity_lower_bound": {
+        "name": "Humidity lower boundary value"
+      },
+      "sense_temperature_upper_bound": {
+        "name": "Temperature upper boundary value"
+      },
+      "sense_temperature_lower_bound": {
+        "name": "Temperature lower boundary value"
       }
     },
     "button": {

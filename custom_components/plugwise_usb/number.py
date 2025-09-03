@@ -13,7 +13,13 @@ from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
 )
-from homeassistant.const import EntityCategory, Platform, UnitOfTime
+from homeassistant.const import (
+    PERCENTAGE,
+    EntityCategory,
+    Platform,
+    UnitOfTemperature,
+    UnitOfTime,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -32,8 +38,8 @@ class PlugwiseNumberEntityDescription(
 ):
     """Describes Plugwise Number entity."""
 
-    api_attribute: str = ""
     async_number_fn: str = ""
+    async_number_type: str = "int"
 
 
 NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
@@ -47,7 +53,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
         native_max_value=255,
         native_min_value=1,
-        api_attribute="reset_timer",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="maintenance_interval",
@@ -59,7 +65,6 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
         native_max_value=1440,
         native_min_value=5,
-        api_attribute="maintenance_interval",
     ),
     PlugwiseNumberEntityDescription(
         key="sleep_duration",
@@ -71,7 +76,6 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         native_max_value=1440,
         native_min_value=60,
-        api_attribute="sleep_duration",
     ),
     PlugwiseNumberEntityDescription(
         key="awake_duration",
@@ -83,7 +87,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         native_max_value=60,
         native_min_value=1,
-        api_attribute="awake_duration",
+        mode="box",
     ),
     PlugwiseNumberEntityDescription(
         key="clock_interval",
@@ -95,7 +99,62 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.MINUTES,
         native_max_value=65535,
         native_min_value=1,
-        api_attribute="clock_interval",
+    ),
+    PlugwiseNumberEntityDescription(
+        key="humidity_upper_bound",
+        translation_key="sense_humidity_upper_bound",
+        async_number_fn="set_hysteresis_humidity_upper_bound",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        entity_category=EntityCategory.CONFIG,
+        device_class=NumberDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
+        native_max_value=99,
+        native_min_value=1,
+        native_step=0.1,
+        async_number_type="float",
+        mode="box",
+    ),
+    PlugwiseNumberEntityDescription(
+        key="humidity_lower_bound",
+        translation_key="sense_humidity_lower_bound",
+        async_number_fn="set_hysteresis_humidity_lower_bound",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        entity_category=EntityCategory.CONFIG,
+        device_class=NumberDeviceClass.HUMIDITY,
+        native_unit_of_measurement=PERCENTAGE,
+        native_max_value=99,
+        native_min_value=1,
+        native_step=0.1,
+        async_number_type="float",
+        mode="box",
+    ),
+    PlugwiseNumberEntityDescription(
+        key="temperature_upper_bound",
+        translation_key="sense_temperature_upper_bound",
+        async_number_fn="set_hysteresis_temperature_upper_bound",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        entity_category=EntityCategory.CONFIG,
+        device_class=NumberDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        native_max_value=60,
+        native_min_value=1,
+        native_step=0.1,
+        async_number_type="float",
+        mode="box",
+    ),
+    PlugwiseNumberEntityDescription(
+        key="temperature_lower_bound",
+        translation_key="sense_temperature_lower_bound",
+        async_number_fn="set_hysteresis_temperature_lower_bound",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        entity_category=EntityCategory.CONFIG,
+        device_class=NumberDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        native_max_value=60,
+        native_min_value=1,
+        native_step=0.1,
+        async_number_type="float",
+        mode="box",
     ),
 )
 
@@ -178,12 +237,14 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
             return
         self._attr_native_value = getattr(
             self.coordinator.data[self.entity_description.node_feature],
-            self.entity_description.api_attribute,
+            self.entity_description.key,
         )
         self.async_write_ha_state()
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
-
-        await self.async_number_fn(int(value))
+        if self.entity_description.async_number_type == "float":
+            await self.async_number_fn(float(value))
+        else:
+            await self.async_number_fn(int(value))
         self.async_write_ha_state()

@@ -70,6 +70,38 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         node_feature=NodeFeature.MOTION_CONFIG,
         api_attribute="daylight_mode",
     ),
+    PlugwiseSwitchEntityDescription(
+        key="humidity_enabled",
+        translation_key="sense_humidity_enabled",
+        async_switch_fn="set_hysteresis_humidity_enabled",
+        entity_category=EntityCategory.CONFIG,
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        api_attribute="humidity_enabled",
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="humidity_direction",
+        translation_key="sense_humidity_direction",
+        async_switch_fn="set_hysteresis_humidity_direction",
+        entity_category=EntityCategory.CONFIG,
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        api_attribute="humidity_direction",
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="temperature_enabled",
+        translation_key="sense_temperature_enabled",
+        async_switch_fn="set_hysteresis_temperature_enabled",
+        entity_category=EntityCategory.CONFIG,
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        api_attribute="temperature_enabled",
+    ),
+    PlugwiseSwitchEntityDescription(
+        key="temperature_direction",
+        translation_key="sense_temperature_direction",
+        async_switch_fn="set_hysteresis_temperature_direction",
+        entity_category=EntityCategory.CONFIG,
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        api_attribute="temperature_direction",
+    ),
 )
 
 
