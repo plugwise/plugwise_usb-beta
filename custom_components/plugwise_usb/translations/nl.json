@@ -174,7 +174,7 @@
         "name": "Lage schakelpunt temperatuur"
       },
       "sense_report_interval": {
-        "name": "Meetraportage interval"
+        "name": "Meetrapportage-interval"
       }
     },
     "button": {
