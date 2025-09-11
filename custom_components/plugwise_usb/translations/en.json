@@ -174,7 +174,7 @@
         "name": "Temperature lower boundary value"
       },
       "sense_report_interval": {
-        "name": "Measurement report interval"
+        "name": "Measurement reporting interval"
       }
     },
     "button": {
