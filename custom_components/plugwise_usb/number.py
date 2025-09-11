@@ -166,6 +166,7 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
         native_max_value=60,
         native_min_value=1,
+        native_step=1,
         mode="box",
     ),
 )
