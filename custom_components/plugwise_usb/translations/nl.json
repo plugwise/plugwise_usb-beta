@@ -172,6 +172,9 @@
       },
       "sense_temperature_lower_bound": {
         "name": "Lage schakelpunt temperatuur"
+      },
+      "sense_report_interval": {
+        "name": "Meetrapportage-interval"
       }
     },
     "button": {

@@ -156,6 +156,19 @@ NUMBER_TYPES: tuple[PlugwiseNumberEntityDescription, ...] = (
         async_number_type="float",
         mode="box",
     ),
+    PlugwiseNumberEntityDescription(
+        key="report_interval",
+        translation_key="sense_report_interval",
+        async_number_fn="set_report_interval",
+        node_feature=NodeFeature.SENSE_HYSTERESIS,
+        device_class=NumberDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
+        entity_category=EntityCategory.CONFIG,
+        native_max_value=60,
+        native_min_value=1,
+        native_step=1,
+        mode="box",
+    ),
 )
 
 

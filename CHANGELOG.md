@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.57.0 - 2025-09-12
+
+- Activate new Sense feature, report interval setting via PR [331](https://github.com/plugwise/plugwise_usb-beta/pull/331)
+- Link to plugwise_usb [v0.46.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.46.0)
+
 ## v0.56.0 - 2025-09-03
 
 - Activate new Sense hysteresis based switch action via PR [326](https://github.com/plugwise/plugwise_usb-beta/pull/326)
