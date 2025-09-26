@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.58.0 - 2025-09-26
+
+- Link to plugwise_usb [v0.47.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.0)
+- Link to plugwise_usb [v0.46.1](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.46.1)
+
 ## v0.57.0 - 2025-09-12
 
 - Activate new Sense feature, report interval setting via PR [331](https://github.com/plugwise/plugwise_usb-beta/pull/331)
