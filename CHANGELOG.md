@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.58.1 - 2025-09-27
+
+- Cache-related bugfix via plugwise_usb [v0.47.1](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.1)
+
 ## v0.58.0 - 2025-09-26
 
 - New Feature: implement energy device clock synchronization via plugwise_usb [v0.47.0](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.0)
