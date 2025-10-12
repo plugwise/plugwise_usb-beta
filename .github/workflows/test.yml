@@ -4,7 +4,7 @@
 name: Test against HA-core
 
 env:
-  CACHE_VERSION: 11
+  CACHE_VERSION: 1
   DEFAULT_PYTHON: "3.13"
   PRE_COMMIT_HOME: ~/.cache/pre-commit
   VENV: venv
@@ -32,6 +32,7 @@ jobs:
     name: Cache identify
     outputs:
       cache-key: ${{ steps.set-key.outputs.cache-key }}
+      python-version: ${{ steps.python.outputs.python-version }}
     steps:
       - name: Check out committed code
         uses: actions/checkout@v5
@@ -45,7 +46,7 @@ jobs:
         run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
       - name: Compute cache key
         id: set-key
-        run: echo "cache-key=${{ runner.os }}-venv-cache-${{ env.CACHE_VERSION }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
+        run: echo "cache-key=${{ runner.os }}--${{ env.CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
 
   # Prepare default python version environment
   prepare:
@@ -59,7 +60,7 @@ jobs:
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
           clone-core: "true"
@@ -79,13 +80,14 @@ jobs:
         uses: plugwise/gh-actions/restore-venv@v1
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
-          python-version: ${{ env.DEFAULT_PYTHON }}
+          python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
           precommit-home: ${{ env.PRE_COMMIT_HOME }}
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
         run: |
           set +e
+          source venv-${{ needs.cache.outputs.python-version }}/bin/activate
           GITHUB_ACTIONS="" scripts/ci-core-testing.sh
           EXIT_CODE=$?
           exit $EXIT_CODE
