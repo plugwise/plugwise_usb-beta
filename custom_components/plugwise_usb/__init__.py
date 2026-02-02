@@ -135,7 +135,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def pair_plus_device(call: ServiceCall) -> bool:
         """Pair a plus device."""
-        mac = mac = call.data[ATTR_MAC]
+        mac = call.data[ATTR_MAC]
         try:
             result = await api_stick.plus_pair_request(mac)
         except (NodeError, StickError) as exc:
