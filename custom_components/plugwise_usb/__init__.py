@@ -133,6 +133,17 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             ) from exc
         return result
 
+    async def pair_plus_device(call: ServiceCall) -> bool:
+        """Pair a plus device."""
+        mac = mac = call.data[ATTR_MAC]
+        try:
+            result = await api_stick.plus_pair_request(mac)
+        except (NodeError, StickError) as exc:
+            raise HomeAssistantError(
+                f"Pairing with Plus-device failed for {mac}: {exc}"
+            ) from exc
+        return result
+
     hass.services.async_register(
         DOMAIN, SERVICE_ENABLE_PRODUCTION, enable_production, SERVICE_USB_DEVICE_SCHEMA
     )
