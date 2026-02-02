@@ -5,17 +5,24 @@ from __future__ import annotations
 from typing import Any
 
 from plugwise_usb import Stick
-from plugwise_usb.exceptions import StickError
+from plugwise_usb.exceptions import NodeError, StickError
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.config_entries import SOURCE_USER, ConfigEntry, ConfigFlow
+from homeassistant.config_entries import (
+    SOURCE_USER,
+    ConfigEntry,
+    ConfigFlow,
+    OptionsFlow,
+)
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.exceptions import HomeAssistantError
 import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
+from .util import validate_mac
 
 CONF_ZIGBEE_MAC: Final[str] = "zigbee_mac"
 
@@ -143,9 +150,16 @@ class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
         """Handle the input of the plus-device MAC address."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            errors, mac = await validate_mac(user_input) # check if zb-mac address has a valid format
-            if not errors:
-                #execute pair_plus_device function - use CirclePlusConnectRequest
+            valid = await validate_mac(user_input)
+            if not valid:
+                try:
+                    coordinator.api_stick.plus_pair_request(user_input)
+                except NodeError:
+                    raise HomeAssistantError(f"Pairing of Plus-device {user_input} failed")
+                return None
+
+            errors["init"] = "invalid mac"
+
         return self.async_show_form(
             step_id=SOURCE_USER,
             data_schema=vol.Schema({vol.Required(CONF_ZIGBEE_MAC): str}),

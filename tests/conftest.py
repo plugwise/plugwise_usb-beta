@@ -11,6 +11,7 @@ import pytest
 
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
+
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
