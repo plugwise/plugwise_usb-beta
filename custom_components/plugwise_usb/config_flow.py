@@ -149,7 +149,7 @@ class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult | None:
         """Handle the input of the plus-device MAC address."""
-        coordinator = self.config_entry.runtime_data
+        # coordinator = self.config_entry.runtime_data
         errors: dict[str, str] = {}
         if user_input is not None:
             if validate_mac(user_input):
