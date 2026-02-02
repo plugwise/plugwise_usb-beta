@@ -1,6 +1,6 @@
 """Config flow for Plugwise USB integration."""
 
-from typing import Any
+from typing import Any, Final
 
 from plugwise_usb import Stick
 from plugwise_usb.exceptions import NodeError, StickError
@@ -11,6 +11,7 @@ from homeassistant.config_entries import (
     SOURCE_USER,
     ConfigEntry,
     ConfigFlow,
+    ConfigFlowResult,
     OptionsFlow,
 )
 from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
@@ -178,9 +179,9 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: ConfigEntry,
-    ) -> PlugwiseOptionsFlowHandler:
+    ) -> PlugwiseUSBOptionsFlowHandler:
         """Get the options flow for this handler."""
-        return PlugwiseOptionsFlowHandler(config_entry)
+        return PlugwiseUSBOptionsFlowHandler(config_entry)
 
 
 class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
@@ -190,14 +191,15 @@ class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle the input of the plus-device MAC address."""
+        coordinator = self.config_entry.runtime_data
         errors: dict[str, str] = {}
         if user_input is not None:
             valid = await validate_mac(user_input)
             if not valid:
                 try:
                     coordinator.api_stick.plus_pair_request(user_input)
-                except NodeError:
-                    raise HomeAssistantError(f"Pairing of Plus-device {user_input} failed")
+                except NodeError as exc:
+                    raise HomeAssistantError(f"Pairing of Plus-device {user_input} failed") from exc
                 return None
 
             errors["init"] = "invalid mac"
