@@ -145,16 +145,20 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
     """Plugwise USB options flow."""
 
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.coordinator = self.config_entry.runtime_data
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult | None:
         """Handle the input of the plus-device MAC address."""
-        # coordinator = self.config_entry.runtime_data
+        
         errors: dict[str, str] = {}
         if user_input is not None:
             if validate_mac(user_input):
                 try:
-                    # coordinator.api_stick.plus_pair_request(user_input)
+                    # self.coordinator.api_stick.plus_pair_request(user_input)
                     LOGGER.debug("Fake call to api_stick.plus_pair_request with %s", user_input)
                 except NodeError as exc:
                     raise HomeAssistantError(f"Pairing of Plus-device {user_input} failed") from exc
