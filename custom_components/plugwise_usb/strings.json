@@ -22,6 +22,16 @@
       "stick_init": "Initialization of Plugwise USB-stick failed"
     }
   },
+  "options": {
+    "step": {
+      "user": {
+        "data": {
+          "mac": " ZigBee MAC"
+        },
+        "description": "Pair Plus-device, please enter:"
+      }
+    }
+  },
   "services": {
     "enable_production":{
       "name": "Enable production logging",
