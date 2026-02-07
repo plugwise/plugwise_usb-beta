@@ -1,5 +1,9 @@
 # Changelog
 
+## Ongoing
+
+- Remove serial_number, ZigBee MAC address is now shown in HA, via PR [400](https://github.com/plugwise/plugwise_usb-beta/pull/400)
+
 ## v0.59.0
 
 - New Feature: implement reconfiguring of the Stick path via PR [407](https://github.com/plugwise/plugwise_usb-beta/pull/407)
