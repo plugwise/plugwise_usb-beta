@@ -2,7 +2,7 @@
 
 ## Ongoing
 
-- Remove serial_number, ZigBee MAC address is now shown in HA, via PR []()
+- Remove serial_number, ZigBee MAC address is now shown in HA, via PR [400](https://github.com/plugwise/plugwise_usb-beta/pull/400)
 
 ## v0.58.2 - 2026-01-29
 
