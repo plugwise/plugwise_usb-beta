@@ -24,12 +24,16 @@
   },
   "options": {
     "step": {
-      "user": {
+      "init": {
+        "title": "Pair Plus-device",
+        "description": "Please enter the ZigBee MAC address:",
         "data": {
-          "mac": " ZigBee MAC"
-        },
-        "description": "Pair Plus-device, please enter:"
+          "zigbee_mac": "16-bit MAC"
+        }
       }
+    },
+    "error": {
+      "invalid_mac": "MAC is invalid, please retry"
     }
   },
   "services": {
@@ -245,3 +249,4 @@
     }
   }
 }
+
