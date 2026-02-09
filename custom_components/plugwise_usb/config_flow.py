@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, Final
 
 from plugwise_usb import Stick
@@ -10,7 +11,6 @@ import voluptuous as vol
 
 from homeassistant.components import usb
 from homeassistant.config_entries import (
-    SOURCE_USER,
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
@@ -23,9 +23,13 @@ from homeassistant.exceptions import HomeAssistantError
 import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, LOGGER, MANUAL_PATH
+from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .util import validate_mac
 
+type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
+
 CONF_ZIGBEE_MAC: Final[str] = "zigbee_mac"
+
 
 @callback
 def plugwise_stick_entries(hass):
@@ -136,7 +140,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,
+        config_entry: PlugwiseUSBConfigEntry
     ) -> PlugwiseUSBOptionsFlowHandler:
         """Get the options flow for this handler."""
         return PlugwiseUSBOptionsFlowHandler(config_entry)
@@ -147,27 +151,30 @@ class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
-        self.coordinator = self.config_entry.runtime_data
+        pass
+        # self.data = deepcopy(dict(config_entry.data))
 
-    async def async_step_user(
+    async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult | None:
         """Handle the input of the plus-device MAC address."""
-        
+        # coordinator = self.config_entry.runtime_data
         errors: dict[str, str] = {}
         if user_input is not None:
-            if validate_mac(user_input):
+            mac = user_input["zigbee_mac"]
+            if validate_mac(mac):
                 try:
-                    # self.coordinator.api_stick.plus_pair_request(user_input)
-                    LOGGER.debug("Fake call to api_stick.plus_pair_request with %s", user_input)
+                    # self.coordinator.api_stick.plus_pair_request(mac)
+                    LOGGER.warning("Fake call to api_stick.plus_pair_request with %s", mac)
                 except NodeError as exc:
-                    raise HomeAssistantError(f"Pairing of Plus-device {user_input} failed") from exc
-                return None
+                    raise HomeAssistantError(f"Pairing of Plus-device {mac} failed") from exc
+                return self.async_create_entry(title="", data=user_input)
 
-            errors["init"] = "invalid mac"
+            errors["init"] = "invalid_mac"
 
         return self.async_show_form(
-            step_id=SOURCE_USER,
+            step_id="init",
             data_schema=vol.Schema({vol.Required(CONF_ZIGBEE_MAC): str}),
             errors=errors,
         )
+
