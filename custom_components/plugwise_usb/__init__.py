@@ -104,8 +104,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         await api_stick.discover_coordinator(load=False)
     except StickError as exc:
         await api_stick.disconnect()
-        # raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
-        _LOGGER.warning("Failed to connect to Circle+")
+        raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
 
     _LOGGER.info("Discovery of the Plugwise network coordinator has finished")
 
