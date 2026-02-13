@@ -151,21 +151,18 @@ class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
-        pass
-        # self.data = deepcopy(dict(config_entry.data))
+        self.coordinator = self.config_entry.runtime_data
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult | None:
         """Handle the input of the plus-device MAC address."""
-        # coordinator = self.config_entry.runtime_data
         errors: dict[str, str] = {}
         if user_input is not None:
             mac = user_input["zigbee_mac"]
             if validate_mac(mac):
                 try:
-                    # self.coordinator.api_stick.plus_pair_request(mac)
-                    LOGGER.warning("Fake call to api_stick.plus_pair_request with %s", mac)
+                    self.coordinator.api_stick.plus_pair_request(mac)
                 except NodeError as exc:
                     raise HomeAssistantError(f"Pairing of Plus-device {mac} failed") from exc
                 return self.async_create_entry(title="", data=user_input)
