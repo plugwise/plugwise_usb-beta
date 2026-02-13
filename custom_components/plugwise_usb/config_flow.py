@@ -11,6 +11,7 @@ import voluptuous as vol
 
 from homeassistant.components import usb
 from homeassistant.config_entries import (
+    SOURCE_USER,
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
