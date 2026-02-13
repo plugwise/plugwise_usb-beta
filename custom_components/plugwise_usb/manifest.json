@@ -9,6 +9,6 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/plugwise/python-plugwise-usb/issues",
   "loggers": ["plugwise_usb"],
-  "requirements": ["plugwise-usb==0.47.2"],
-  "version": "0.58.2"
+  "requirements": ["plugwise-usb@git+https://github.com/plugwise/python-plugwise-usb@pair-plus#plugwise-usb==0.48.0a1"],
+  "version": "0.59.0a0"
 }
