@@ -21,7 +21,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, LOGGER, MANUAL_PATH
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .util import validate_mac
 
