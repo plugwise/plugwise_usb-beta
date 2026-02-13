@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 from typing import Any, Final
 
 from plugwise_usb import Stick
@@ -23,7 +22,7 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 import serial.tools.list_ports
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, LOGGER, MANUAL_PATH
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .util import validate_mac
 
