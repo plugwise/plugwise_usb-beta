@@ -25,6 +25,7 @@ from .const import (
     STICK,
 )
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
+from .util import validate_mac
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
@@ -135,7 +136,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
     async def pair_plus_device(call: ServiceCall) -> bool:
         """Pair a plus device."""
-        mac = mac = call.data[ATTR_MAC]
+        mac = call.data[ATTR_MAC]
+        if not validate_mac(mac):
+            raise HomeAssistantError("ZigBee MAC not valid")
         try:
             result = await api_stick.plus_pair_request(mac)
         except (NodeError, StickError) as exc:
