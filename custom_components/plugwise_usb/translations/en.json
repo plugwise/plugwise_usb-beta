@@ -25,21 +25,31 @@
   "services": {
     "enable_production":{
       "name": "Enable production logging",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+      "description": "Enter the ZigBee MAC of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plugwise device."
         }
       }
     },
     "disable_production":{
       "name": "Disable production logging, return to consumption logging only",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+      "description": "Enter the ZigBee MAC of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plugwise device."
+        }
+      }
+    },
+    "pair_plus_device":{
+      "name": "Pair a Plus device",
+      "description": "Enter the ZigBee MAC of the Plus device: (data = mac: 0123456789ABCDEF)",
+      "fields": {
+        "mac": {
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plus device."
         }
       }
     }
@@ -77,7 +87,7 @@
     },
     "sensor": {
       "power_last_second": {
-        "name": "Power"
+        "name": "[%key:component::sensor::entity_component::power::name%]"
       },
       "power_last_8_seconds": {
         "name": "Power usage last 8 seconds"
@@ -107,10 +117,10 @@
         "name": "RSSI level outbound"
       },
       "temperature": {
-        "name": "Temperature"
+        "name": "[%key:component::sensor::entity_component::temperature::name%]"
       },
       "humidity": {
-        "name": "Humidity"
+        "name": "[%key:component::sensor::entity_component::humidity::name%]"
       },
       "awake_timestamp": {
         "name": "Last awake"
@@ -188,21 +198,49 @@
         "name": "Ping Device"
       },
       "calibrate_light":{
-        "name": "Schedule light sensor calibration"
+        "name": "Schedule Light Sensor Calibration"
       }
     },
     "event": {
       "button_press_i_group_1": {
-        "name": "Button I group 1 pressed"
+        "name": "Button I pressed group 1",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed"
+            }
+          }
+        }
       },
       "button_press_o_group_1": {
-        "name": "Button O group 1 pressed"
+        "name": "Button O pressed group 1",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed"
+            }
+          }
+        }
       },
       "button_press_i_group_2": {
-        "name": "Button I group 2 pressed"
+        "name": "Button I pressed group 2",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed"
+            }
+          }
+        }
       },
       "button_press_o_group_2": {
-        "name": "Button O group 2 pressed"
+        "name": "Button O pressed group 2",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "single_press": "Pressed"
+            }
+          }
+        }
       }
     }
   }
