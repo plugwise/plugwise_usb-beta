@@ -25,21 +25,31 @@
   "services": {
     "enable_production":{
       "name": "Enable production logging",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+      "description": "Enter the ZigBee MAC of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plugwise device."
         }
       }
     },
     "disable_production":{
       "name": "Disable production logging, return to consumption logging only",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+      "description": "Enter the ZigBee MAC of the Node: (data = mac: 0123456789ABCDEF)",
       "fields": {
         "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plugwise device."
+        }
+      }
+    },
+    "pair_plus_device":{
+      "name": "Pair a Plus device",
+      "description": "Enter the ZigBee MAC of the Plus device: (data = mac: 0123456789ABCDEF)",
+      "fields": {
+        "mac": {
+          "name": "ZigBee MAC address",
+          "description": "The full 16 character MAC address of the Plus device."
         }
       }
     }
