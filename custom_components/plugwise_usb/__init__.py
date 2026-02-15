@@ -21,6 +21,7 @@ from .const import (
     PLUGWISE_USB_PLATFORMS,
     SERVICE_DISABLE_PRODUCTION,
     SERVICE_ENABLE_PRODUCTION,
+    SERVICE_PAIR_PLUS,
     SERVICE_USB_DEVICE_SCHEMA,
     STICK,
 )
@@ -151,10 +152,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         DOMAIN, SERVICE_ENABLE_PRODUCTION, enable_production, SERVICE_USB_DEVICE_SCHEMA
     )
     hass.services.async_register(
-        DOMAIN,
-        SERVICE_DISABLE_PRODUCTION,
-        disable_production,
-        SERVICE_USB_DEVICE_SCHEMA,
+        DOMAIN, SERVICE_DISABLE_PRODUCTION, disable_production, SERVICE_USB_DEVICE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_PAIR_PLUS, pair_plus_device, SERVICE_USB_DEVICE_SCHEMA
     )
 
     # Initiate background nodes discovery task
