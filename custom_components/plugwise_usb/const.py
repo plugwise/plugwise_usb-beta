@@ -35,6 +35,7 @@ CONF_USB_PATH: Final[str] = "usb_path"
 SERVICE_DISABLE_PRODUCTION: Final[str] = "disable_production"
 SERVICE_ENABLE_PRODUCTION: Final[str] = "enable_production"
 SERVICE_ENERGY_RESET: Final[str] = "reset_energy_logs"
+SERVICE_PAIR_PLUS: Final[str] = "pair_plus_device"
 SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
     {
         vol.Required(ATTR_MAC): vol.All(
