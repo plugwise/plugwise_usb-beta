@@ -8,3 +8,8 @@ disable_production:
   fields:
     mac:
       example: "data: {mac: 0123456789ABCDEF}"
+pair_plus_device:
+  description: "Pair a Plus device"
+  fields:
+    mac:
+      example: "data: {mac: 0123456789ABCDEF}"
