@@ -26,7 +26,6 @@ from .const import (
     STICK,
 )
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
-from .util import validate_mac
 
 _LOGGER = logging.getLogger(__name__)
 UNSUBSCRIBE_DISCOVERY = "unsubscribe_discovery"
