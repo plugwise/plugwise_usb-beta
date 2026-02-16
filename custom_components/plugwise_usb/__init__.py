@@ -113,6 +113,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
+    @callback
     async def enable_production(call: ServiceCall) -> bool:
         """Enable production-logging for a Node."""
         mac = call.data[ATTR_MAC]
@@ -124,6 +125,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             ) from exc
         return result
 
+    @callback
     async def disable_production(call: ServiceCall) -> bool:
         """Disable production-logging for a Node."""
         mac = call.data[ATTR_MAC]
@@ -135,11 +137,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             ) from exc
         return result
 
+    @callback
     async def pair_plus_device(call: ServiceCall) -> bool:
         """Pair a plus device."""
         mac = call.data[ATTR_MAC]
-        if not validate_mac(mac):
-            raise HomeAssistantError("ZigBee MAC not valid")
         try:
             result = await api_stick.plus_pair_request(mac)
         except (NodeError, StickError) as exc:
