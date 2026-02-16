@@ -2,14 +2,14 @@ enable_production:
   description: "Enable production logging for a Plugwise USB node by MAC address"
   fields:
     mac:
-      example: "data: {mac: 0123456789ABCDEF}"
+      example: "{mac: 0123456789ABCDEF}"
 disable_production:
   description: "Disable production logging for a Plugwise USB node by MAC address"
   fields:
     mac:
-      example: "data: {mac: 0123456789ABCDEF}"
+      example: "{mac: 0123456789ABCDEF}"
 pair_plus_device:
   description: "Pair a Plus device"
   fields:
     mac:
-      example: "data: {mac: 0123456789ABCDEF}"
+      example: "{mac: 0123456789ABCDEF}"
