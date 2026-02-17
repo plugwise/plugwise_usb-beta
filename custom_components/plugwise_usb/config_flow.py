@@ -52,9 +52,10 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     else:
         try:
             await api_stick.initialize()
-            mac = api_stick.mac_stick
         except StickError:
             errors[CONF_BASE] = "stick_init"
+    
+    mac = api_stick.mac_stick
     await api_stick.disconnect()
     return errors, mac
 
