@@ -15,7 +15,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import serial.tools.list_ports
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, LOGGER, MANUAL_PATH
 
 
 @callback
@@ -51,6 +51,7 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     
     mac = api_stick.mac_stick
     await api_stick.disconnect()
+    LOGGER.debug("Validate USB connection: %s, %s", mac, errors)
     return errors, mac
 
 
