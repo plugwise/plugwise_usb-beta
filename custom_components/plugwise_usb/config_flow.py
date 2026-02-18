@@ -51,6 +51,7 @@ async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str
     
     mac = api_stick.mac_stick
     await api_stick.disconnect()
+    _LOGGER.debug("Validate USB connection: %s, %s", mac, errors)
     return errors, mac
 
 
