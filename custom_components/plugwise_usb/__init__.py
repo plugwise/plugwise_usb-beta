@@ -93,19 +93,27 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry.runtime_data[NODES][mac] = coordinator
         await node.load()
 
-    config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY] = (
-        api_stick.subscribe_to_node_events(
-            async_node_discovered,
-            (NodeEvent.DISCOVERED,),
+    if api_stick.network_online:
+        config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY] = (
+            api_stick.subscribe_to_node_events(
+                async_node_discovered,
+                (NodeEvent.DISCOVERED,),
+            )
         )
-    )
 
-    _LOGGER.info("Start to discover the Plugwise network coordinator (Circle+)")
-    try:
-        await api_stick.discover_coordinator(load=False)
-    except StickError as exc:
-        await api_stick.disconnect()
-        raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
+        _LOGGER.info("Start to discover the Plugwise network coordinator (Circle+)")
+        try:
+            await api_stick.discover_coordinator(load=False)
+        except StickError as exc:
+            await api_stick.disconnect()
+            raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
+
+        # Initiate background nodes discovery task
+        config_entry.async_create_task(
+            hass,
+            api_stick.discover_nodes(load=True),
+            "discover_nodes",
+        )
 
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
@@ -156,13 +164,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     )
     hass.services.async_register(
         DOMAIN, SERVICE_PAIR_PLUS, pair_plus_device, SERVICE_USB_DEVICE_SCHEMA
-    )
-
-    # Initiate background nodes discovery task
-    config_entry.async_create_task(
-        hass,
-        api_stick.discover_nodes(load=True),
-        "discover_nodes",
     )
 
     while True:
