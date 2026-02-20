@@ -93,7 +93,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         config_entry.runtime_data[NODES][mac] = coordinator
         await node.load()
 
-    if api_stick.network_online:
+    if api_stick.network_discovered:
         config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY] = (
             api_stick.subscribe_to_node_events(
                 async_node_discovered,
