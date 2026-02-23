@@ -115,10 +115,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
             "discover_nodes",
         )
 
-    # Load platforms to allow them to register for node events
-    await hass.config_entries.async_forward_entry_setups(
-        config_entry, PLUGWISE_USB_PLATFORMS
-    )
+        # Load platforms to allow them to register for node events
+        await hass.config_entries.async_forward_entry_setups(
+            config_entry, PLUGWISE_USB_PLATFORMS
+        )
 
     @callback
     async def enable_production(call: ServiceCall) -> bool:
@@ -166,10 +166,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         DOMAIN, SERVICE_PAIR_PLUS, pair_plus_device, SERVICE_USB_DEVICE_SCHEMA
     )
 
-    while True:
-        await asyncio.sleep(1)
-        if api_stick.network_discovered:
-            break
+    # while True:
+    #     await asyncio.sleep(1)
+    #     if api_stick.network_discovered:
+    #        break
 
     return True
 
