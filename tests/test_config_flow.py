@@ -1,5 +1,6 @@
 """Test the Plugwise config flow."""
 
+from typing import Final
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -13,8 +14,9 @@ from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 import serial.tools.list_ports
 
-TEST_USBPORT = "/dev/ttyUSB1"
-TEST_USBPORT2 = "/dev/ttyUSB2"
+TEST_MAC: Final[str] = "01:23:45:67:AB"
+TEST_USBPORT: Final[str] = "/dev/ttyUSB1"
+TEST_USBPORT2: Final[str] = "/dev/ttyUSB2"
 
 
 def com_port():
