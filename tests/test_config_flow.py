@@ -244,12 +244,13 @@ async def test_reconfigure_flow_other_stick(
 async def test_reconfigure_flow_errors(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
+    mock_usb_stick: AsyncMock,
     side_effect: Exception,
     reason: str,
 ) -> None:
     """Test we handle each reconfigure exception error."""
 
-    mock_smile_adam.connect.side_effect = side_effect
+    mock_usb_stick.connect.side_effect = side_effect
 
     result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USBPORT)
 
