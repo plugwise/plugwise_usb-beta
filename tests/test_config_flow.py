@@ -6,6 +6,7 @@ import pytest
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from plugwise_usb.exceptions import StickError
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_SOURCE
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
@@ -183,3 +184,75 @@ async def test_failed_initialization(hass, mock_usb_stick_init_error: MagicMock)
     await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": "stick_init"}
+
+
+async def _start_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    port: str,
+) -> ConfigFlowResult:
+    """Initialize a reconfigure flow."""
+    mock_config_entry.add_to_hass(hass)
+
+    reconfigure_result = await mock_config_entry.start_reconfigure_flow(hass)
+
+    assert reconfigure_result["type"] is FlowResultType.FORM
+    assert reconfigure_result["step_id"] == "reconfigure"
+
+    return await hass.config_entries.flow.async_configure(
+        reconfigure_result["flow_id"], {CONF_USB_PATH: port}
+    )
+
+
+async def test_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow."""
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USBPORT)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
+
+    entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
+    assert entry
+    assert entry.data.get(CONF_HOST) == TEST_USBPORT
+
+
+async def test_reconfigure_flow_other_stick(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_usb_stick: AsyncMock,
+) -> None:
+    """Test reconfigure flow aborts on other Smile ID."""
+    mock_usb_stick.mac_stick = TEST_MAC
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USBPORT)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "not_the_same_stick"
+
+
+@pytest.mark.parametrize(
+    ("side_effect", "reason"),
+    [
+        (None, "already_configured"),
+        (StickError, "cannot_connect"),
+        (StickError, "stick_init"),
+    ],
+)
+async def test_reconfigure_flow_errors(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    side_effect: Exception,
+    reason: str,
+) -> None:
+    """Test we handle each reconfigure exception error."""
+
+    mock_smile_adam.connect.side_effect = side_effect
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USBPORT)
+
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": reason}
+    assert result.get("step_id") == "reconfigure"
