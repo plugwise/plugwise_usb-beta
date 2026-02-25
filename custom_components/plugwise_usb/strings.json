@@ -14,6 +14,10 @@
         }
       }
     },
+    "abort": {
+      "not_the_same_stick": "The configured Stick does not match with the Stick on the entered port",
+      "reconfigure_successful": "Reconfiguration successful"
+    },
     "error": {
       "already_configured": "This device is already configured",
       "cannot_connect": "Failed to connect",
@@ -29,7 +33,7 @@
       "fields": {
         "mac": {
           "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "description": "The full 16 character MAC address of the plugwise device"
         }
       }
     },
@@ -39,7 +43,7 @@
       "fields": {
         "mac": {
           "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device."
+          "description": "The full 16 character MAC address of the plugwise device"
         }
       }
     }
