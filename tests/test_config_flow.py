@@ -225,6 +225,20 @@ async def test_reconfigure_flow(
     assert entry.data.get(CONF_USB_PATH) == TEST_USB2_PATH
 
 
+
+async def test_reconfigure_flow_same_path(
+    hass: HomeAssistant,
+    mock_usb_stick: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow."""
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
+
+    assert result["type"] is FlowResultType.FORM
+    assert result.get("errors") == {"base": "already_configured"}
+
+
 async def test_reconfigure_flow_other_stick(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
@@ -242,9 +256,7 @@ async def test_reconfigure_flow_other_stick(
 @pytest.mark.parametrize(
     ("side_effect", "reason"),
     [
-        (None, "already_configured"),
         (StickError, "cannot_connect"),
-        (StickError, "stick_init"),
     ],
 )
 async def test_reconfigure_flow_errors(

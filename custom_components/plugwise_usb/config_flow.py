@@ -99,6 +99,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
+
         return self.async_show_form(
             step_id=SOURCE_USER,
             data_schema=vol.Schema(
@@ -144,7 +145,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
-            if mac_stick:
+            if not errors:
                 await self.async_set_unique_id(
                      unique_id=mac_stick, raise_on_progress=False
                 )
@@ -153,6 +154,8 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     reconfigure_entry,
                     data_updates={CONF_USB_PATH: device_path}
                 )
+
+            self.async_abort(reason="already configured")
 
         return self.async_show_form(
             step_id="reconfigure",
