@@ -13,9 +13,9 @@ from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-TEST_MAC: Final[str] = "01:23:45:67:AB"
 STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
-
+TEST_MAC: Final[str] = "01:23:45:67:AB"
+TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 
 @pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock]:
@@ -27,17 +27,14 @@ def mock_setup_entry() -> Generator[AsyncMock]:
         yield mock_setup
 
 
-TEST_USBPORT = "/dev/ttyUSB1"
-
-
 @pytest.fixture
 def mock_config_entry() -> MockConfigEntry:
     """Return a mocked v1.2 config entry."""  # pw-beta only
     return MockConfigEntry(
         domain=DOMAIN,
-        data={CONF_USB_PATH: TEST_USBPORT},
+        data={CONF_USB_PATH: TEST_USB_PATH},
         title="plugwise_usb",
-        unique_id="TEST_USBPORT",
+        unique_id="TEST_USB_PATH",
     )
 
 
