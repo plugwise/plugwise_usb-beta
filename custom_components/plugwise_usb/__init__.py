@@ -168,10 +168,9 @@ async def async_unload_entry(
             await coordinator.unsubscribe_all_nodefeatures()
         await config_entry.runtime_data[STICK].disconnect()
 
-    unload = await hass.config_entries.async_unload_platforms(
+    return await hass.config_entries.async_unload_platforms(
         config_entry, PLUGWISE_USB_PLATFORMS
     )
-    return unload
 
 
 async def async_remove_config_entry_device(
