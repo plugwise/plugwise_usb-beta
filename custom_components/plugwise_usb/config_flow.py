@@ -139,23 +139,10 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         reconfigure_entry = self._get_reconfigure_entry()
 
-        # ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
-        # list_of_ports = [
-        #     f"{p}, s/n: {p.serial_number or 'n/a'}"
-        #     + (f" - {p.manufacturer}" if p.manufacturer else "")
-        #     for p in ports
-        # ]
-        # list_of_ports.append(CONF_MANUAL_PATH)
-
         if user_input:
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
-            # user_selection = user_input[CONF_USB_PATH]
-            # port = ports[list_of_ports.index(user_selection)]
-            # device_path = await self.hass.async_add_executor_job(
-            #     usb.get_serial_by_id, port.device
-            # )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if mac_stick:
                 await self.async_set_unique_id(
