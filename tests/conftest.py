@@ -36,7 +36,7 @@ def mock_config_entry() -> MockConfigEntry:
         data={CONF_USB_PATH: TEST_USB_PATH},
         minor_version=1,
         version=1,
-        unique_id=TEST_USB_PATH,
+        unique_id=TEST_MAC,
     )
 
 

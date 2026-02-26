@@ -16,6 +16,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 import serial.tools.list_ports
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
+TEST_MAC2: Final[str] = "02:23:45:67:AB"
 TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 TEST_USB2_PATH: Final[str] = "/dev/ttyUSB2"
 
@@ -214,14 +215,14 @@ async def test_reconfigure_flow(
     mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test reconfigure flow."""
-    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
 
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "reconfigure_successful"
 
     entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
     assert entry
-    assert entry.data.get(CONF_HOST) == TEST_USB_PATH
+    assert entry.data.get(CONF_USB_PATH) == TEST_USB2_PATH
 
 
 async def test_reconfigure_flow_other_stick(
@@ -230,11 +231,11 @@ async def test_reconfigure_flow_other_stick(
     mock_usb_stick: AsyncMock,
 ) -> None:
     """Test reconfigure flow aborts on other Smile ID."""
-    mock_usb_stick.mac_stick = TEST_MAC
+    mock_usb_stick.mac_stick = TEST_MAC2
 
-    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
 
-    assert result["type"] is FlowResultType.FORM
+    assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "not_the_same_stick"
 
 
@@ -257,7 +258,7 @@ async def test_reconfigure_flow_errors(
 
     mock_usb_stick.connect.side_effect = side_effect
 
-    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
 
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": reason}
