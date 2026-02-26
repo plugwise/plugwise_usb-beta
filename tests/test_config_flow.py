@@ -213,7 +213,7 @@ async def test_reconfigure_flow(
     """Test reconfigure flow."""
     result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_PORT_PATH)
 
-    assert result["type"] is FlowResultType.ABORT
+    assert result["type"] is FlowResultType.FORM
     assert result["reason"] == "reconfigure_successful"
 
     entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
@@ -231,7 +231,7 @@ async def test_reconfigure_flow_other_stick(
 
     result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_PORT_PATH)
 
-    assert result["type"] is FlowResultType.ABORT
+    assert result["type"] is FlowResultType.FORM
     assert result["reason"] == "not_the_same_stick"
 
 
