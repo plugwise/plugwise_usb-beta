@@ -17,6 +17,7 @@ STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stic
 TEST_MAC: Final[str] = "01:23:45:67:AB"
 TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 
+
 @pytest.fixture
 def mock_setup_entry() -> Generator[AsyncMock]:
     """Override async_setup_entry."""
@@ -33,8 +34,9 @@ def mock_config_entry() -> MockConfigEntry:
     return MockConfigEntry(
         domain=DOMAIN,
         data={CONF_USB_PATH: TEST_USB_PATH},
-        title="plugwise_usb",
-        unique_id="TEST_USB_PATH",
+        minor_version=1,
+        version=1,
+        unique_id=TEST_USB_PATH,
     )
 
 
@@ -110,11 +112,15 @@ def mock_usb_stick_init_error() -> Generator[MagicMock]:
         yield usb
 
 
-async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:
+async def setup_integration(
+    hass: HomeAssistant, config_entry: MockConfigEntry
+) -> MockConfigEntry:
     """Set up the usb integration."""
     config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
+
+    return config_entry
 
 
 @pytest.fixture(autouse=True)

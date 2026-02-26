@@ -17,6 +17,12 @@ import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
+STICK_RECONF_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_USB_PATH): str,
+    }
+)
+
 
 @callback
 def plugwise_stick_entries(hass):
@@ -141,26 +147,31 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
         # ]
         # list_of_ports.append(CONF_MANUAL_PATH)
 
-        if user_input is not None:
-            full_input = user_input.get(CONF_USB_PATH)
+        if user_input:
+            device_path = await self.hass.async_add_executor_job(
+                usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
+            )
             # user_selection = user_input[CONF_USB_PATH]
             # port = ports[list_of_ports.index(user_selection)]
             # device_path = await self.hass.async_add_executor_job(
             #     usb.get_serial_by_id, port.device
             # )
-            errors, mac_stick = await validate_usb_connection(self.hass, full_input)
-            if not errors:
-                await self.async_set_unique_id(mac_stick, raise_on_progress=False)
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
+            if mac_stick:
+                await self.async_set_unique_id(
+                     unique_id=mac_stick, raise_on_progress=False
+                )
                 self._abort_if_unique_id_mismatch(reason="not_the_same_stick")
                 return self.async_update_reload_and_abort(
                     reconfigure_entry,
-                    data_updates=full_input,
+                    data_updates={CONF_USB_PATH: device_path}
                 )
 
         return self.async_show_form(
             step_id="reconfigure",
-            data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH): str}  #vol.In(list_of_ports)}
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema=STICK_RECONF_SCHEMA,
+                suggested_values=reconfigure_entry.data,
             ),
             description_placeholders={"title": reconfigure_entry.title},
             errors=errors,

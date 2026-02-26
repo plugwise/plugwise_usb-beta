@@ -209,14 +209,14 @@ async def _start_reconfigure_flow(
 
 async def test_reconfigure_flow(
     hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
-    mock_setup_entry: AsyncMock,
     mock_usb_stick: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
 ) -> None:
     """Test reconfigure flow."""
     result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
 
-    assert result["type"] is FlowResultType.FORM
+    assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "reconfigure_successful"
 
     entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
