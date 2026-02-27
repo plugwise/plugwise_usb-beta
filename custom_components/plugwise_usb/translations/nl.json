@@ -17,7 +17,7 @@
         "data": {
           "usb_path": "USB-pad"
         },
-        "description": "USB-pad bijwerken voor {title}."
+        "description": "USB-{title} pad bijwerken"
       }
     },
     "abort": {
