@@ -162,11 +162,16 @@ async def async_unload_entry(
     hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
 ) -> bool:
     """Unload the Plugwise USB stick connection."""
-    if hasattr(config_entry, "runtime_data"):
-        config_entry.runtime_data[UNSUBSCRIBE_DISCOVERY]()
-        for coordinator in config_entry.runtime_data[NODES].values():
+    runtime_data = getattr(config_entry, "runtime_data", None) or {}
+    if runtime_data:
+        unsubscribe_discovery = runtime_data.get(UNSUBSCRIBE_DISCOVERY)
+        if callable(unsubscribe_discovery):
+            unsubscribe_discovery()
+        for coordinator in runtime_data.get(NODES, {}).values():
             await coordinator.unsubscribe_all_nodefeatures()
-        await config_entry.runtime_data[STICK].disconnect()
+        stick = runtime_data.get(STICK)
+        if stick is not None:
+            await stick.disconnect()
 
     return await hass.config_entries.async_unload_platforms(
         config_entry, PLUGWISE_USB_PLATFORMS
