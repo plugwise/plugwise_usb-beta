@@ -55,7 +55,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
     api_stick.cache_folder = hass.config.path(
         STORAGE_DIR, f"plugwisecache-{config_entry.entry_id}"
     )
-    config_entry.runtime_data = {STICK: api_stick}
+    config_entry.runtime_data[STICK] = api_stick
 
     _LOGGER.info("Connect & initialize Plugwise USB-Stick...")
     try:
