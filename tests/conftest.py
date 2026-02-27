@@ -68,6 +68,21 @@ async def init_integration(
 
 
 @pytest.fixture
+def mock_usb_stick_not_setup() -> Generator[MagicMock]:
+    """Return a mocked usb_mock."""
+
+    with patch(STICK_IMPORT_MOCK, autospec=True) as mock_usb:
+        usb = mock_usb.return_value
+
+        usb.connect = AsyncMock(return_value=None)
+        usb.initialize = AsyncMock(return_value=None)
+        usb.disconnect = AsyncMock(return_value=None)
+        usb.mac_stick = None
+
+        yield usb
+
+
+@pytest.fixture
 def mock_usb_stick() -> Generator[MagicMock]:
     """Return a mocked usb_mock."""
 
