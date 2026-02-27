@@ -9,13 +9,19 @@ from plugwise_usb.exceptions import StickError
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.config_entries import SOURCE_USER, ConfigFlow
+from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
+
+STICK_RECONF_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_USB_PATH): str,
+    }
+)
 
 
 @callback
@@ -28,7 +34,7 @@ def plugwise_stick_entries(hass):
     ]
 
 
-async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], str]:
+async def validate_usb_connection(self, device_path=None) -> tuple[dict[str, str], str | None]:
     """Test if device_path is a real Plugwise USB-Stick."""
     errors = {}
 
@@ -93,6 +99,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
+
         return self.async_show_form(
             step_id=SOURCE_USER,
             data_schema=vol.Schema(
@@ -112,7 +119,10 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             )
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
-                await self.async_set_unique_id(mac_stick)
+                await self.async_set_unique_id(
+                    unique_id=mac_stick, raise_on_progress=False
+                )
+                self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title="Stick", data={CONF_USB_PATH: device_path}
                 )
@@ -121,5 +131,37 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the integration."""
+        errors: dict[str, str] = {}
+        reconfigure_entry = self._get_reconfigure_entry()
+
+        if user_input:
+            device_path = await self.hass.async_add_executor_job(
+                usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
+            )
+            errors, mac_stick = await validate_usb_connection(self.hass, device_path)
+            if not errors:
+                await self.async_set_unique_id(
+                     unique_id=mac_stick, raise_on_progress=False
+                )
+                self._abort_if_unique_id_mismatch(reason="not_the_same_stick")
+                return self.async_update_reload_and_abort(
+                    reconfigure_entry,
+                    data_updates={CONF_USB_PATH: device_path}
+                )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema=STICK_RECONF_SCHEMA,
+                suggested_values=reconfigure_entry.data,
+            ),
+            description_placeholders={"title": reconfigure_entry.title},
             errors=errors,
         )

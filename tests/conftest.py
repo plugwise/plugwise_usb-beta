@@ -13,8 +13,9 @@ from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-TEST_MAC: Final[str] = "01:23:45:67:AB"
 STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
+TEST_MAC: Final[str] = "01:23:45:67:AB"
+TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 
 
 @pytest.fixture
@@ -27,17 +28,15 @@ def mock_setup_entry() -> Generator[AsyncMock]:
         yield mock_setup
 
 
-TEST_USBPORT = "/dev/ttyUSB1"
-
-
 @pytest.fixture
 def mock_config_entry() -> MockConfigEntry:
     """Return a mocked v1.2 config entry."""  # pw-beta only
     return MockConfigEntry(
         domain=DOMAIN,
-        data={CONF_USB_PATH: TEST_USBPORT},
-        title="plugwise_usb",
-        unique_id="TEST_USBPORT",
+        data={CONF_USB_PATH: TEST_USB_PATH},
+        minor_version=1,
+        version=1,
+        unique_id=TEST_MAC,
     )
 
 
@@ -66,6 +65,21 @@ async def init_integration(
 #         port.device = TEST_USBPORT
 #         port.description = "Some serial port"
 #         yield [port]
+
+
+@pytest.fixture
+def mock_usb_stick_not_setup() -> Generator[MagicMock]:
+    """Return a mocked usb_mock."""
+
+    with patch(STICK_IMPORT_MOCK, autospec=True) as mock_usb:
+        usb = mock_usb.return_value
+
+        usb.connect = AsyncMock(return_value=None)
+        usb.initialize = AsyncMock(return_value=None)
+        usb.disconnect = AsyncMock(return_value=None)
+        usb.mac_stick = None
+
+        yield usb
 
 
 @pytest.fixture
@@ -113,11 +127,15 @@ def mock_usb_stick_init_error() -> Generator[MagicMock]:
         yield usb
 
 
-async def setup_integration(hass: HomeAssistant, config_entry: MockConfigEntry) -> None:
+async def setup_integration(
+    hass: HomeAssistant, config_entry: MockConfigEntry
+) -> MockConfigEntry:
     """Set up the usb integration."""
     config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
+
+    return config_entry
 
 
 @pytest.fixture(autouse=True)

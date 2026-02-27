@@ -1,5 +1,9 @@
 # Changelog
 
+## Ongoing
+
+- Implement config_flow reconfigure
+
 ## v0.58.2 - 2026-01-29
 
 - Update plugwise_usb to [v0.47.2](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.2) fixing a bug.
