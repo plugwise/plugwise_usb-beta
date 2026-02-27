@@ -156,8 +156,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                     data_updates={CONF_USB_PATH: device_path}
                 )
 
-            self.async_abort(reason="already configured")
-
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=self.add_suggested_values_to_schema(
