@@ -12,6 +12,12 @@
         "data": {
           "usb_path": "USB-pad"
         }
+      },
+      "reconfigure": {
+        "data": {
+          "usb_path": "USB-pad"
+        },
+        "description": "USB-pad bijwerken voor {title}."
       }
     },
     "abort": {

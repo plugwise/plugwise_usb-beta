@@ -3,11 +3,11 @@
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from plugwise_usb.exceptions import StickError
 import pytest
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
-from plugwise_usb.exceptions import StickError
 from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant

@@ -12,6 +12,12 @@
         "data": {
           "usb_path": "USB-path"
         }
+      },
+      "reconfigure": {
+        "data": {
+          "usb_path": "USB-path"
+        },
+        "description": "Update device-path for {title}."
       }
     },
     "abort": {
