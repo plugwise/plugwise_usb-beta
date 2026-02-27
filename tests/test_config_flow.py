@@ -254,10 +254,7 @@ async def test_reconfigure_flow_other_stick(
 
 
 @pytest.mark.parametrize(
-    ("side_effect", "reason"),
-    [
-        (StickError, "cannot_connect"),
-    ],
+    ("side_effect", "reason"),[(StickError, "cannot_connect")],
 )
 async def test_reconfigure_flow_errors(
     hass: HomeAssistant,
