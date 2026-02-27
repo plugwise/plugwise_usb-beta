@@ -82,7 +82,7 @@ async def test_user_flow_manual_selected_show_form(hass):
 
 
 async def test_user_flow_manual(
-    hass, mock_usb_stick: MagicMock, init_integration: MockConfigEntry
+    hass, mock_usb_stick_not_setup: MagicMock, init_integration: MockConfigEntry
 ):
     """Test user flow when USB-stick is manually entered."""
 
