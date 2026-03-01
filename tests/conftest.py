@@ -35,7 +35,7 @@ def mock_config_entry() -> MockConfigEntry:
     return MockConfigEntry(
         domain=DOMAIN,
         data={CONF_USB_PATH: TEST_USB_PATH},
-        minor_version=1,
+        minor_version=0,
         version=1,
         unique_id=TEST_MAC,
     )
