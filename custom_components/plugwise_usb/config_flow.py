@@ -148,7 +148,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(
-                     unique_id=mac_stick, raise_on_progress=False
+                    unique_id=mac_stick, raise_on_progress=False
                 )
                 self._abort_if_unique_id_mismatch(reason="not_the_same_stick")
                 return self.async_update_reload_and_abort(
