@@ -141,7 +141,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         reconfigure_entry = self._get_reconfigure_entry()
 
-        if user_input:
+        if user_input is not None:
             device_path = await self.hass.async_add_executor_job(
                 usb.get_serial_by_id, user_input.get(CONF_USB_PATH)
             )
