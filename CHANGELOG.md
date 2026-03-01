@@ -1,8 +1,8 @@
 # Changelog
 
-## Ongoing
+## v0.59.0
 
-- Implement config_flow reconfigure
+- New Feature: implement reconfiguring of the Stick path via PR [407](https://github.com/plugwise/plugwise_usb-beta/pull/407)
 
 ## v0.58.2 - 2026-01-29
 
