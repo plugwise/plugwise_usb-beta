@@ -1,28 +1,33 @@
 """Test the Plugwise config flow."""
 
-from unittest.mock import MagicMock, patch
+from typing import Final
+from unittest.mock import AsyncMock, MagicMock, patch
 
+from plugwise_usb.exceptions import StickError
 import pytest
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
-from homeassistant.config_entries import SOURCE_USER
+from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
+from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 import serial.tools.list_ports
 
-TEST_USBPORT = "/dev/ttyUSB1"
-TEST_USBPORT2 = "/dev/ttyUSB2"
+TEST_MAC: Final[str] = "01:23:45:67:AB"
+TEST_MAC2: Final[str] = "02:23:45:67:AB"
+TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
+TEST_USB2_PATH: Final[str] = "/dev/ttyUSB2"
 
 
 def com_port():
     """Mock of a serial port."""
 
-    port = serial.tools.list_ports_common.ListPortInfo(TEST_USBPORT)
+    port = serial.tools.list_ports_common.ListPortInfo(TEST_USB_PATH)
     port.serial_number = "1234"
     port.manufacturer = "Virtual serial port"
-    port.device = TEST_USBPORT
+    port.device = TEST_USB_PATH
     port.description = "Some serial port"
     return port
 
@@ -47,7 +52,7 @@ async def test_user_flow_select(hass, mock_usb_stick: MagicMock):
     )
     await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.CREATE_ENTRY
-    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT}
+    assert result.get("data") == {CONF_USB_PATH: TEST_USB_PATH}
 
     # Retry to ensure configuring the same port is not allowed
     result = await hass.config_entries.flow.async_init(
@@ -77,7 +82,7 @@ async def test_user_flow_manual_selected_show_form(hass):
 
 
 async def test_user_flow_manual(
-    hass, mock_usb_stick: MagicMock, init_integration: MockConfigEntry
+    hass, mock_usb_stick_not_setup: MagicMock, init_integration: MockConfigEntry
 ):
     """Test user flow when USB-stick is manually entered."""
 
@@ -92,11 +97,11 @@ async def test_user_flow_manual(
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        user_input={CONF_USB_PATH: TEST_USBPORT2},
+        user_input={CONF_USB_PATH: TEST_USB2_PATH},
     )
     await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.CREATE_ENTRY
-    assert result.get("data") == {CONF_USB_PATH: TEST_USBPORT2}
+    assert result.get("data") == {CONF_USB_PATH: TEST_USB2_PATH}
 
 
 async def test_invalid_connection(hass):
@@ -183,3 +188,87 @@ async def test_failed_initialization(hass, mock_usb_stick_init_error: MagicMock)
     await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {"base": "stick_init"}
+
+
+async def _start_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    device_path: str,
+) -> ConfigFlowResult:
+    """Initialize a reconfigure flow."""
+    mock_config_entry.add_to_hass(hass)
+
+    reconfigure_result = await mock_config_entry.start_reconfigure_flow(hass)
+
+    assert reconfigure_result["type"] is FlowResultType.FORM
+    assert reconfigure_result["step_id"] == "reconfigure"
+
+    return await hass.config_entries.flow.async_configure(
+        reconfigure_result["flow_id"], {CONF_USB_PATH: device_path}
+    )
+
+
+async def test_reconfigure_flow(
+    hass: HomeAssistant,
+    mock_usb_stick: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow."""
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
+
+    entry = hass.config_entries.async_get_entry(mock_config_entry.entry_id)
+    assert entry
+    assert entry.data.get(CONF_USB_PATH) == TEST_USB2_PATH
+
+
+
+async def test_reconfigure_flow_same_path(
+    hass: HomeAssistant,
+    mock_usb_stick: AsyncMock,
+    mock_setup_entry: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Test reconfigure flow."""
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB_PATH)
+
+    assert result["type"] is FlowResultType.FORM
+    assert result.get("errors") == {"base": "already_configured"}
+
+
+async def test_reconfigure_flow_other_stick(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_usb_stick: AsyncMock,
+) -> None:
+    """Test reconfigure flow aborts on other Smile ID."""
+    mock_usb_stick.mac_stick = TEST_MAC2
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "not_the_same_stick"
+
+
+@pytest.mark.parametrize(
+    ("side_effect", "reason"),[(StickError, "cannot_connect")],
+)
+async def test_reconfigure_flow_errors(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_usb_stick: AsyncMock,
+    side_effect: Exception,
+    reason: str,
+) -> None:
+    """Test we handle each reconfigure exception error."""
+
+    mock_usb_stick.connect.side_effect = side_effect
+
+    result = await _start_reconfigure_flow(hass, mock_config_entry, TEST_USB2_PATH)
+
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("errors") == {"base": reason}
+    assert result.get("step_id") == "reconfigure"

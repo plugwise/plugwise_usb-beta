@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.59.0
+
+- New Feature: implement reconfiguring of the Stick path via PR [407](https://github.com/plugwise/plugwise_usb-beta/pull/407)
+
 ## v0.58.2 - 2026-01-29
 
 - Update plugwise_usb to [v0.47.2](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.2) fixing a bug.
