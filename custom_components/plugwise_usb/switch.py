@@ -60,7 +60,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         async_switch_fn="set_relay_init",
         entity_category=EntityCategory.CONFIG,
         node_feature=NodeFeature.RELAY_INIT,
-        api_attribute="state",
+        api_attribute="init_state",
     ),
     PlugwiseSwitchEntityDescription(
         key="daylight_mode",
