@@ -1,5 +1,9 @@
 # Changelog
 
+## Ongoing:
+
+- Link to plugwise_usb v0.47.4, change relay_init api_attribute
+
 ## v0.59.1
 
 - Remove device serial_number, ZigBee MAC addresses are now shown in HA, via PR [400](https://github.com/plugwise/plugwise_usb-beta/pull/400)
