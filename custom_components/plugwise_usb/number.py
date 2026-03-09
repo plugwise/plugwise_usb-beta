@@ -22,6 +22,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import UpdateFailed
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -240,7 +241,10 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(self.entity_description.node_feature, None)
+        try:
+           data = self.coordinator.data.get(self.entity_description.node_feature, None)
+        except AttributeError as err:
+           raise UpdateFailed from err
         if data is None:
             _LOGGER.debug(
                 "No %s number data for %s",
