@@ -1,6 +1,6 @@
 # Changelog
 
-## Ongoing:
+## Ongoing
 
 - Link to plugwise_usb v0.47.4, change relay_init api_attribute
 
