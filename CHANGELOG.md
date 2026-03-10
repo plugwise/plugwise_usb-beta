@@ -2,6 +2,7 @@
 
 ## Ongoing
 
+- Link to plugwise_usb v0.47.5, improve node-update error-handling
 - Link to plugwise_usb v0.47.4, change relay_init api_attribute
 
 ## v0.59.1
