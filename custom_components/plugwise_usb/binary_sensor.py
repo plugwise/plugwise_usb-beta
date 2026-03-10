@@ -144,23 +144,21 @@ class PlugwiseUSBBinarySensor(PlugwiseUSBEntity, BinarySensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-           data = self.coordinator.data.get(self.entity_description.node_feature, None)
-        except AttributeError as err:
-           raise UpdateFailed from err
-        if data is None:
+
+        if self.coordinator.data is None:
             _LOGGER.debug(
-                "No %s binary sensor data for %s",
-                self.entity_description.node_feature,
+                "No coordinator data available for %s",
                 self._node_info.mac,
             )
             return
-        if self.coordinator.data[self.entity_description.node_feature] is None:
-            _LOGGER.info(
-                "No binary sensor data for %s",
-                str(self.entity_description.node_feature),
-            )
+
+        feature = self.entity_description.node_feature
+        data = self.coordinator.data.get(feature, None)
+        if data is None or self.coordinator.data.get(feature) is None:
+            _LOGGER.debug(
+                "No %s binary sensor data for %s", feature, self._node_info.mac)
             return
+
         self._attr_is_on = getattr(
             self.coordinator.data[self.entity_description.node_feature],
             self.entity_description.api_attribute,

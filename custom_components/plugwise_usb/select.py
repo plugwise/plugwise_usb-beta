@@ -114,16 +114,18 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        try:
-           data = self.coordinator.data.get(self.entity_description.node_feature, None)
-        except AttributeError as err:
-           raise UpdateFailed from err
-        if data is None:
+        if self.coordinator.data is None:
             _LOGGER.debug(
-                "No %s select data for %s",
-                str(self.entity_description.node_feature),
+                "No coordinator data available for %s",
                 self._node_info.mac,
             )
+            return
+
+        feature = self.entity_description.node_feature
+        data = self.coordinator.data.get(feature, None)
+        if data is None or self.coordinator.data.get(feature) is None:
+            _LOGGER.debug(
+                "No %s select data for %s", feature, self._node_info.mac)
             return
 
         current_option = getattr(
