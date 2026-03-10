@@ -76,7 +76,9 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             states = await self.node.get_state(features)
         except (NodeError, NodeTimeout, StickError, StickTimeout) as err:
-            raise UpdateFailed from err
+            raise UpdateFailed(
+                f"Failed to refresh node {self.node.node_info.mac}: {err}"
+            ) from err
 
         if (
             not self.node.node_info.is_battery_powered
