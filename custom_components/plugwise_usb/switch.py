@@ -16,6 +16,7 @@ from homeassistant.components.switch import (
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import UpdateFailed
 
 from .const import NODES, STICK, UNSUB_NODE_LOADED
 from .coordinator import PlugwiseUSBConfigEntry, PlugwiseUSBDataUpdateCoordinator
@@ -60,7 +61,7 @@ SWITCH_TYPES: tuple[PlugwiseSwitchEntityDescription, ...] = (
         async_switch_fn="set_relay_init",
         entity_category=EntityCategory.CONFIG,
         node_feature=NodeFeature.RELAY_INIT,
-        api_attribute="state",
+        api_attribute="init_state",
     ),
     PlugwiseSwitchEntityDescription(
         key="daylight_mode",
@@ -174,13 +175,18 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        data = self.coordinator.data.get(self.entity_description.node_feature, None)
-        if data is None:
+        if self.coordinator.data is None:
             _LOGGER.debug(
-                "No %s switch data for %s",
-                str(self.entity_description.node_feature),
+                "No coordinator data available for %s",
                 self._node_info.mac,
             )
+            return
+
+        feature = self.entity_description.node_feature
+        data = self.coordinator.data.get(feature, None)
+        if data is None or self.coordinator.data.get(feature) is None:
+            _LOGGER.debug(
+                "No %s switch data for %s", feature, self._node_info.mac)
             return
 
         self._attr_is_on = getattr(
