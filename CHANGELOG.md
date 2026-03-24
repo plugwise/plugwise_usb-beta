@@ -1,10 +1,11 @@
 # Changelog
 
-## Ongoing
+## v0.59.2
 
-- Link to plugwise_usb v0.47.6
-- Link to plugwise_usb v0.47.5, improve node-update error-handling
-- Link to plugwise_usb v0.47.4, change relay_init api_attribute
+- Fix set_relay_init() function, improve _handle_coordinator_update() error-handling in all platform files
+- Link to plugwise_usb [v0.47.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.6)
+- Link to plugwise_usb v0.47.5 (not released)
+- Link to plugwise_usb [v0.47.4](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.4)
 
 ## v0.59.1
 
