@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.59.2
+
+- Fix set_relay_init() function, improve _handle_coordinator_update() error-handling in all platform files
+- Link to plugwise_usb [v0.47.6](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.6)
+- Link to plugwise_usb v0.47.5 (not released)
+- Link to plugwise_usb [v0.47.4](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.4)
+
 ## v0.59.1
 
 - Remove device serial_number, ZigBee MAC addresses are now shown in HA, via PR [400](https://github.com/plugwise/plugwise_usb-beta/pull/400)
