@@ -183,7 +183,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	  uv pip install -r "${my_path}/requirements_commit.txt"
 	fi
 	if ! [ -x "$(command -v pytest)" ]; then
-	  echo -e "${CINFO}Ensure uv presence${CWARN}"
+	  echo -e "${CINFO}Ensure pytest presence${CWARN}"
 	  uv pip install pytest
 	fi
 
