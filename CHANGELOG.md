@@ -1,5 +1,9 @@
 # Changelog
 
+## Ongoing
+
+- Bump python to 3.14
+
 ## v0.59.2
 
 - Fix set_relay_init() function, improve _handle_coordinator_update() error-handling in all platform files

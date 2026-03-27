@@ -3,7 +3,7 @@ name = "plugwise_usb-beta"
 version = "0.59.2"
 description = "Plugwise USB custom_component (BETA)"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = {file = "LICENSE"}
 keywords = ["Plugwise", "Switch", "Circle", "Plus"]
 authors = [
@@ -21,7 +21,7 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Home Automation",]
 
 dependencies = ["homeassistant", "plugwise-usb"]
@@ -35,7 +35,7 @@ dependencies = ["homeassistant", "plugwise-usb"]
 # ported when updating this file, (besides the obvious insertions of plugwise_usb everywhere)
 
 [tool.pylint.MAIN]
-py-version = "3.13"
+py-version = "3.14"
 # Use a conservative default here; 2 should speed up most setups and not hurt
 # any too bad. Override on command line as appropriate.
 jobs = 2
