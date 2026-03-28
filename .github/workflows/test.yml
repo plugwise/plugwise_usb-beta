@@ -4,9 +4,8 @@
 name: Test against HA-core
 
 env:
-  CACHE_VERSION: 1
-  DEFAULT_PYTHON: "3.13"
-  PRE_COMMIT_HOME: ~/.cache/pre-commit
+  CACHE_VERSION: 2
+  DEFAULT_PYTHON: "3.14"
   VENV: venv
 
 # Do not run on 'push' (as the flow doesn't have access to the labels) - also disabled workflow_dispatch as such
@@ -54,7 +53,7 @@ jobs:
     needs: cache
     name: Prepare
     steps:
-      - name: Prepare code checkout and python/pre-commit setup
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
         uses: plugwise/gh-actions/prepare-python-and-code@v2
         with:
@@ -62,7 +61,6 @@ jobs:
           fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          precommit-home: ${{ env.PRE_COMMIT_HOME }}
           clone-core: "true"
 
   # Prepare default python version environment

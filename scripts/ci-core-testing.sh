@@ -28,6 +28,9 @@ echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 # If you want full pytest output run as
 # DEBUG=1 scripts/ci-core-testing.sh
 
+# Ensure ulimit is setup to match core/astral-uv expectations
+ulimit -n 65536
+
 # If you want to test a single file
 # run as "scripts/core_testing.sh test_config_flow.py" or
 # "scripts/core_testing.sh test_sensor.py"
@@ -37,11 +40,6 @@ echo -e "${CINFO}Working on HA-core branch ${core_branch}${CNORM}"
 #
 # If you want to prepare for Core PR, run as
 # "COMMIT_CHECK=true scripts/core_testing.sh"
-
-# Which packages to install (to prevent installing all test requirements)
-# actual package version ARE verified (i.e. grepped) from requirements_test_all
-# separate packages with |
-pip_packages="aiousbwatcher|fnvhash|lru-dict|voluptuous|aiohttp_cors|pyroute2|sqlalchemy|zeroconf|pytest-socket|pre-commit|paho-mqtt|numpy|pydantic|ruff|ffmpeg|hassil|home-assistant-intents|pylint|pylint-per-file-ignores"
 
 echo ""
 echo -e "${CINFO}Checking for necessary tools and preparing setup:${CNORM}"
@@ -83,10 +81,14 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install --upgrade pre-commit
+if ! [ -x "$(command -v prek)" ]; then
+  uv pip install prek
+fi
+
+uv pip install -r "${my_path}/requirements_commit.txt"
 
 # Install pre-commit hook
-pre-commit install
+prek install
 
 # i.e. args used for functions, not directions 
 set +u
@@ -178,12 +180,15 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 
 	if ! [ -x "$(command -v uv)" ]; then
 	  echo -e "${CINFO}Ensure uv presence${CWARN}"
-	  python3 -m pip install uv
+	  uv pip install -r "${my_path}/requirements_commit.txt"
+	fi
+	if ! [ -x "$(command -v pytest)" ]; then
+	  echo -e "${CINFO}Ensure pytest presence${CWARN}"
+	  uv pip install pytest
 	fi
 
 	echo -e "${CINFO}Bootstrap pip parts of HA-core${CWARN}"
-	sh "${coredir}/script/bootstrap"
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	script/setup
 
 	echo ""
 	echo -e "${CINFO}Cleaning existing ${REPO_NAME} from HA core${CNORM}"
@@ -220,13 +225,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	fi
 	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 	echo ""
-	echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-	uv pip install --upgrade -r requirements.txt -r requirements_test.txt
-	grep -hEi "${pip_packages}" requirements_test_all.txt > ./tmp/requirements_test_extra.txt
-	echo -e "${CINFO} - extra's required for ${REPO_NAME}${CNORM}"
-	uv pip install --upgrade -r ./tmp/requirements_test_extra.txt
-	echo -e "${CINFO} - home assistant basics${CNORM}"
-	uv pip install -e . --config-settings editable_mode=compat --constraint homeassistant/package_constraints.txt
+	script/setup
 	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/${REPO_NAME}/manifest.json | tr -d '"')
@@ -274,8 +273,8 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	#echo -e "${CINFO}... mypy ...${CNORM}"
 	#script/run-in-env.sh mypy homeassistant/components/${REPO_NAME}/*.py || exit
 	cd ..
-	echo -e "${CINFO}... markdownlint ...${CNORM}"
-	pre-commit run --all-files --hook-stage manual markdownlint
+	echo -e "${CINFO}... pymarkdown ...${CNORM}"
+	prek run --all-files --hook-stage manual pymarkdown
 fi # quality
 
 # Copying back not necessary in actions
@@ -319,9 +318,9 @@ fi
 if [ -z "${GITHUB_ACTIONS}" ] && [ -n "${COMMIT_CHECK}" ] ; then 
 	cd "${coredir}" || exit
 	echo ""
-	echo -e "${CINFO}Core PR pre-commit check ...${CNORM}"
+	echo -e "${CINFO}Core PR prek check ...${CNORM}"
 	echo ""
-        git add -A ; pre-commit
+        git add -A ; prek run 
 fi
 
 if [ -z "${GITHUB_ACTIONS}" ] ; then 

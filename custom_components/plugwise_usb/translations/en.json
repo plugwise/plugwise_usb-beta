@@ -1,219 +1,247 @@
 {
-  "config": {
-    "step": {
-      "user": {
-        "title": "Connect to Plugwise Stick",
-        "description": "Please enter:",
-        "data": {
-          "usb_path": "USB-path"
-        }
-      },
-      "manual_path": {
-        "data": {
-          "usb_path": "USB-path"
-        }
-      },
-      "reconfigure": {
-        "data": {
-          "usb_path": "USB-path"
+    "config": {
+        "abort": {
+            "not_the_same_stick": "The configured Stick does not match with the Stick on the entered port",
+            "reconfigure_successful": "Reconfiguration successful"
         },
-        "description": "Update USB-{title} device-path"
-      }
-    },
-    "abort": {
-      "not_the_same_stick": "The configured Stick does not match with the Stick on the entered port",
-      "reconfigure_successful": "Reconfiguration successful"
-    },
-    "error": {
-      "already_configured": "This device is already configured",
-      "cannot_connect": "Failed to connect",
-      "network_down": "Plugwise Zigbee network is down",
-      "network_timeout": "Network communication timeout",
-      "stick_init": "Initialization of Plugwise USB-stick failed"
-    }
-  },
-  "services": {
-    "enable_production":{
-      "name": "Enable production logging",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device"
+        "error": {
+            "already_configured": "This device is already configured",
+            "cannot_connect": "Failed to connect",
+            "network_down": "Plugwise Zigbee network is down",
+            "network_timeout": "Network communication timeout",
+            "stick_init": "Initialization of Plugwise USB-stick failed"
+        },
+        "step": {
+            "manual_path": {
+                "data": {
+                    "usb_path": "USB-path"
+                }
+            },
+            "reconfigure": {
+                "data": {
+                    "usb_path": "USB-path"
+                },
+                "description": "Update USB-{title} device-path"
+            },
+            "user": {
+                "data": {
+                    "usb_path": "USB-path"
+                },
+                "description": "Please enter:",
+                "title": "Connect to Plugwise Stick"
+            }
         }
-      }
     },
-    "disable_production":{
-      "name": "Disable production logging, return to consumption logging only",
-      "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
-      "fields": {
-        "mac": {
-          "name": "MAC address",
-          "description": "The full 16 character MAC address of the plugwise device"
+    "entity": {
+        "binary_sensor": {
+            "battery_config_dirty": {
+                "name": "Battery config changed"
+            },
+            "humidity_hysteresis_state": {
+                "name": "Humidity Status"
+            },
+            "motion": {
+                "name": "Motion"
+            },
+            "motion_config_dirty": {
+                "name": "Motion config changed"
+            },
+            "sense_config_dirty": {
+                "name": "Sense hysteresis config changed"
+            },
+            "temperature_hysteresis_state": {
+                "name": "Temperature Status"
+            }
+        },
+        "button": {
+            "calibrate_light": {
+                "name": "Schedule Light Sensor Calibration"
+            },
+            "enable_auto_join": {
+                "name": "Enable Auto-joining (temporarily)"
+            },
+            "energy_reset": {
+                "name": "Reset energy collection"
+            },
+            "ping_node": {
+                "name": "Ping Device"
+            }
+        },
+        "event": {
+            "button_press_i_group_1": {
+                "name": "Button I pressed group 1",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "single_press": "Pressed"
+                        }
+                    }
+                }
+            },
+            "button_press_i_group_2": {
+                "name": "Button I pressed group 2",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "single_press": "Pressed"
+                        }
+                    }
+                }
+            },
+            "button_press_o_group_1": {
+                "name": "Button O pressed group 1",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "single_press": "Pressed"
+                        }
+                    }
+                }
+            },
+            "button_press_o_group_2": {
+                "name": "Button O pressed group 2",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "single_press": "Pressed"
+                        }
+                    }
+                }
+            }
+        },
+        "number": {
+            "motion_reset_timer": {
+                "name": "Motion reset timer"
+            },
+            "sed_awake_duration": {
+                "name": "Awake duration"
+            },
+            "sed_clock_interval": {
+                "name": "Clock interval"
+            },
+            "sed_maintenance_interval": {
+                "name": "Maintenance interval"
+            },
+            "sed_sleep_duration": {
+                "name": "Sleep duration"
+            },
+            "sense_humidity_lower_bound": {
+                "name": "Humidity lower boundary value"
+            },
+            "sense_humidity_upper_bound": {
+                "name": "Humidity upper boundary value"
+            },
+            "sense_report_interval": {
+                "name": "Measurement reporting interval"
+            },
+            "sense_temperature_lower_bound": {
+                "name": "Temperature lower boundary value"
+            },
+            "sense_temperature_upper_bound": {
+                "name": "Temperature upper boundary value"
+            }
+        },
+        "select": {
+            "motion_sensitivity_level": {
+                "name": "Motion sensitivity level",
+                "state": {
+                    "high": "High",
+                    "medium": "Medium",
+                    "off": "Off"
+                }
+            }
+        },
+        "sensor": {
+            "awake_reason": {
+                "name": "Awake reason"
+            },
+            "awake_timestamp": {
+                "name": "Last awake"
+            },
+            "energy_day_consumption": {
+                "name": "Energy consumption today"
+            },
+            "energy_day_production": {
+                "name": "Energy production today"
+            },
+            "energy_hour_consumption": {
+                "name": "Energy consumption this hour"
+            },
+            "energy_hour_production": {
+                "name": "Energy production this hour"
+            },
+            "humidity": {
+                "name": "Humidity"
+            },
+            "last_seen": {
+                "name": "Last seen"
+            },
+            "ping_rrt": {
+                "name": "Network roundtrip time"
+            },
+            "ping_rssi_in": {
+                "name": "RSSI level inbound"
+            },
+            "ping_rssi_out": {
+                "name": "RSSI level outbound"
+            },
+            "power_last_8_seconds": {
+                "name": "Power usage last 8 seconds"
+            },
+            "power_last_second": {
+                "name": "Power"
+            },
+            "temperature": {
+                "name": "Temperature"
+            }
+        },
+        "switch": {
+            "motion_daylight_mode": {
+                "name": "Daylight mode"
+            },
+            "relay": {
+                "name": "Relay"
+            },
+            "relay_init": {
+                "name": "Relay startup"
+            },
+            "relay_lock": {
+                "name": "Lock relay"
+            },
+            "sense_humidity_direction": {
+                "name": "Switch on increasing or decreasing humidity"
+            },
+            "sense_humidity_enabled": {
+                "name": "Enable humidity switching on hysteresis"
+            },
+            "sense_temperature_direction": {
+                "name": "Switch on increasing or decreasing temperature"
+            },
+            "sense_temperature_enabled": {
+                "name": "Enable temperature switching on hysteresis"
+            }
         }
-      }
-    }
-  },
-  "entity": {
-    "binary_sensor": {
-      "motion": {
-        "name": "Motion"
-      },
-      "motion_config_dirty": {
-        "name": "Motion config changed"
-      },
-      "battery_config_dirty": {
-        "name": "Battery config changed"
-      },
-      "sense_config_dirty": {
-        "name": "Sense hysteresis config changed"
-      },
-      "humidity_hysteresis_state": {
-        "name": "Humidity Status"
-      },
-      "temperature_hysteresis_state": {
-        "name": "Temperature Status"
-      }
     },
-    "select": {
-      "motion_sensitivity_level": {
-        "name": "Motion sensitivity level",
-        "state": {
-          "high": "High",
-          "medium": "Medium",
-          "off": "Off"
+    "services": {
+        "disable_production": {
+            "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+            "fields": {
+                "mac": {
+                    "description": "The full 16 character MAC address of the plugwise device",
+                    "name": "MAC address"
+                }
+            },
+            "name": "Disable production logging, return to consumption logging only"
+        },
+        "enable_production": {
+            "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
+            "fields": {
+                "mac": {
+                    "description": "The full 16 character MAC address of the plugwise device",
+                    "name": "MAC address"
+                }
+            },
+            "name": "Enable production logging"
         }
-      }
-    },
-    "sensor": {
-      "power_last_second": {
-        "name": "Power"
-      },
-      "power_last_8_seconds": {
-        "name": "Power usage last 8 seconds"
-      },
-      "energy_hour_consumption": {
-        "name": "Energy consumption this hour"
-      },
-      "energy_day_consumption": {
-        "name": "Energy consumption today"
-      },
-      "energy_hour_production": {
-        "name": "Energy production this hour"
-      },
-      "energy_day_production": {
-        "name": "Energy production today"
-      },
-      "last_seen": {
-        "name": "Last seen"
-      },
-      "ping_rrt": {
-        "name": "Network roundtrip time"
-      },
-      "ping_rssi_in": {
-        "name": "RSSI level inbound"
-      },
-      "ping_rssi_out": {
-        "name": "RSSI level outbound"
-      },
-      "temperature": {
-        "name": "Temperature"
-      },
-      "humidity": {
-        "name": "Humidity"
-      },
-      "awake_timestamp": {
-        "name": "Last awake"
-      },
-      "awake_reason": {
-        "name": "Awake reason"
-      }
-    },
-    "switch": {
-      "relay": {
-        "name": "Relay"
-      },
-      "relay_init": {
-        "name": "Relay startup"
-      },
-      "relay_lock": {
-        "name": "Lock relay"
-      },
-      "motion_daylight_mode": {
-        "name": "Daylight mode"
-      },
-      "sense_humidity_enabled": {
-        "name": "Enable humidity switching on hysteresis"
-      },
-      "sense_humidity_direction": {
-        "name": "Switch on increasing or decreasing humidity"
-      },
-      "sense_temperature_enabled": {
-        "name": "Enable temperature switching on hysteresis"
-      },
-      "sense_temperature_direction": {
-        "name": "Switch on increasing or decreasing temperature"
-      }
-    },
-    "number": {
-      "motion_reset_timer": {
-        "name": "Motion reset timer"
-      },
-      "sed_maintenance_interval": {
-        "name": "Maintenance interval"
-      },
-      "sed_sleep_duration": {
-        "name": "Sleep duration"
-      },
-      "sed_awake_duration": {
-        "name": "Awake duration"
-      },
-      "sed_clock_interval": {
-        "name": "Clock interval"
-      },
-      "sense_humidity_upper_bound": {
-        "name": "Humidity upper boundary value"
-      },
-      "sense_humidity_lower_bound": {
-        "name": "Humidity lower boundary value"
-      },
-      "sense_temperature_upper_bound": {
-        "name": "Temperature upper boundary value"
-      },
-      "sense_temperature_lower_bound": {
-        "name": "Temperature lower boundary value"
-      },
-      "sense_report_interval": {
-        "name": "Measurement reporting interval"
-      }
-    },
-    "button": {
-      "enable_auto_join": {
-        "name": "Enable Auto-joining (temporarily)"
-      },
-      "energy_reset":{
-        "name": "Reset energy collection"
-      },
-      "ping_node":{
-        "name": "Ping Device"
-      },
-      "calibrate_light":{
-        "name": "Schedule light sensor calibration"
-      }
-    },
-    "event": {
-      "button_press_i_group_1": {
-        "name": "Button I group 1 pressed"
-      },
-      "button_press_o_group_1": {
-        "name": "Button O group 1 pressed"
-      },
-      "button_press_i_group_2": {
-        "name": "Button I group 2 pressed"
-      },
-      "button_press_o_group_2": {
-        "name": "Button O group 2 pressed"
-      }
     }
-  }
 }
