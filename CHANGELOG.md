@@ -3,6 +3,7 @@
 ## Ongoing
 
 - Bump python to 3.14
+- Link to plugwise_usb [v0.47.7](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.7)
 
 ## v0.59.2
 
