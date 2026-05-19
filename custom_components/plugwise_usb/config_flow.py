@@ -91,6 +91,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             port = ports[list_of_ports.index(user_selection)]
             LOGGER.debug("HOI port: %s", port)
             device_path = port.device
+            LOGGER.debug("HOI path: %s", device_path)
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(
