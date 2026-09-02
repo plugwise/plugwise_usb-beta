@@ -47,7 +47,7 @@ def mocked_com_port()-> USBDevice:
 
 async def test_user_flow_select(hass, mock_usb_stick: MagicMock, pyserial_comports: MockFixture):
     """Test user flow when USB-stick is selected from list."""
-    port = com_port()
+    port = mocked_com_port()
     port_select = f"{port.device}, s/n: {port.serial_number} - {port.manufacturer}"
 
     result = await hass.config_entries.flow.async_init(
