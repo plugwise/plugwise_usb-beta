@@ -1,7 +1,7 @@
 """Test the Plugwise config flow."""
 
 from typing import Final
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, MockFixture, patch
 
 from plugwise_usb.exceptions import StickError
 import pytest
