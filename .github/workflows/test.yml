@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Restore cached environment
         id: cache-reuse
-        uses: plugwise/gh-actions/restore-venv@v2
+        uses: plugwise/gh-actions/restore-venv@9054f02b05e53697300c41df27d0307332dc7cd8
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           python-version: ${{ needs.cache.outputs.python-version }}
