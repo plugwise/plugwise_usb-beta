@@ -1,7 +1,8 @@
 """Test the Plugwise config flow."""
 
+from collections.abc import Generator
 from typing import Final
-from unittest.mock import AsyncMock, MagicMock, MockFixture, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from plugwise_usb.exceptions import StickError
 import pytest
@@ -15,6 +16,8 @@ from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+type MockFixture = Generator[MagicMock | AsyncMock]
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
 TEST_MAC2: Final[str] = "02:23:45:67:AB"
