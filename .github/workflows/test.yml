@@ -80,7 +80,7 @@ jobs:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          precommit-home: ${{ env.PRE_COMMIT_HOME }}
+          prek-home: ${{ env.PREK_HOME }}
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
         run: |
