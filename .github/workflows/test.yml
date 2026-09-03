@@ -25,6 +25,14 @@ on:
       - unlabeled
 
 jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
+
   # Determine cache key once
   cache:
     runs-on: ubuntu-latest
@@ -41,8 +49,14 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Fetch HA pyproject
-        id: core-version
+       id: core-version
         run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
+      - name: Core dependencies
+        id: core-dependencies-1
+        run: sudo apt-get update
+      - name: Core dependencies
+        id: core-dependencies-2
+        run: sudo apt-get install python3-pip python3-dev python3-venv autoconf libssl-dev libxml2-dev libxslt1-dev libjpeg-dev libffi-dev libudev-dev zlib1g-dev pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libswresample-dev libavfilter-dev ffmpeg libgammu-dev build-essential
       - name: Compute cache key
         id: set-key
         run: echo "cache-key=${{ runner.os }}--${{ env.CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
@@ -64,36 +78,67 @@ jobs:
           clone-core: "true"
 
   # Prepare default python version environment
-  ha-core-release:
+  ha-core-release-prepare:
     runs-on: ubuntu-latest
-    name: Setup for HA-core (release/master)
+    name: Prepare and validate prek (pre-commit)
     needs:
       - cache
       - prepare
     steps:
       - name: Check out committed code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - name: Restore cached environment
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/restore-venv@9054f02b05e53697300c41df27d0307332dc7cd8
+        uses: plugwise/gh-actions/prepare-python-and-code@9054f02b05e53697300c41df27d0307332dc7cd8
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          prek-home: ${{ env.PREK_HOME }}
-      - name: Test through HA-core (master/release)
+      - name: Run all-files prek (pre-commit) excluding testing
+        run: |
+          # shellcheck disable=SC1091 # ingesting virtualenv
+          source venv-${{ needs.cache.outputs.python-version }}/bin/activate
+          prek run --all-files --show-diff-on-failure
+        env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
+          SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
+
+
+  ha-core-testing:
+    runs-on: ubuntu-latest
+    name: Setup for HA-core (release/master)
+    needs:
+      - cache
+      - prepare
+      - ha-core-release-prepare
+    outputs:
+      release_failed: ${{ steps.ha_core_release_tests.outputs.release_failed }}
+    steps:
+      - name: Check out committed code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Prepare code checkout and python/prek/pre-commit setup
+        id: cache-reuse
+        uses: plugwise/gh-actions/prepare-python-and-code@9054f02b05e53697300c41df27d0307332dc7cd8
+        with:
+          cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
+          python-version: ${{ needs.cache.outputs.python-version }}
+          venv-dir: ${{ env.VENV }}
+      - name: Test through HA-core (master/release) - continue-on-error = ${{ needs.determine-mode.outputs.strict_dev == 'true' }}
         id: ha_core_release_tests
+        continue-on-error: ${{ needs.determine-mode.outputs.strict_dev == 'true' }} # Allow master failures only if dev is strict
         run: |
           set +e
-          source venv-${{ needs.cache.outputs.python-version }}/bin/activate
-          GITHUB_ACTIONS="" scripts/ci-core-testing.sh
-          EXIT_CODE=$?
-          exit $EXIT_CODE
 
-  shellcheck:
-    name: Shellcheck
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
+          GITHUB_ACTIONS="" scripts/core-testing.sh
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::warning::Release HA core incompatibility"
+            echo "release_failed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Successfully tested against released HA-core"
+            echo "release_failed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          exit $EXIT_CODE
