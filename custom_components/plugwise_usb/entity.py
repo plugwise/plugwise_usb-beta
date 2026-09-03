@@ -7,7 +7,11 @@ import logging
 
 from plugwise_usb.api import NodeFeature, NodeInfo
 
-from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE, DeviceInfo
+from homeassistant.helpers.device_registry import (
+    CONNECTION_ZIGBEE,
+    DeviceInfo,
+    async_get_device_id_by_identifier,
+)
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -38,9 +42,9 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         super().__init__(node_duc, context=entity_description.node_feature)
         self.node_duc = node_duc
         self.entity_description = entity_description
+        self.entry = node_duc.config_entry
         self._node_info: NodeInfo = node_duc.node.node_info
         self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
-        self._via_device = (DOMAIN, str(node_duc.api_stick.mac_stick))
 
     @property
     def available(self) -> bool:
@@ -61,7 +65,11 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             model_id=self._node_info.model_type,
             name=str(self._node_info.name),
             sw_version=str(self._node_info.firmware),
-            via_device=self._via_device,
+            via_device_id=async_get_device_id_by_identifier(
+                self.node_duc.hass,
+                (DOMAIN, str(self.node_duc.api_stick.mac_stick)),
+                config_entry_id=self.entry.entry_id,
+            ),
         )
 
     async def async_added_to_hass(self):
