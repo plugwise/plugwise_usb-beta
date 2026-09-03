@@ -9,7 +9,6 @@ CWARN="\x1B[93m"  # yellow
 
 # Repository name (for reuse betweeh plugwise network and usb
 REPO_NAME="plugwise_usb"
-VENV_DIR=".venv"
 
 # By default assumes running against 'master' branch of Core-HA
 # as requested by @bouwew for on-par development with the releases
@@ -60,6 +59,25 @@ which jq || ( echo -e "${CFAIL}You should have jq installed, exiting${CNORM}"; e
 
 my_path=$(git rev-parse --show-toplevel)
 
+venv_and_uv() {
+        # shellcheck disable=SC1091
+        source venv/bin/activate
+	if ! [ -x "$(command -v uv)" ]; then
+	  echo -e "${CINFO}Ensure uv presence${CWARN}"
+	  python3 -m pip install uv
+	fi
+	if ! [ -x "$(command -v prek)" ]; then
+	  echo -e "${CINFO}Ensure prek presence${CWARN}"
+	  uv pip install -r "${my_path}/requirements_commit.txt"
+	fi
+        if ! uv pip list | grep -q bcrypt; then
+          script/setup
+	fi
+	if ! [ -x "$(command -v pytest)" ]; then
+	  uv pip install pytest
+	fi
+}
+
 # Ensure environment is set-up
 
 # 20250613 Copied from HA-core and shell-check adjusted and modified for local use
@@ -67,12 +85,12 @@ set -e
 
 if [ -z "$VIRTUAL_ENV" ]; then
   if [ -x "$(command -v uv)" ]; then
-    uv venv --seed "${VENV_DIR}"
+    uv venv --seed venv
   else
-    python3 -m venv "${VENV_DIR}"
+    python3 -m venv venv
   fi
   # shellcheck disable=SC1091 # ingesting virtualenv
-  source "${VENV_DIR}/bin/activate"
+  source venv/bin/activate
 fi
 
 if ! [ -x "$(command -v uv)" ]; then
@@ -81,13 +99,7 @@ fi
 # /20250613
 
 # Install commit requirements
-if ! [ -x "$(command -v prek)" ]; then
-  uv pip install prek
-fi
-
 uv pip install -r "${my_path}/requirements_commit.txt"
-
-# Install pre-commit hook
 prek install
 
 # i.e. args used for functions, not directions 
@@ -168,27 +180,14 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	# Fake branch
 	git checkout -b fake_branch
 
-	echo ""
-	echo -e "${CINFO}Ensure HA-core venv${CWARN}"
-        if [ -x "$(command -v uv)" ]; then
-          uv venv --seed "${VENV_DIR}"
-        else
-          python3 -m venv "${VENV_DIR}"
+		if [ ! -d "venv" ]; then
+          echo -e "${CINFO}Ensure HA-core venv${CWARN}"
+          uv venv --seed venv
         fi
+        echo -e "${CINFO}(Re)setup HA-core ${CWARN}"
+		script/setup
         # shellcheck disable=SC1091
-        source "${VENV_DIR}/bin/activate"
-
-	if ! [ -x "$(command -v uv)" ]; then
-	  echo -e "${CINFO}Ensure uv presence${CWARN}"
-	  uv pip install -r "${my_path}/requirements_commit.txt"
-	fi
-	if ! [ -x "$(command -v pytest)" ]; then
-	  echo -e "${CINFO}Ensure pytest presence${CWARN}"
-	  uv pip install pytest
-	fi
-
-	echo -e "${CINFO}Bootstrap pip parts of HA-core${CWARN}"
-	script/setup
+        source venv/bin/activate
 
 	echo ""
 	echo -e "${CINFO}Cleaning existing ${REPO_NAME} from HA core${CNORM}"
@@ -198,12 +197,17 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo -e "${CINFO}Overwriting with ${REPO_NAME}-beta${CNORM}"
 	echo ""
 	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
-        mkdir -p ./tests/components/${REPO_NAME}/
 	cp -r ../tests/*py ./tests/components/${REPO_NAME}/
-	# Rework pytest from custom_component to core
-	sed -i".sedbck" 's/pytest_homeassistant_custom_component.common/tests.common/g' ./tests/components/${REPO_NAME}/*py
-	sed -i".sedbck" 's/custom_components/homeassistant.components/g' ./tests/components/${REPO_NAME}/*py
+
 	echo ""
+
+        echo -e "${CINFO}Validating prettierrc changes${CNORM}"
+        prettierrc=".prettierrc.js"
+        if ! diff -q <(sed 's/homeassistant/custom_components/g' "${prettierrc}") "../${prettierrc}" >/dev/null; then
+            echo -e "${CWARN}Updating prettierrc from core${CNORM}"
+            sed 's/homeassistant/custom_components/g' "${prettierrc}" > "../${prettierrc}"
+        fi
+
 fi # core_prep
 
 set +u
@@ -211,22 +215,12 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source "${VENV_DIR}/bin/activate"
+        venv_and_uv
 	mkdir -p ./tmp
 	echo ""
 	echo -e "${CINFO}Ensure translations are there${CNORM}"
 	echo ""
 	python3 -m script.translations develop --all > /dev/null 2>&1
-	echo ""
-	if ! [ -x "$(command -v uv)" ]; then
-	  echo -e "${CINFO}Ensure uv is there${CNORM}"
-	  python3 -m pip install uv
-	fi
-	echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
-	echo ""
-	script/setup
-	echo ""
 	# When using test.py prettier makes multi-line, so use jq
 	module=$(jq '.requirements[]' ../custom_components/${REPO_NAME}/manifest.json | tr -d '"')
 	#module=$(grep require ../custom_components/${REPO_NAME}/manifest.json | cut -f 4 -d '"')
@@ -240,8 +234,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source "${VENV_DIR}/bin/activate"
+         venv_and_uv
 	echo ""
 	echo -e "${CINFO}Test commencing ...${CNORM}"
 	echo ""
@@ -257,8 +250,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	cd "${coredir}" || exit
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source "${VENV_DIR}/bin/activate"
+         venv_and_uv
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"
@@ -283,14 +275,10 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	cd "${coredir}" || exit
 	echo ""
 	echo "Ensure HA-core venv${CNORM}"
-        # shellcheck disable=SC1091
-        source "${VENV_DIR}/bin/activate"
+         venv_and_uv
 	echo ""
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
-	sed -i".sedbck" 's/tests.common/pytest_homeassistant_custom_component.common/g' ./tests/components/${REPO_NAME}/*py
-	sed -i".sedbck" 's/homeassistant.components/custom_components/g' ./tests/components/${REPO_NAME}/*py
-        rm ./tests/components/${REPO_NAME}/*sedbck
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
 	cp -r ./tests/components/${REPO_NAME}/*py ../tests/
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
