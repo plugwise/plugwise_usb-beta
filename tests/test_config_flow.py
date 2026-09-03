@@ -150,14 +150,11 @@ async def test_empty_connection(hass):
     )
     await hass.async_block_till_done()
 
-    try:
+    with pytest.raises(InvalidData):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {CONF_USB_PATH: None},
         )
-        pytest.fail("Empty connection was accepted")
-    except InvalidData:
-        assert True
 
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {}
