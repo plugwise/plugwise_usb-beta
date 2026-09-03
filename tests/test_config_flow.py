@@ -9,7 +9,6 @@ import pytest
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
-
 from homeassistant.components.usb import USBDevice
 from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
