@@ -8,14 +8,13 @@ import pytest
 
 from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
 from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
-# from homeassistant.components import usb
+
 from homeassistant.components.usb import USBDevice
 from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from pytest_homeassistant_custom_component.common import MockConfigEntry
-# import serial.tools.list_ports
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
 TEST_MAC2: Final[str] = "02:23:45:67:AB"
