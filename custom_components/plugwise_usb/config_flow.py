@@ -9,7 +9,6 @@ from plugwise_usb.exceptions import StickError
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.components.usb import USBDevice
 from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback

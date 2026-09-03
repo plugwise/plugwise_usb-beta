@@ -23,11 +23,11 @@ TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 TEST_USB2_PATH: Final[str] = "/dev/ttyUSB2"
 
 
-@pytest.fixture(name="pyserial_comports")
+@pytest.fixture(name="serial_ports", autouse=True)
 def usb_comports() -> MockFixture:
     """Mock scan_serial_ports."""
     with patch(
-        "homeassistant.components.plugwise_usb.config_flow.usb.async_scan_serial_ports",
+        "custom_components.plugwise_usb.config_flow.usb.async_scan_serial_ports",
         AsyncMock(return_value=[mocked_com_port()]),
     ) as comports_mock:
         yield comports_mock
@@ -45,7 +45,7 @@ def mocked_com_port()-> USBDevice:
     )
 
 
-async def test_user_flow_select(hass, mock_usb_stick: MagicMock, pyserial_comports: MockFixture):
+async def test_user_flow_select(hass, mock_usb_stick: MagicMock):
     """Test user flow when USB-stick is selected from list."""
     port = mocked_com_port()
     port_select = f"{port.device}, s/n: {port.serial_number} - {port.manufacturer}"
