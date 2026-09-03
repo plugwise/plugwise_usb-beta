@@ -14,7 +14,7 @@ from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, LOGGER, MANUAL_PATH
+from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
 STICK_RECONF_SCHEMA = vol.Schema(
     {
@@ -79,7 +79,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             if isinstance(port, usb.USBDevice)
         ]
         list_of_ports.append(CONF_MANUAL_PATH)
-        LOGGER.debug("HOI ports: %s", list_of_ports)
 
         if user_input is not None:
             user_selection = user_input[CONF_USB_PATH]
@@ -88,9 +87,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 return await self.async_step_manual_path()
 
             port = ports[list_of_ports.index(user_selection)]
-            LOGGER.debug("HOI port: %s", port)
             device_path = port.device
-            LOGGER.debug("HOI path: %s", device_path)
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(
