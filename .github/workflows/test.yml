@@ -130,7 +130,7 @@ jobs:
         run: |
           set +e
 
-          GITHUB_ACTIONS="" scripts/core-testing.sh
+          GITHUB_ACTIONS="" scripts/ci-core-testing.sh
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -ne 0 ]; then
