@@ -103,7 +103,6 @@ jobs:
         env: # While not problematic, save time on performing the local hooks as they are run from the complete script in the next job
           SKIP: local-test-core-prep,local-test-pip-prep,local-testing,local-quality
 
-
   ha-core-testing:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
