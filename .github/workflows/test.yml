@@ -77,9 +77,9 @@ jobs:
         uses: plugwise/gh-actions/prepare-python-and-code@6b33ca47b5b47b3324e081221da2baa499905914
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          prek-home: ${{ env.PREK_HOME }}
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
         run: |
