@@ -43,13 +43,13 @@ prek install
 echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
 echo ""
 echo -e "${CINFO} - HA requirements (core and test)${CNORM}"
-uv pip install -q --upgrade -r requirements_commit.txt -r requirements_test.txt
+uv pip install --no-build -q --upgrade -r requirements_commit.txt -r requirements_test.txt
 
 # When using test.py prettier makes multi-line, so use jq
 module=$(jq '.requirements[]' custom_components/${REPO_NAME}/manifest.json | tr -d '"')
 echo -e "${CINFO}Checking manifest for current python-${REPO_NAME} to install: ${module}${CNORM}"
 echo ""
-uv pip install -q --upgrade "${module}"
+uv pip install --no-build -q --upgrade "${module}"
 debug_params=""
 if [ -n "${DEBUG}" ] ; then
 	debug_params="-rpP --log-cli-level=DEBUG"
