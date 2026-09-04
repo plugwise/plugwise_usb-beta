@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@dac5b9c5597fcc4d46b6fef622db5f8d57d2df81
+        uses: plugwise/gh-actions/prepare-python-and-code@6b33ca47b5b47b3324e081221da2baa499905914
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@dac5b9c5597fcc4d46b6fef622db5f8d57d2df81
+        uses: plugwise/gh-actions/prepare-python-and-code@6b33ca47b5b47b3324e081221da2baa499905914
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           python-version: ${{ needs.cache.outputs.python-version }}
