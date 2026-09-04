@@ -42,7 +42,7 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Fetch HA pyproject
         id: core-version
-        run: wget --https-only -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
+        run: curl --fail --location --proto '=https' -o ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
       - name: Compute cache key
         id: set-key
         run: echo "cache-key=${{ runner.os }}--${{ env.CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
