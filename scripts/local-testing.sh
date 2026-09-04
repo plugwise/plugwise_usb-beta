@@ -34,10 +34,10 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install -q --upgrade pre-commit
+uv pip install -q --upgrade prek
 
 # Install pre-commit hook
-pre-commit install
+prek install
 
 
 echo -e "${CINFO}Installing pip modules (using uv)${CNORM}"
@@ -71,4 +71,4 @@ echo -e "${CFAIL}... SKIPPING mypy ...${CNORM}"
 #mypy custom_components/${REPO_NAME}/*.py || exit
 
 #echo -e "${CINFO}... markdownlint ...${CNORM}"
-#pre-commit run --all-files --hook-stage manual markdownlint
+#prek run --all-files --hook-stage manual markdownlint

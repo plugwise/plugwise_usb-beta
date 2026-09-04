@@ -4,7 +4,7 @@
 name: Test against HA-core
 
 env:
-  CACHE_VERSION: 4
+  CACHE_VERSION: 5
   DEFAULT_PYTHON: "3.14"
   VENV: venv
 
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@9054f02b05e53697300c41df27d0307332dc7cd8
+        uses: plugwise/gh-actions/prepare-python-and-code@dac5b9c5597fcc4d46b6fef622db5f8d57d2df81
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@9054f02b05e53697300c41df27d0307332dc7cd8
+        uses: plugwise/gh-actions/prepare-python-and-code@dac5b9c5597fcc4d46b6fef622db5f8d57d2df81
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           python-version: ${{ needs.cache.outputs.python-version }}

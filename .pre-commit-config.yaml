@@ -5,7 +5,7 @@ default_language_version:
 repos:
   # Run manually in CI skipping the branch checks
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.13
+    rev: v0.16.6
     hooks:
       - id: ruff
         name: "Ruff-ing code"
@@ -27,7 +27,7 @@ repos:
         name: "Checking pyupgrade"
         args: [--py39-plus]
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
       - id: codespell
         name: "Verifying/updating code for spelling issues"
@@ -52,7 +52,7 @@ repos:
       - id: yamllint
         name: "Linting yaml"
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.4.15
+    rev: v2.5.12
     hooks:
       - id: biome-lint
         additional_dependencies: ["@biomejs/biome@2.0.4"]
@@ -79,7 +79,7 @@ repos:
         language: script
         pass_filenames: false
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.37
+    rev: v0.9.39
     hooks:
       - id: pymarkdown
         name: "MarkDown Lint"
