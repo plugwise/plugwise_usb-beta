@@ -34,7 +34,7 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install -q --upgrade prek
+uv pip install --no-build -q --upgrade prek
 
 # Install pre-commit hook
 prek install
