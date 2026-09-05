@@ -222,6 +222,20 @@
             }
         }
     },
+    "options": {
+        "error": {
+            "invalid_mac": "MAC is invalid, please retry"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "zigbee_mac": "16-bit MAC"
+                },
+                "description": "Please enter the ZigBee MAC address:",
+                "title": "Pair Plus-device"
+            }
+        }
+    },
     "services": {
         "disable_production": {
             "description": "Enter the mac of the Node: (data = mac: 0123456789ABCDEF)",
