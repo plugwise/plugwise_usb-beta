@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise_usb.exceptions import StickError
 import pytest
 
-from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
-from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
+from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.components.usb import USBDevice
 from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
@@ -28,7 +28,7 @@ TEST_USB2_PATH: Final[str] = "/dev/ttyUSB2"
 def usb_comports() -> MockFixture:
     """Mock scan_serial_ports."""
     with patch(
-        "custom_components.plugwise_usb.config_flow.usb.async_scan_serial_ports",
+        "homeassistant.components.plugwise_usb.config_flow.usb.async_scan_serial_ports",
         AsyncMock(return_value=[mocked_com_port()]),
     ) as comports_mock:
         yield comports_mock
