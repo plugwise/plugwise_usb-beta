@@ -133,6 +133,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			git config pull.rebase true
 			echo -e "${CINFO} ** Resetting to ${core_branch} (just cloned) **${CNORM}"
 			git reset --hard || echo -e "${CWARN} - Should have nothing to reset to after cloning${CNORM}"
+			git fetch origin "${core_branch}" --depth 1 || echo -e "${CWARN} - Ignoring unexisting branch${CNORM}"
 			git checkout "${core_branch}"
 			echo ""
 			cp -a "${manualdir}." "${coredir}"
@@ -140,7 +141,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			echo ""
 			echo -e "${CINFO} ** Cloning HA core **${CNORM}"
 			echo ""
-			git clone https://github.com/home-assistant/core.git "${coredir}"
+			git clone --depth 1 --no-tags --branch master https://github.com/home-assistant/core.git "${coredir}"
 			cp -a "${coredir}." "${manualdir}"
 		fi
 		if [[ ! -f "${coredir}/requirements_test.txt" ]]; then
@@ -156,6 +157,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 		git config pull.rebase true
 		echo -e "${CINFO} ** Resetting to ${core_branch} (just cloned) **${CNORM}"
 		git reset --hard || echo -e "${CWARN} - Should have nothing to reset to after cloning${CNORM}"
+		git fetch origin "${core_branch}" --depth 1 || echo -e "${CWARN} - Ignoring unexisting branch${CNORM}"
 		git checkout "${core_branch}"
 	else
 		cd "${coredir}" || exit
