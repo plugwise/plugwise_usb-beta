@@ -1,7 +1,5 @@
 """Plugwise USB stick base entity."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 import logging
 

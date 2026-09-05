@@ -1,7 +1,5 @@
 """Plugwise USB Binary Sensor component for Home Assistant."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from datetime import timedelta
 import logging

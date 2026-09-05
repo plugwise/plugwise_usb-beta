@@ -1,7 +1,5 @@
 """Config flow for Plugwise USB integration."""
 
-from __future__ import annotations
-
 from typing import Any
 
 from plugwise_usb import Stick
