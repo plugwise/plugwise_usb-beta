@@ -74,7 +74,7 @@ venv_and_uv() {
           script/setup
 	fi
 	if ! [ -x "$(command -v pytest)" ]; then
-	  uv pip install pytest
+	  uv pip install --only-binary :all: pytest
 	fi
 }
 
@@ -123,7 +123,7 @@ mkdir -p "${coredir}"
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then 
 	# If only dir exists, but not cloned yet
-	if [ ! -f "${coredir}/requirements_test.txt" ]; then
+	if [[ ! -f "${coredir}/requirements_test.txt" ]]; then
 		if [ -d "${manualdir}" ]; then
 			echo ""
 			echo -e "${CINFO} ** Reusing copy, rebasing and copy to HA core**${CNORM}"
@@ -143,7 +143,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 			git clone https://github.com/home-assistant/core.git "${coredir}"
 			cp -a "${coredir}." "${manualdir}"
 		fi
-		if [ ! -f "${coredir}/requirements_test.txt" ]; then
+		if [[ ! -f "${coredir}/requirements_test.txt" ]]; then
 			echo ""
 			echo -e "${CFAIL}Cloning failed .. make sure ${coredir} exists and is an empty directory${CNORM}"
 			echo ""
