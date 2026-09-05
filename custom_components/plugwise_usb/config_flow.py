@@ -1,6 +1,5 @@
 """Config flow for Plugwise USB integration."""
 
-from copy import deepcopy
 from typing import Any, Final
 
 from plugwise_usb import Stick
@@ -15,7 +14,6 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlow,
 )
-from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
@@ -25,14 +23,15 @@ from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 from .coordinator import PlugwiseUSBDataUpdateCoordinator
 from .util import validate_mac
 
+type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
+
+CONF_ZIGBEE_MAC: Final[str] = "zigbee_mac"
+
 STICK_RECONF_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_USB_PATH): str,
     }
 )
-type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
-
-CONF_ZIGBEE_MAC: Final[str] = "zigbee_mac"
 
 
 @callback
