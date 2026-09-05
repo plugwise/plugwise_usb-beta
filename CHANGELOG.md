@@ -2,7 +2,7 @@
 
 ## Ongoing
 
-- Improve raise-message for no paired Plus-device via PR[]()
+- Improve raise-message for no paired Plus-device, via PR[#399](https://github.com/plugwise/plugwise_usb-beta/pull/399)
 
 ## v0.59.3
 
