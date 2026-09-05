@@ -68,13 +68,13 @@ venv_and_uv() {
 	fi
 	if ! [ -x "$(command -v prek)" ]; then
 	  echo -e "${CINFO}Ensure prek presence${CWARN}"
-	  uv pip install --no-build -r "${my_path}/requirements_commit.txt"
+	  uv pip install -r "${my_path}/requirements_commit.txt"
 	fi
         if ! uv pip list | grep -q bcrypt; then
           script/setup
 	fi
 	if ! [ -x "$(command -v pytest)" ]; then
-	  uv pip install --no-build pytest
+	  uv pip install pytest
 	fi
 }
 
@@ -99,7 +99,7 @@ fi
 # /20250613
 
 # Install commit requirements
-uv pip install --no-build -r "${my_path}/requirements_commit.txt"
+uv pip install -r "${my_path}/requirements_commit.txt"
 prek install
 
 # i.e. args used for functions, not directions 
@@ -226,7 +226,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "pip_prep" ] ; then
 	#module=$(grep require ../custom_components/${REPO_NAME}/manifest.json | cut -f 4 -d '"')
 	echo -e "${CINFO}Checking manifest for current python-${REPO_NAME} to install: ${module}${CNORM}"
 	echo ""
-	uv pip install --no-build --upgrade "${module}"
+	uv pip install --upgrade "${module}"
 fi # pip_prep
 
 if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "testing" ] ; then 
