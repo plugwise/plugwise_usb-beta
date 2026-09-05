@@ -14,6 +14,7 @@ from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
+
 # from pytest_homeassistant_custom_component.common import MockConfigEntry
 from tests.common import MockConfigEntry
 

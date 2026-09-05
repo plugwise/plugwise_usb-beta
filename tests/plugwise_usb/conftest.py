@@ -1,7 +1,5 @@
 """Setup mocks for the Plugwise USB integration tests."""
 
-from __future__ import annotations
-
 from collections.abc import Generator
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -11,6 +9,7 @@ import pytest
 
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
+
 # from pytest_homeassistant_custom_component.common import MockConfigEntry
 from tests.common import MockConfigEntry
 
