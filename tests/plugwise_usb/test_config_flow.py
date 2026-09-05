@@ -1,19 +1,24 @@
 """Test the Plugwise config flow."""
 
+from collections.abc import Generator
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from plugwise_usb.exceptions import StickError
 import pytest
 
-from custom_components.plugwise_usb.config_flow import CONF_MANUAL_PATH
-from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from homeassistant.components.plugwise_usb.config_flow import CONF_MANUAL_PATH
+from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from homeassistant.components.usb import USBDevice
 from homeassistant.config_entries import SOURCE_USER, ConfigFlowResult
 from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-import serial.tools.list_ports
+
+# from pytest_homeassistant_custom_component.common import MockConfigEntry
+from tests.common import MockConfigEntry
+
+type MockFixture = Generator[MagicMock | AsyncMock]
 
 TEST_MAC: Final[str] = "01:23:45:67:AB"
 TEST_MAC2: Final[str] = "02:23:45:67:AB"
@@ -21,22 +26,32 @@ TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 TEST_USB2_PATH: Final[str] = "/dev/ttyUSB2"
 
 
-def com_port():
+@pytest.fixture(name="serial_ports", autouse=True)
+def usb_comports() -> MockFixture:
+    """Mock scan_serial_ports."""
+    with patch(
+        "homeassistant.components.plugwise_usb.config_flow.usb.async_scan_serial_ports",
+        AsyncMock(return_value=[mocked_com_port()]),
+    ) as comports_mock:
+        yield comports_mock
+
+
+def mocked_com_port()-> USBDevice:
     """Mock of a serial port."""
+    return USBDevice(
+        device=TEST_USB_PATH,
+        vid="04D2",
+        pid="162E",
+        serial_number="1234",
+        manufacturer="Virtual serial port",
+        description="Some serial port",
+    )
 
-    port = serial.tools.list_ports_common.ListPortInfo(TEST_USB_PATH)
-    port.serial_number = "1234"
-    port.manufacturer = "Virtual serial port"
-    port.device = TEST_USB_PATH
-    port.description = "Some serial port"
-    return port
 
-
-@patch("serial.tools.list_ports.comports", MagicMock(return_value=[com_port()]))
 async def test_user_flow_select(hass, mock_usb_stick: MagicMock):
     """Test user flow when USB-stick is selected from list."""
-    port = com_port()
-    port_select = f"{port}, s/n: {port.serial_number} - {port.manufacturer}"
+    port = mocked_com_port()
+    port_select = f"{port.device}, s/n: {port.serial_number} - {port.manufacturer}"
 
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
@@ -118,7 +133,7 @@ async def test_invalid_connection(hass):
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_USB_PATH: "/dev/null"},
+        user_input={CONF_USB_PATH: "null"},
     )
     await hass.async_block_till_done()
     assert result.get("type") is FlowResultType.FORM
@@ -137,14 +152,11 @@ async def test_empty_connection(hass):
     )
     await hass.async_block_till_done()
 
-    try:
+    with pytest.raises(InvalidData):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {CONF_USB_PATH: None},
         )
-        pytest.fail("Empty connection was accepted")
-    except InvalidData:
-        assert True
 
     assert result.get("type") is FlowResultType.FORM
     assert result.get("errors") == {}

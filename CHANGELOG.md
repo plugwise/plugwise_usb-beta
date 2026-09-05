@@ -1,8 +1,10 @@
 # Changelog
 
-## Ongoing
+## v0.59.3
 
+- General environment and code updates, improve (test)files structure
 - Bump python to 3.14
+- Link to plugwise_usb [v0.47.8](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.8), rework to using the HA USB platform
 
 ## v0.59.2
 

@@ -54,6 +54,7 @@ class PlugwiseUSBDataUpdateCoordinator(DataUpdateCoordinator):
             super().__init__(
                 hass,
                 _LOGGER,
+                config_entry=config_entry,
                 name=node.node_info.name,
                 update_interval=timedelta(seconds=15),
                 update_method=self.async_node_update,

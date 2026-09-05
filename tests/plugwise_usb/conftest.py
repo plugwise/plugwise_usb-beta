@@ -1,7 +1,5 @@
 """Setup mocks for the Plugwise USB integration tests."""
 
-from __future__ import annotations
-
 from collections.abc import Generator
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -9,11 +7,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from plugwise_usb.exceptions import StickError
 import pytest
 
-from custom_components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
+from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-STICK_IMPORT_MOCK: Final[str] = "custom_components.plugwise_usb.config_flow.Stick"
+# from pytest_homeassistant_custom_component.common import MockConfigEntry
+from tests.common import MockConfigEntry
+
+STICK_IMPORT_MOCK: Final[str] = "homeassistant.components.plugwise_usb.config_flow.Stick"
 TEST_MAC: Final[str] = "01:23:45:67:AB"
 TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 
@@ -22,7 +22,7 @@ TEST_USB_PATH: Final[str] = "/dev/ttyUSB1"
 def mock_setup_entry() -> Generator[AsyncMock]:
     """Override async_setup_entry."""
     with patch(
-        "custom_components.plugwise_usb.async_setup_entry",
+        "homeassistant.components.plugwise_usb.async_setup_entry",
         return_value=True,
     ) as mock_setup:
         yield mock_setup
@@ -30,7 +30,7 @@ def mock_setup_entry() -> Generator[AsyncMock]:
 
 @pytest.fixture
 def mock_config_entry() -> MockConfigEntry:
-    """Return a mocked v1.2 config entry."""  # pw-beta only
+    """Return a mocked v1.2 config entry."""
     return MockConfigEntry(
         domain=DOMAIN,
         data={CONF_USB_PATH: TEST_USB_PATH},
@@ -51,20 +51,6 @@ async def init_integration(
     await hass.async_block_till_done()
 
     return mock_config_entry
-
-
-# @pytest.fixture
-# def mock_comport() -> Generator[MagicMock]:
-#    """Return a mocked comport."""
-#     with patch(
-#         "serial.tools.list_ports.comports",
-#     ) as port:
-#         port = serial.tools.list_ports_common.ListPortInfo(TEST_USBPORT)
-#         port.serial_number = "1234"
-#         port.manufacturer = "Virtual serial port"
-#         port.device = TEST_USBPORT
-#         port.description = "Some serial port"
-#         yield [port]
 
 
 @pytest.fixture

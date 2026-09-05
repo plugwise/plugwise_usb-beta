@@ -4,7 +4,7 @@
 name: Test against HA-core
 
 env:
-  CACHE_VERSION: 2
+  CACHE_VERSION: 5
   DEFAULT_PYTHON: "3.14"
   VENV: venv
 
@@ -34,15 +34,15 @@ jobs:
       python-version: ${{ steps.python.outputs.python-version }}
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Fetch HA pyproject
         id: core-version
-        run: wget -O ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
+        run: curl --fail --location --proto '=https' -o ha_pyproject.toml "https://raw.githubusercontent.com/home-assistant/core/refs/heads/dev/pyproject.toml"
       - name: Compute cache key
         id: set-key
         run: echo "cache-key=${{ runner.os }}--${{ env.CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements_test.txt', '.pre-commit-config.yaml', 'ha_pyproject.toml') }}" >> "$GITHUB_OUTPUT"
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/prepare-python-and-code@v2
+        uses: plugwise/gh-actions/prepare-python-and-code@6b33ca47b5b47b3324e081221da2baa499905914
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
           fail-on-miss: false  # First time create cache (if not already exists)
@@ -63,7 +63,6 @@ jobs:
           venv-dir: ${{ env.VENV }}
           clone-core: "true"
 
-  # Prepare default python version environment
   ha-core-release:
     runs-on: ubuntu-latest
     name: Setup for HA-core (release/master)
@@ -72,15 +71,15 @@ jobs:
       - prepare
     steps:
       - name: Check out committed code
-        uses: actions/checkout@v6
-      - name: Restore cached environment
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Prepare code checkout and python/prek/pre-commit setup
         id: cache-reuse
-        uses: plugwise/gh-actions/restore-venv@v2
+        uses: plugwise/gh-actions/prepare-python-and-code@6b33ca47b5b47b3324e081221da2baa499905914
         with:
           cache-key: ${{ needs.cache.outputs.cache-key }}
+          fail-on-miss: false  # First time create cache (if not already exists)
           python-version: ${{ needs.cache.outputs.python-version }}
           venv-dir: ${{ env.VENV }}
-          precommit-home: ${{ env.PRE_COMMIT_HOME }}
       - name: Test through HA-core (master/release)
         id: ha_core_release_tests
         run: |
@@ -94,6 +93,6 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38

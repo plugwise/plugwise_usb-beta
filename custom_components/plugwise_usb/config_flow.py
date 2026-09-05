@@ -1,7 +1,5 @@
 """Config flow for Plugwise USB integration."""
 
-from __future__ import annotations
-
 from typing import Any
 
 from plugwise_usb import Stick
@@ -13,7 +11,6 @@ from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResu
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-import serial.tools.list_ports
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
@@ -72,11 +69,15 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Step when user initializes a integration."""
         errors: dict[str, str] = {}
-        ports = await self.hass.async_add_executor_job(serial.tools.list_ports.comports)
+        ports = [
+            port
+            for port in await usb.async_scan_serial_ports(self.hass)
+            if isinstance(port, usb.USBDevice)
+        ]
         list_of_ports = [
-            f"{p}, s/n: {p.serial_number or 'n/a'}"
-            + (f" - {p.manufacturer}" if p.manufacturer else "")
-            for p in ports
+            f"{port.device}, s/n: {port.serial_number or 'n/a'}"
+            + (f" - {port.manufacturer}" if port.manufacturer else "")
+            for port in ports
         ]
         list_of_ports.append(CONF_MANUAL_PATH)
 
@@ -87,9 +88,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 return await self.async_step_manual_path()
 
             port = ports[list_of_ports.index(user_selection)]
-            device_path = await self.hass.async_add_executor_job(
-                usb.get_serial_by_id, port.device
-            )
+            device_path = port.device
             errors, mac_stick = await validate_usb_connection(self.hass, device_path)
             if not errors:
                 await self.async_set_unique_id(
