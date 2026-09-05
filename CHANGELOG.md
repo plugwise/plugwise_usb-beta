@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.59.0(a0)
+## v0.60.0(a0)
 
 - Test new feature: pairing of Plus-device (untested!!)
 
