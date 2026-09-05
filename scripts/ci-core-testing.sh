@@ -280,7 +280,7 @@ if [ -z "${GITHUB_ACTIONS}" ]; then
 	echo -e "${CINFO}Copy back modified files ...${CNORM}"
 	echo ""
 	cp -r ./homeassistant/components/${REPO_NAME} ../custom_components/
-	cp -r ./tests/components/${REPO_NAME}/*py ../tests/
+	cp -r ./tests/components/${REPO_NAME}/ ../tests/
 	echo -e "${CINFO}Removing 'version' from manifest for hassfest-ing, version not allowed in core components${CNORM}"
 	echo ""
 	# shellcheck disable=SC2090
