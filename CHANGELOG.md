@@ -1,5 +1,9 @@
 # Changelog
 
+## Ongoing
+
+- Improve raise-message for no paired Plus-device via PR[]()
+
 ## v0.59.3
 
 - General environment and code updates, improve (test)files structure
