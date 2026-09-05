@@ -103,7 +103,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         await api_stick.discover_coordinator(load=False)
     except StickError as exc:
         await api_stick.disconnect()
-        raise ConfigEntryNotReady("Failed to connect to Circle+") from exc
+        raise ConfigEntryNotReady("No connected Plus-device found, pair with one first e.g. via Source") from exc
 
     # Load platforms to allow them to register for node events
     await hass.config_entries.async_forward_entry_setups(
