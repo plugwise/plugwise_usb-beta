@@ -37,7 +37,7 @@ ulimit -n 65536
 # if you fancy more options (i.e. show test results)
 # run as "scripts/core_testing.sh test_config_flow.py -rP"
 #
-# If you want to prepare for Core PR, run ass
+# If you want to prepare for Core PR, run as
 # "COMMIT_CHECK=true scripts/core_testing.sh"
 
 echo ""
