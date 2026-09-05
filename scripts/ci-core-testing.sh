@@ -37,7 +37,7 @@ ulimit -n 65536
 # if you fancy more options (i.e. show test results)
 # run as "scripts/core_testing.sh test_config_flow.py -rP"
 #
-# If you want to prepare for Core PR, run as
+# If you want to prepare for Core PR, run ass
 # "COMMIT_CHECK=true scripts/core_testing.sh"
 
 echo ""
@@ -197,7 +197,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	echo -e "${CINFO}Overwriting with ${REPO_NAME}-beta${CNORM}"
 	echo ""
 	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
-	cp -r ../tests/*py ./tests/components/${REPO_NAME}/
+	cp -r ../tests/${REPO_NAME} ./tests/components/
 
 	echo ""
 
