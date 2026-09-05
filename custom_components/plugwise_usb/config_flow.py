@@ -69,12 +69,15 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Step when user initializes a integration."""
         errors: dict[str, str] = {}
-        ports = await usb.async_scan_serial_ports(self.hass)
+        ports = [
+            port
+            for port in await usb.async_scan_serial_ports(self.hass)
+            if isinstance(port, usb.USBDevice)
+        ]
         list_of_ports = [
             f"{port.device}, s/n: {port.serial_number or 'n/a'}"
             + (f" - {port.manufacturer}" if port.manufacturer else "")
             for port in ports
-            if isinstance(port, usb.USBDevice)
         ]
         list_of_ports.append(CONF_MANUAL_PATH)
 
