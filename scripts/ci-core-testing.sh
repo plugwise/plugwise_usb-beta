@@ -199,15 +199,6 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "core_prep" ] ; then
 	cp -r ../custom_components/${REPO_NAME} ./homeassistant/components/
 	cp -r ../tests/${REPO_NAME} ./tests/components/
 
-	echo ""
-
-        echo -e "${CINFO}Validating prettierrc changes${CNORM}"
-        prettierrc=".prettierrc.js"
-        if ! diff -q <(sed 's/homeassistant/custom_components/g' "${prettierrc}") "../${prettierrc}" >/dev/null; then
-            echo -e "${CWARN}Updating prettierrc from core${CNORM}"
-            sed 's/homeassistant/custom_components/g' "${prettierrc}" > "../${prettierrc}"
-        fi
-
 fi # core_prep
 
 set +u
