@@ -1,4 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "pinDigests": true,
   "extends": ["github>plugwise/renovate-config:custom_component"]
 }
