@@ -1,18 +1,31 @@
 """Config flow for Plugwise USB integration."""
 
-from typing import Any
+from typing import Any, Final
 
 from plugwise_usb import Stick
-from plugwise_usb.exceptions import StickError
+from plugwise_usb.exceptions import NodeError, StickError
 import voluptuous as vol
 
 from homeassistant.components import usb
-from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import (
+    SOURCE_USER,
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import CONF_BASE
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.exceptions import HomeAssistantError
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
+from .coordinator import PlugwiseUSBDataUpdateCoordinator
+from .util import validate_mac
+
+type PlugwiseUSBConfigEntry = ConfigEntry[PlugwiseUSBDataUpdateCoordinator]
+
+CONF_ZIGBEE_MAC: Final[str] = "zigbee_mac"
 
 STICK_RECONF_SCHEMA = vol.Schema(
     {
@@ -164,3 +177,42 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             description_placeholders={"title": reconfigure_entry.title},
             errors=errors,
         )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: PlugwiseUSBConfigEntry
+    ) -> PlugwiseUSBOptionsFlowHandler:
+        """Get the options flow for this handler."""
+        return PlugwiseUSBOptionsFlowHandler(config_entry)
+
+
+class PlugwiseUSBOptionsFlowHandler(OptionsFlow):
+    """Plugwise USB options flow."""
+
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.coordinator = self.config_entry.runtime_data
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult | None:
+        """Handle the input of the plus-device MAC address."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            mac = user_input["zigbee_mac"]
+            if validate_mac(mac):
+                try:
+                    self.coordinator.api_stick.plus_pair_request(mac)
+                except NodeError as exc:
+                    raise HomeAssistantError(f"Pairing of Plus-device {mac} failed") from exc
+                return self.async_create_entry(title="", data=user_input)
+
+            errors[CONF_BASE] = "invalid_mac"
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({vol.Required(CONF_ZIGBEE_MAC): str}),
+            errors=errors,
+        )
+

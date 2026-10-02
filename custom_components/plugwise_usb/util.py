@@ -1,0 +1,16 @@
+"""Plugwise USB helper functions."""
+
+import re
+
+
+def validate_mac(mac: str) -> bool:
+    """Validate the supplied string is in a ZigBee MAC address format."""
+    try:
+        if not re.match("^[A-F0-9]+$", mac):
+            return False
+    except TypeError:
+        return False
+
+    if len(mac) != 16:
+        return False
+    return True
