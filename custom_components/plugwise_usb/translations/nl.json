@@ -32,6 +32,20 @@
       "stick_init": "Initaliseren van USB-stick mislukt"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pair Plus-apparaat",
+        "description": "Voer het ZigBee MAC adres in:",
+        "data": {
+          "zigbee_mac": "16-bit MAC"
+        }
+      }
+    },
+    "error": {
+      "invalid_mac": "Ongeldig MAC adres, voer een geldig adres in"
+    }
+  },
   "services": {
     "enable_production":{
       "name": "Zet productie-loggen aan",
