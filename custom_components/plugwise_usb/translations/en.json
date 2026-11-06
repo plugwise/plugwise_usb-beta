@@ -1,8 +1,7 @@
 {
     "config": {
         "abort": {
-            "not_the_same_stick": "The configured Stick does not match with the Stick on the entered port",
-            "reconfigure_successful": "Reconfiguration successful"
+            "not_the_same_stick": "The configured Stick does not match with the Stick on the entered port"
         },
         "error": {
             "already_configured": "This device is already configured",
