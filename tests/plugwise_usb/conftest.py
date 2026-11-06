@@ -10,8 +10,7 @@ import pytest
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
 
-# from pytest_homeassistant_custom_component.common import MockConfigEntry
-from tests.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 STICK_IMPORT_MOCK: Final[str] = "homeassistant.components.plugwise_usb.config_flow.Stick"
 TEST_MAC: Final[str] = "01:23:45:67:AB"
@@ -23,7 +22,7 @@ def mock_setup_entry() -> Generator[AsyncMock]:
     """Override async_setup_entry."""
     with patch(
         "homeassistant.components.plugwise_usb.async_setup_entry",
-        return_value=True,
+        return_value=None,
     ) as mock_setup:
         yield mock_setup
 

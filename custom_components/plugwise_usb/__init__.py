@@ -37,7 +37,7 @@ class NodeConfigEntry(TypedDict):
     coordinator: PlugwiseUSBDataUpdateCoordinator
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry) -> None:
     """Establish connection with plugwise USB-stick."""
 
     @callback
@@ -159,7 +159,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
 
 async def async_unload_entry(
     hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
-) -> bool:
+) -> None:
     """Unload the Plugwise USB stick connection."""
     runtime_data = getattr(config_entry, "runtime_data", None) or {}
     if runtime_data:
@@ -172,7 +172,7 @@ async def async_unload_entry(
         if stick is not None:
             await stick.disconnect()
 
-    return await hass.config_entries.async_unload_platforms(
+    await hass.config_entries.async_unload_platforms(
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
