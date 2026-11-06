@@ -4,6 +4,7 @@
   "after_dependencies": ["usb"],
   "codeowners": ["@CoMPaTech", "@bouwew", "@brefra", "@dirixmjm", "@arnoutd_77"],
   "config_flow": true,
+  "connectivity": ["zigbee"],
   "documentation": "https://github.com/plugwise/plugwise_usb-beta",
   "integration_type": "hub",
   "iot_class": "local_polling",
