@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 import logging
+from typing import override
 
 from plugwise_usb.api import NodeEvent, NodeFeature
 
@@ -127,6 +128,7 @@ class PlugwiseUSBButtonEntity(PlugwiseUSBEntity, ButtonEntity):
             node_duc.node, entity_description.async_button_fn
         )
 
+    @override
     async def async_press(self) -> None:
         """Button was pressed."""
         await self.async_button_fn()

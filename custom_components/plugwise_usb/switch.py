@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 import logging
+from typing import override
 
 from plugwise_usb.api import NodeEvent, NodeFeature
 
@@ -192,11 +193,13 @@ class PlugwiseUSBSwitchEntity(PlugwiseUSBEntity, SwitchEntity):
         )
         self.async_write_ha_state()
 
+    @override
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
         self._attr_is_on = await self.async_switch_fn(True)
         self.async_write_ha_state()
 
+    @override
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
         self._attr_is_on = await self.async_switch_fn(False)

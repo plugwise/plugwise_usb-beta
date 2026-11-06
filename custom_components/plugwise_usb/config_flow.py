@@ -1,6 +1,6 @@
 """Config flow for Plugwise USB integration."""
 
-from typing import Any
+from typing import Any, override
 
 from plugwise_usb import Stick
 from plugwise_usb.exceptions import StickError
@@ -64,6 +64,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 
     # no async_step_zeroconf this USB is physical
 
+    @override
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -107,6 +108,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
+    @override
     async def async_step_manual_path(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -133,6 +135,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
+    @override
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:

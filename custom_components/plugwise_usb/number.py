@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 import logging
+from typing import override
 
 from plugwise_usb.api import NodeEvent, NodeFeature
 
@@ -258,6 +259,7 @@ class PlugwiseUSBNumberEntity(PlugwiseUSBEntity, NumberEntity):
         )
         self.async_write_ha_state()
 
+    @override
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
         if self.entity_description.async_number_type == "float":
