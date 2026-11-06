@@ -3,4 +3,4 @@ pytest-cov
 pytest-asyncio
 aiousbwatcher
 plugwise-usb
-pytest-homeassistant-custom-component>=0.13.252
+pytest-homeassistant
