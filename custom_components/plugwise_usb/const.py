@@ -3,7 +3,7 @@
 import logging
 from typing import Final
 
-import voluptuous as vol
+import probatio
 
 from homeassistant.components.device_tracker import ATTR_MAC
 from homeassistant.const import Platform
@@ -35,11 +35,11 @@ CONF_USB_PATH: Final[str] = "usb_path"
 SERVICE_DISABLE_PRODUCTION: Final[str] = "disable_production"
 SERVICE_ENABLE_PRODUCTION: Final[str] = "enable_production"
 SERVICE_ENERGY_RESET: Final[str] = "reset_energy_logs"
-SERVICE_USB_DEVICE_SCHEMA: Final = vol.Schema(
+SERVICE_USB_DEVICE_SCHEMA: Final = probatio.Schema(
     {
-        vol.Required(ATTR_MAC): vol.All(
+        probatio.Required(ATTR_MAC): probatio.All(
             cv.string,
-            vol.Match(r"^[0-9A-Fa-f]{16}$")
+            probatio.Match(r"^[0-9A-Fa-f]{16}$")
         )
     }
 )

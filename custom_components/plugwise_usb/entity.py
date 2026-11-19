@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import logging
+from typing import override
 
 from plugwise_usb.api import NodeFeature, NodeInfo
 
@@ -45,6 +46,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         self._attr_unique_id = f"{self._node_info.mac}-{entity_description.key}"
 
     @property
+    @override
     def available(self) -> bool:
         """Return if entity is available."""
         available = self.node_duc.node.available and super().available
@@ -52,6 +54,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
         return available
 
     @property
+    @override
     def device_info(self) -> DeviceInfo:
         """Return DeviceInfo for each created entity."""
         return DeviceInfo(
@@ -70,6 +73,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
             ),
         )
 
+    @override
     async def async_added_to_hass(self):
         """Subscribe for push updates."""
         await super().async_added_to_hass()
@@ -77,6 +81,7 @@ class PlugwiseUSBEntity(CoordinatorEntity):
                  self.entity_description.node_feature
               )
 
+    @override
     async def async_will_remove_from_hass(self):
         """Unsubscribe to updates."""
         await super().async_will_remove_from_hass()

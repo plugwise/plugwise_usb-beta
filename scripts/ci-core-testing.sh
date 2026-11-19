@@ -76,6 +76,7 @@ venv_and_uv() {
 	if ! [ -x "$(command -v pytest)" ]; then
 	  uv pip install --only-binary :all: pytest
 	fi
+	uv pip install --no-deps -e "${coredir}/packages/pytest-homeassistant"
 }
 
 # Ensure environment is set-up
@@ -244,6 +245,7 @@ if [ -z "${GITHUB_ACTIONS}" ] || [ "$1" == "quality" ] ; then
 	echo ""
 	echo -e "${CINFO}Ensure HA-core venv${CNORM}"
          venv_and_uv
+	uv pip install --only-binary :all: -r requirements_test_pre_commit.txt
 	echo ""
 	set +e
 	echo -e "${CINFO}... ruff-ing component...${CNORM}"

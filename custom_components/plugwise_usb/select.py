@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 import logging
+from typing import override
 
 from plugwise_usb.api import MotionSensitivity, NodeEvent, NodeFeature
 
@@ -132,6 +133,7 @@ class PlugwiseUSBSelectEntity(PlugwiseUSBEntity, SelectEntity):
         self._attr_current_option = current_option.name.lower()
         self.async_write_ha_state()
 
+    @override
     async def async_select_option(self, option: str) -> None:
         """Change to the selected entity option."""
         normalized = option.strip().lower()

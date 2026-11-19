@@ -1,6 +1,3 @@
-pytest
-pytest-cov
-pytest-asyncio
+pytest-homeassistant-custom-component
 aiousbwatcher
 plugwise-usb
-pytest-homeassistant-custom-component>=0.13.252

@@ -1,6 +1,7 @@
 """Test the Plugwise config flow."""
 
 from collections.abc import Generator
+from importlib.util import find_spec
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -15,8 +16,10 @@ from homeassistant.const import CONF_SOURCE
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 
-# from pytest_homeassistant_custom_component.common import MockConfigEntry
-from tests.common import MockConfigEntry
+if find_spec("pytest_homeassistant") is None:
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+else:
+    from pytest_homeassistant.common import MockConfigEntry
 
 type MockFixture = Generator[MagicMock | AsyncMock]
 

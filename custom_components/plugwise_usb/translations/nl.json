@@ -21,8 +21,7 @@
       }
     },
     "abort": {
-      "not_the_same_stick": "De geconfigureerde Stick matcht niet met de Stick van de ingegeven poort",
-      "reconfigure_successful": "Herconfiguratie succesvol"
+      "not_the_same_stick": "De geconfigureerde Stick matcht niet met de Stick van de ingegeven poort"
     },
     "error": {
       "already_configured": "Dit apparaat is al geconfigureerd",

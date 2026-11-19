@@ -1,10 +1,10 @@
 """Config flow for Plugwise USB integration."""
 
-from typing import Any
+from typing import Any, override
 
 from plugwise_usb import Stick
 from plugwise_usb.exceptions import StickError
-import voluptuous as vol
+import probatio
 
 from homeassistant.components import usb
 from homeassistant.config_entries import SOURCE_USER, ConfigFlow, ConfigFlowResult
@@ -14,9 +14,9 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import CONF_MANUAL_PATH, CONF_USB_PATH, DOMAIN, MANUAL_PATH
 
-STICK_RECONF_SCHEMA = vol.Schema(
+STICK_RECONF_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_USB_PATH): str,
+        probatio.Required(CONF_USB_PATH): str,
     }
 )
 
@@ -64,6 +64,7 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 
     # no async_step_zeroconf this USB is physical
 
+    @override
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -101,8 +102,8 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id=SOURCE_USER,
-            data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH): vol.In(list_of_ports)}
+            data_schema=probatio.Schema(
+                {probatio.Required(CONF_USB_PATH): probatio.In(list_of_ports)}
             ),
             errors=errors,
         )
@@ -127,8 +128,8 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
                 )
         return self.async_show_form(
             step_id=MANUAL_PATH,
-            data_schema=vol.Schema(
-                {vol.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
+            data_schema=probatio.Schema(
+                {probatio.Required(CONF_USB_PATH, default="/dev/ttyUSB0"): str}
             ),
             errors=errors,
         )
