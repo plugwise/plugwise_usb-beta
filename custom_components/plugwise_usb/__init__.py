@@ -170,7 +170,7 @@ async def async_unload_entry(
         if stick is not None:
             await stick.disconnect()
 
-    await hass.config_entries.async_unload_platforms(
+    await hass.config_entries.async_unload_platforms_or_raise(
         config_entry, PLUGWISE_USB_PLATFORMS
     )
 
