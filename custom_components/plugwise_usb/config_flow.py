@@ -108,7 +108,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    @override
     async def async_step_manual_path(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -135,7 +134,6 @@ class PlugwiseUSBConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    @override
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
