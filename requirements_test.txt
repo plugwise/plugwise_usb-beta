@@ -1,6 +1,1 @@
-pytest
-pytest-cov
-pytest-asyncio
-aiousbwatcher
-plugwise-usb
-pytest-homeassistant
+pytest-homeassistant-custom-component

@@ -1,3 +1,1 @@
--r requirements_test.txt
 prek>=0.2.27
-ruff

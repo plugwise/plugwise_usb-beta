@@ -1,6 +1,7 @@
 """Setup mocks for the Plugwise USB integration tests."""
 
 from collections.abc import Generator
+from importlib.util import find_spec
 from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -10,7 +11,10 @@ import pytest
 from homeassistant.components.plugwise_usb.const import CONF_USB_PATH, DOMAIN
 from homeassistant.core import HomeAssistant
 
-from pytest_homeassistant.common import MockConfigEntry
+if find_spec("pytest_homeassistant") is None:
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+else:
+    from pytest_homeassistant.common import MockConfigEntry
 
 STICK_IMPORT_MOCK: Final[str] = "homeassistant.components.plugwise_usb.config_flow.Stick"
 TEST_MAC: Final[str] = "01:23:45:67:AB"
