@@ -154,8 +154,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: PlugwiseUSBConfig
         if api_stick.network_discovered:
             break
 
-    return True
-
 
 async def async_unload_entry(
     hass: HomeAssistant, config_entry: PlugwiseUSBConfigEntry
