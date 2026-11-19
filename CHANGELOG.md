@@ -2,6 +2,7 @@
 
 ## Ongoing
 
+- Link to plugwise_usb [v0.47.9](https://github.com/plugwise/python-plugwise-usb/releases/tag/v0.47.9)
 - Core 2026.11.0 compatibility fixes, via PR [#472](https://github.com/plugwise/plugwise_usb-beta/pull/472)
 - Improve raise-message for no paired Plus-device, via PR[#399](https://github.com/plugwise/plugwise_usb-beta/pull/399)
 
